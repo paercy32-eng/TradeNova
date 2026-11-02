@@ -8,107 +8,37 @@
 <link rel="stylesheet" href="css/styles.css">
 <style>
   /* Dashboard specific styles */
-  .dash-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--blue);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-    text-transform: uppercase;
-  }
+  .dash-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+  .user-profile { display: flex; align-items: center; gap: 1rem; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; }
   
   /* Wallet Card */
-  .wallet-card {
-    background: linear-gradient(135deg, var(--surface-2), var(--surface));
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin: 1.5rem 0 2.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .wallet-balance {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.03em;
-    margin: 0.2rem 0;
-  }
-  .wallet-label {
-    color: var(--muted);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+  .wallet-card { background: linear-gradient(135deg, var(--surface-2), var(--surface)); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .wallet-balance { font-size: 2.2rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; margin: 0.2rem 0; }
+  .wallet-label { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
   
-  /* Signal Feed */
-  .signal-grid {
-    display: grid;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  @media (min-width: 760px) {
-    .signal-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  
-  .signal-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .signal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  /* Plan Stats */
+  .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 2rem; text-align: center; }
+  .plan-item { display: flex; flex-direction: column; }
+  .plan-val { font-size: 1.1rem; font-weight: 700; color: var(--blue); }
+  .plan-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+
+  /* Signals */
+  .signal-grid { display: grid; gap: 1rem; margin-top: 1rem; }
+  @media (min-width: 760px) { .signal-grid { grid-template-columns: repeat(2, 1fr); } }
+  .signal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; display: flex; flex-direction: column; gap: 1rem; }
+  .signal-header { display: flex; justify-content: space-between; align-items: center; }
   .signal-pair { font-size: 1.2rem; font-weight: 800; }
-  .signal-dir {
-    font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px;
-  }
+  .signal-dir { font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px; }
   .dir-long { background: var(--green-soft); color: var(--green); }
   .dir-short { background: var(--red-soft); color: var(--red); }
-  
-  .signal-levels {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    background: var(--bg);
-    padding: 0.8rem;
-    border-radius: 8px;
-    text-align: center;
-  }
+  .signal-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: var(--bg); padding: 0.8rem; border-radius: 8px; text-align: center; }
   .signal-levels div { display: flex; flex-direction: column; }
   .signal-levels span { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
   .signal-levels strong { font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .signal-meta { font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; }
   
-  .signal-meta {
-    font-size: 0.8rem; color: var(--muted);
-    display: flex; justify-content: space-between;
-  }
+  .locked-card { text-align: center; padding: 3rem 1rem; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--muted); }
 </style>
 </head>
 <body>
@@ -116,9 +46,7 @@
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="dashboard.html">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Trade Nova</span>
     </a>
     <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:auto">Log out</button>
@@ -127,7 +55,6 @@
 
 <main class="wrap" style="padding-bottom: 4rem;">
   
-  <!-- User Header -->
   <div class="dash-header">
     <div class="user-profile">
       <div class="avatar" id="userInitial">U</div>
@@ -138,50 +65,52 @@
     </div>
   </div>
 
-  <!-- Wallet -->
+  <!-- Wallet & Earnings -->
   <div class="wallet-card">
     <div>
-      <div class="wallet-label">Available Balance</div>
+      <div class="wallet-label">Total Balance (USD)</div>
       <div class="wallet-balance" id="walletBalance">$0.00</div>
-      <div id="walletStatus" style="font-size:0.8rem; color:var(--muted);">Minimum deposit: $50.00</div>
+      <div style="font-size:0.8rem; color:var(--green);" id="profitToday">+$0.00 earned today</div>
     </div>
-    <div>
-      <button class="btn btn-primary" id="depositBtn">Deposit USD</button>
+    <div style="text-align:right;">
+      <div class="wallet-label">Active Plan</div>
+      <div style="font-weight:700; font-size:1.1rem;" id="depositAmount">$0.00 Deposit</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:0.4rem;" id="depositBtn">Add Funds</button>
     </div>
   </div>
 
-  <!-- Admin Signals Feed -->
-  <div>
-    <h3 style="font-size:1.3rem; margin-bottom:0.2rem;">Admin Signals</h3>
-    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">
-      Latest trades from the Trade Nova team. Click to execute.
-    </p>
-    
-    <div class="signal-grid" id="signalGrid">
-      <!-- Populated by JS -->
+  <!-- Plan Status -->
+  <div class="plan-grid">
+    <div class="plan-item">
+      <span class="plan-val" id="planDay">Day 1 / 30</span>
+      <span class="plan-lbl">Plan Progress</span>
     </div>
+    <div class="plan-item">
+      <span class="plan-val" id="planSignals">1</span>
+      <span class="plan-lbl">Signals Today</span>
+    </div>
+    <div class="plan-item">
+      <span class="plan-val pos" id="planROI">+8.54%</span>
+      <span class="plan-lbl">Daily Yield</span>
+    </div>
+  </div>
+
+  <!-- Signals Feed -->
+  <div>
+    <h3 style="font-size:1.3rem; margin-bottom:0.2rem;">Today's Signals</h3>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">
+      Signals allocated to your tier. Execute via Binance.
+    </p>
+    <div class="signal-grid" id="signalGrid"></div>
+  </div>
+
+  <!-- Admin Test Button -->
+  <div style="margin-top:3rem; padding-top:2rem; border-top:1px dashed var(--border); text-align:center;">
+    <p style="color:var(--muted); font-size:0.8rem; margin-bottom:0.5rem;">Admin Testing Tool</p>
+    <button class="btn btn-primary" id="simulateBtn">Simulate Next Day</button>
   </div>
 
 </main>
-
-<!-- Deposit Modal (Native Dialog) -->
-<dialog id="depositDialog" class="modal">
-  <div class="modal-head">
-    <div>
-      <h3 style="margin:0;">Deposit Funds</h3>
-      <p class="modal-sub">Minimum $50.00 required to copy signals.</p>
-    </div>
-    <button class="icon-btn" id="closeDeposit" aria-label="Close">✕</button>
-  </div>
-  <div style="padding: 1rem 0;">
-    <div class="field">
-      <label for="depositAmt">Amount (USD)</label>
-      <input id="depositAmt" type="number" min="50" step="10" value="50" placeholder="50.00">
-    </div>
-    <p class="field-hint" style="margin-bottom:1rem;">Funds are processed securely via MarzPay (UGX) or Flutterwave.</p>
-    <button class="btn btn-primary btn-block" id="confirmDeposit">Proceed to Payment</button>
-  </div>
-</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
@@ -189,60 +118,106 @@
 (function () {
   'use strict';
 
-  // Mock balance for demo purposes until MarzPay is hooked up
-  const DEMO_BALANCE = 50.00; 
-  const MIN_DEPOSIT = 50.00;
-
-  // Mock Signals (Admin will create these in Supabase later)
-  const MOCK_SIGNALS = [
-    { id: '1', pair: 'BTC/USDT', dir: 'LONG', entry: '64,200', sl: '63,500', tp: '65,800', time: '2 mins ago' },
-    { id: '2', pair: 'ETH/USDT', dir: 'SHORT', entry: '3,450', sl: '3,520', tp: '3,300', time: '1 hr ago' }
+  // Daily profit array for a $50 deposit (Extracted exactly from your image)
+  const PROFIT_TABLE_50 = [
+    4.27, 1.30, 1.33, 1.36, 1.39, 1.43, 1.46, 1.50, 1.53, 1.57, // Days 1-10
+    1.61, 1.64, 1.69, 1.72, 1.77, 1.81, 1.85, 1.89, 1.95, 1.98, // Days 11-20
+    2.04, 2.08, 2.14, 2.18, 2.24, 2.29, 2.35, 2.40, 2.46, 2.51  // Days 21-30
   ];
+
+  let currentUser = null;
+  let currentProfile = null;
 
   function formatMoney(amount) {
     return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  // Determine how many signals the user gets based on deposit
+  function getSignalCount(deposit) {
+    if (deposit >= 2000) return 4;
+    if (deposit >= 1000) return 3;
+    if (deposit >= 400) return 2;
+    if (deposit >= 50) return 1;
+    return 0; // Below min deposit
+  }
+
   function initDashboard() {
-    TN.ready.then(function () {
-      return TN.getSession();
-    }).then(function (session) {
-      if (!session) {
-        window.location.replace('login.html');
-        return;
-      }
-
-      // Fetch profile
+    TN.ready.then(() => TN.getSession())
+    .then(session => {
+      if (!session) throw new Error('No session');
+      currentUser = session.user;
       return TN.client.from('profiles').select('*').eq('id', session.user.id).single();
-        
-    }).then(function (profileRes) {
-      if (!profileRes || !profileRes.data) return;
-
-      const profile = profileRes.data;
-      
-      // Update UI
-      document.getElementById('userName').textContent = profile.full_name || 'Trader';
-      document.getElementById('userLocation').textContent = `${profile.country || 'Unknown'} • ${profile.role || 'Follower'}`;
-      document.getElementById('userInitial').textContent = (profile.full_name || 'U').charAt(0);
-      
-      // Set Wallet
-      document.getElementById('walletBalance').textContent = formatMoney(DEMO_BALANCE);
-      if (DEMO_BALANCE >= MIN_DEPOSIT) {
-        document.getElementById('walletStatus').textContent = 'Account active. Ready to trade.';
-        document.getElementById('walletStatus').style.color = 'var(--green)';
-      }
-
-      // Render Signals
-      renderSignals(MOCK_SIGNALS);
-
-    }).catch(function (err) {
-      console.error('Dashboard init error:', err);
+    })
+    .then(res => {
+      if (!res.data) throw new Error('No profile');
+      currentProfile = res.data;
+      renderUI();
+    })
+    .catch(err => {
+      console.error(err);
+      if (err.message === 'No session') window.location.replace('login.html');
     });
   }
 
-  function renderSignals(signals) {
+  function renderUI() {
+    const p = currentProfile;
+    const dep = Number(p.deposit_amount);
+    const day = p.active_day;
+    const signalsAllowed = getSignalCount(dep);
+
+    // Calculate profit for today
+    let profitToday = 0;
+    if (day <= 30 && dep >= 50) {
+      const baseProfit = PROFIT_TABLE_50[day - 1]; // Get profit for this day
+      const multiplier = dep / 50; // Scale by deposit
+      profitToday = baseProfit * multiplier;
+    }
+
+    // Update Header
+    document.getElementById('userName').textContent = p.full_name || 'Trader';
+    document.getElementById('userLocation').textContent = `${p.country || 'Unknown'}`;
+    document.getElementById('userInitial').textContent = (p.full_name || 'U').charAt(0);
+
+    // Update Wallet
+    document.getElementById('walletBalance').textContent = formatMoney(p.balance_usd);
+    document.getElementById('profitToday').textContent = `+${formatMoney(profitToday)} earned today`;
+    document.getElementById('depositAmount').textContent = `${formatMoney(dep)} Deposit`;
+
+    // Update Plan Grid
+    document.getElementById('planDay').textContent = day <= 30 ? `Day ${day} / 30` : 'Completed';
+    document.getElementById('planSignals').textContent = signalsAllowed;
+    
+    // Calculate Daily ROI %
+    const roiPercent = dep > 0 ? (profitToday / dep) * 100 : 0;
+    document.getElementById('planROI').textContent = `+${roiPercent.toFixed(2)}%`;
+
+    // Render Signals
+    renderSignals(signalsAllowed);
+  }
+
+  function renderSignals(limit) {
     const grid = document.getElementById('signalGrid');
-    grid.innerHTML = signals.map(s => {
+    
+    // Mock signals pool
+    const allSignals = [
+      { pair: 'BTC/USDT', dir: 'LONG', entry: '64,200', sl: '63,500', tp: '65,800' },
+      { pair: 'ETH/USDT', dir: 'SHORT', entry: '3,450', sl: '3,520', tp: '3,300' },
+      { pair: 'SOL/USDT', dir: 'LONG', entry: '145.50', sl: '141.00', tp: '152.00' },
+      { pair: 'BNB/USDT', dir: 'LONG', entry: '590.00', sl: '580.00', tp: '610.00' }
+    ];
+
+    if (limit === 0) {
+      grid.innerHTML = `<div class="locked-card" style="grid-column: 1/-1;">
+        <h3>Deposit Required</h3>
+        <p>You need a minimum balance of $50.00 to unlock signals.</p>
+        <button class="btn btn-primary" onclick="document.getElementById('depositBtn').click()">Deposit Now</button>
+      </div>`;
+      return;
+    }
+
+    const activeSignals = allSignals.slice(0, limit);
+
+    grid.innerHTML = activeSignals.map(s => {
       const dirClass = s.dir === 'LONG' ? 'dir-long' : 'dir-short';
       return `
         <div class="signal-card">
@@ -250,64 +225,70 @@
             <span class="signal-pair">${s.pair}</span>
             <span class="signal-dir ${dirClass}">${s.dir}</span>
           </div>
-          
           <div class="signal-levels">
             <div><span>Entry</span><strong>${s.entry}</strong></div>
             <div><span>Stop</span><strong class="neg">${s.sl}</strong></div>
             <div><span>Target</span><strong class="pos">${s.tp}</strong></div>
           </div>
-          
-          <div class="signal-meta">
-            <span>Posted ${s.time}</span>
-            <span>Admin</span>
-          </div>
-          
-          <button class="btn btn-ghost btn-block" onclick="executeSignal('${s.pair}', '${s.dir}', ${DEMO_BALANCE})">
-            Copy / Execute Trade
-          </button>
+          <button class="btn btn-ghost btn-block" onclick="executeSignal(this)">Execute via Binance</button>
         </div>
       `;
     }).join('');
   }
 
-  // Wallet Deposit Logic
-  const dialog = document.getElementById('depositDialog');
-  document.getElementById('depositBtn').addEventListener('click', () => dialog.showModal());
-  document.getElementById('closeDeposit').addEventListener('click', () => dialog.close());
-  
-  document.getElementById('confirmDeposit').addEventListener('click', function() {
-    const amt = parseFloat(document.getElementById('depositAmt').value);
-    if (amt < MIN_DEPOSIT) {
-      alert("Minimum deposit is $50.00");
+  // Simulate Next Day logic
+  document.getElementById('simulateBtn').addEventListener('click', function() {
+    const btn = this;
+    btn.textContent = 'Updating...';
+    btn.disabled = true;
+
+    const p = currentProfile;
+    const day = p.active_day;
+    const dep = Number(p.deposit_amount);
+
+    if (day > 30) {
+      alert("Plan has already reached 30 days.");
+      btn.textContent = 'Simulate Next Day';
+      btn.disabled = false;
       return;
     }
-    alert(`Redirecting to MarzPay/Flutterwave to collect $${amt}...`);
-    dialog.close();
+
+    const profitToday = (PROFIT_TABLE_50[day - 1] * (dep / 50));
+    const newBalance = Number(p.balance_usd) + profitToday;
+    const nextDay = day + 1;
+
+    // Update database
+    TN.client.from('profiles').update({
+      balance_usd: newBalance,
+      active_day: nextDay
+    }).eq('id', currentUser.id).then(res => {
+      if (res.error) {
+        alert('Error updating: ' + res.error.message);
+        btn.textContent = 'Simulate Next Day';
+        btn.disabled = false;
+      } else {
+        // Reload to show new data
+        window.location.reload();
+      }
+    });
   });
 
-  // Execute Signal Logic
-  window.executeSignal = function(pair, dir, balance) {
-    if (balance < MIN_DEPOSIT) {
-      alert("You need a minimum balance of $50.00 to copy trades. Please deposit.");
-      document.getElementById('depositDialog').showModal();
-      return;
-    }
-
-    const btn = event.target;
+  window.executeSignal = function(btn) {
     btn.disabled = true;
     btn.textContent = 'Connecting to Binance...';
-
-    // This is where the Edge Function call will happen later
     setTimeout(() => {
       btn.textContent = 'Trade Executed ✓';
       btn.style.color = 'var(--green)';
       btn.style.borderColor = 'var(--green)';
-    }, 1500);
+    }, 1200);
   };
 
-  // Logout
   document.getElementById('logoutBtn').addEventListener('click', function() {
     TN.signOut().then(() => window.location.replace('login.html'));
+  });
+
+  document.getElementById('depositBtn').addEventListener('click', function() {
+    alert("This will open the MarzPay/Flutterwave checkout modal in the final version.");
   });
 
   initDashboard();
