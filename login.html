@@ -4,71 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a0e13">
-<meta name="description" content="Sign in to your Trade Nova account.">
+<meta name="description" content="Sign in to Trade Nova — copy top crypto traders across Africa.">
 <title>Sign in — Trade Nova</title>
 <link rel="stylesheet" href="css/styles.css">
 <style>
-/* Auth-page styles — same block as register.html.
-   These will move into css/auth.css when we clean up (later step). */
-
-.auth-page {
-  min-height: calc(100vh - 60px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.15rem;
-}
-.auth-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--surface, #111820);
-  border: 1px solid var(--border, #22303f);
-  border-radius: 16px;
-  padding: 2rem 1.6rem;
-}
-.auth-card h1 { font-size: 1.5rem; margin: 0 0 .35rem; }
-.auth-sub { color: var(--muted, #8fa3b8); font-size: .88rem; margin: 0 0 1.5rem; }
-.auth-card .field { margin-bottom: .9rem; }
-.auth-card .btn { margin-top: .4rem; }
-.field-hint { font-size: .75rem; color: var(--muted, #8fa3b8); margin: .3rem 0 0; opacity: .8; }
-
-.phone-input {
-  display: flex;
-  border: 1px solid var(--border, #22303f);
-  border-radius: 9px;
-  overflow: hidden;
-  background: var(--surface, #111820);
-}
-.phone-input:focus-within {
-  outline: 2px solid #4f8cff;
-  outline-offset: 1px;
-  border-color: #4f8cff;
-}
-.dial-code {
-  display: flex; align-items: center; justify-content: center;
-  padding: 0 .8rem;
-  background: var(--surface-2, #16202b);
-  color: var(--text, #e8eef6);
-  font-size: .92rem; font-weight: 600;
-  border-right: 1px solid var(--border, #22303f);
-  min-width: 3.5rem;
-}
-.phone-input input {
-  border: none; background: transparent; border-radius: 0;
-  flex: 1; min-width: 0;
-  font: inherit; font-size: .92rem;
-  padding: .65rem .8rem;
-  color: var(--text, #e8eef6);
-}
-.phone-input input:focus { outline: none; }
-
-.auth-foot {
-  text-align: center; font-size: .85rem; color: var(--muted, #8fa3b8);
-  margin: 1.3rem 0 0; padding-top: 1.3rem;
-  border-top: 1px solid var(--border, #22303f);
-}
-.auth-foot a { color: #4f8cff; font-weight: 600; }
-.auth-foot a:hover { text-decoration: underline; }
+/* Same auth styles as register.html */
+.auth-page{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:2rem 1.15rem}
+.auth-card{width:100%;max-width:440px;background:var(--surface,#111820);border:1px solid var(--border,#22303f);border-radius:16px;padding:2rem 1.6rem}
+.auth-card h1{font-size:1.5rem;margin:0 0 .35rem}
+.auth-sub{color:var(--muted,#8fa3b8);font-size:.88rem;margin:0 0 1.5rem}
+.auth-card .field{margin-bottom:.85rem}
+.field-hint{font-size:.73rem;color:var(--muted,#8fa3b8);margin:.28rem 0 0;opacity:.8}
+.auth-foot{text-align:center;font-size:.85rem;color:var(--muted,#8fa3b8);margin:1.2rem 0 0;padding-top:1.2rem;border-top:1px solid var(--border,#22303f)}
+.auth-foot a{color:#4f8cff;font-weight:600}
 </style>
 </head>
 <body>
@@ -77,8 +25,7 @@
   <div class="wrap header-inner">
     <a class="brand" href="index.html">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2"
-              stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span>Trade Nova</span>
     </a>
@@ -88,26 +35,18 @@
 
 <main class="auth-page">
   <div class="auth-card">
-    <h1>Sign in</h1>
-    <p class="auth-sub">Welcome back to Trade Nova.</p>
+    <h1>Welcome back</h1>
+    <p class="auth-sub">Sign in to manage your copy trading portfolio.</p>
 
     <form id="loginForm" novalidate>
       <div class="field">
-        <label for="phone">Phone number</label>
-        <div class="phone-input">
-          <span class="dial-code" id="dialCode">+</span>
-          <input id="phone" name="phone" type="tel" inputmode="numeric"
-                 autocomplete="tel" placeholder="256712345678" required>
-        </div>
-        <p class="field-hint">
-          Full number with country code (e.g. 256712345678).
-        </p>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
       </div>
 
       <div class="field">
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" required
-               autocomplete="current-password" placeholder="Your password">
+        <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Your password">
       </div>
 
       <button class="btn btn-primary btn-block" type="submit" id="submitBtn">
@@ -116,13 +55,10 @@
       <p class="form-msg" id="formMsg" role="status"></p>
     </form>
 
-    <p class="auth-foot">
-      New here? <a href="register.html">Create an account</a>
-    </p>
+    <p class="auth-foot">New to Trade Nova? <a href="register.html">Create an account</a></p>
   </div>
 </main>
 
-<!-- Load order matters: SDK first, then our wrapper -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script>
@@ -130,90 +66,67 @@
   'use strict';
 
   var form     = document.getElementById('loginForm');
-  var phone    = document.getElementById('phone');
+  var email    = document.getElementById('email');
   var passwd   = document.getElementById('password');
-  var dialCode = document.getElementById('dialCode');
   var msg      = document.getElementById('formMsg');
   var submit   = document.getElementById('submitBtn');
 
-  var STORAGE_PREFILL = 'tradenova_prefill_phone';
-
   function setMsg(kind, text) {
-    msg.className   = 'form-msg' + (kind ? ' ' + kind : '');
+    msg.className = 'form-msg' + (kind ? ' ' + kind : '');
     msg.textContent = text;
   }
 
-  /* Prefill phone from register.html (or last successful login) */
-  try {
-    var prefill = sessionStorage.getItem(STORAGE_PREFILL);
-    if (prefill) {
-      phone.value = prefill.replace(/^\+/, '');
-      sessionStorage.removeItem(STORAGE_PREFILL);
-    }
-  } catch (e) { /* sessionStorage disabled — ignore */ }
-
-  /* Keep the dial-code display roughly in sync with what's typed.
-     Not strict — just a visual aid. Supabase matches on the digits only. */
-  function syncDialCode() {
-    var v = phone.value.trim();
-    var m = v.match(/^(\+\d{1,4})/);
-    dialCode.textContent = m ? m[1] : '+';
-  }
-  phone.addEventListener('input', syncDialCode);
-  syncDialCode();
-
-  /* ------------------------------------------------------------------
-     If already signed in, go straight to the app.
-     ------------------------------------------------------------------ */
+  // 1. If already signed in, redirect to dashboard
   TN.ready.then(function () {
     return TN.getSession().then(function (session) {
-      if (session) {
-        window.location.replace('index.html');
-        throw new Error('__redirect');
+      if (session) { 
+        window.location.replace('dashboard.html'); 
+        throw new Error('__redirect'); 
       }
     });
   }).catch(function (err) {
     if (err && err.message === '__redirect') return;
-    setMsg('err', 'Could not reach the server. Refresh and try again.');
+    setMsg('err', 'Could not reach server. Refresh and try again.');
   });
 
-  /* ------------------------------------------------------------------
-     Submit
-     ------------------------------------------------------------------ */
+  // 2. Handle form submission
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    /* Digits only, strip leading + if present */
-    var fullPhone = phone.value.replace(/\D/g, '');
-    if (fullPhone.length < 9 || fullPhone.length > 15) {
-      setMsg('err', 'Enter your full phone number with country code (e.g. 256712345678).');
-      phone.focus(); return;
+    var userEmail = email.value.trim();
+    
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
+      setMsg('err', 'Enter a valid email address.'); 
+      email.focus(); 
+      return;
     }
+    
     if (!passwd.value) {
-      setMsg('err', 'Enter your password.'); passwd.focus(); return;
+      setMsg('err', 'Enter your password.'); 
+      passwd.focus(); 
+      return;
     }
 
     submit.disabled = true;
     setMsg('', 'Signing you in…');
 
     TN.ready.then(function () {
-      return TN.signIn(fullPhone, passwd.value);
+      return TN.signIn(userEmail, passwd.value);
     }).then(function (result) {
       if (result.error) throw result.error;
 
-      /* Sign-in successful — clear any stale messages and go home. */
-      setMsg('ok', 'Signed in. Loading…');
+      setMsg('ok', 'Signed in. Loading your dashboard…');
       setTimeout(function () {
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
       }, 400);
     }).catch(function (err) {
       console.error('[login]', err);
       var m = (err && err.message) || '';
 
       if (/Invalid login credentials/i.test(m)) {
-        setMsg('err', 'Wrong phone number or password.');
+        setMsg('err', 'Wrong email or password.');
       } else if (/Email not confirmed/i.test(m)) {
-        setMsg('err', 'Account not confirmed. In Supabase: Auth → Providers → Email → disable "Confirm email".');
+        setMsg('err', 'Account not confirmed. Check your email inbox.');
       } else if (/rate limit|too many/i.test(m)) {
         setMsg('err', 'Too many attempts. Wait a minute, then try again.');
       } else {
