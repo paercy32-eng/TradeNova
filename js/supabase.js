@@ -1,38 +1,18 @@
 /* ==========================================================================
-   Trade Nova — Supabase client
+   Trade Nova — Supabase Client
    --------------------------------------------------------------------------
-   Loads the public Supabase credentials from /api/config (a Vercel
-   serverless function) and initialises the Supabase JS client.
+   Loads credentials from /api/config (Vercel) and initialises the client.
 
-   Everything else in the app calls helpers on window.TN, not the raw
-   Supabase client. That way if we ever swap the backend, only this file
-   changes.
-
-   AUTH METHOD NOTE
-   ----------------
-   This build uses Supabase email+password auth, with the user's phone
-   number mapped to a synthetic email of the form:
-
-       +256712345678  ->  256712345678@tradenova.app
-
-   Why: Supabase's native phone auth requires an SMS provider (Twilio,
-   Vonage, etc.) for OTP verification, which costs money per message and
-   needs setup. The synthetic-email pattern gives working phone+password
-   login today with zero SMS cost.
-
-   To switch to real phone auth later:
-     - Enable Phone provider in Supabase Auth settings
-     - Wire up an SMS provider
-     - In signUp() below, swap the email/phone fields per Supabase docs
-   The UI and the rest of the app don't change.
+   AUTH METHOD
+   -----------
+   Uses Supabase native email + password authentication.
+   User profile data (name, phone, country, invite code) is handled
+   separately via the `profiles` table in the database.
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  /* ------------------------------------------------------------------
-     Namespace + state
-     ------------------------------------------------------------------ */
   window.TN = window.TN || {};
 
   var readyResolve;
@@ -43,17 +23,6 @@
   });
 
   TN.ready = readyPromise;
-
-  /* ------------------------------------------------------------------
-     Synthetic-email helpers
-     ------------------------------------------------------------------ */
-  var EMAIL_DOMAIN = 'tradenova.app';
-
-  function phoneToEmail(fullPhone) {
-    /* fullPhone expected as "+256712345678" — strip everything but digits. */
-    var digits = String(fullPhone).replace(/\D/g, '');
-    return digits + '@' + EMAIL_DOMAIN;
-  }
 
   /* ------------------------------------------------------------------
      Config fetch — get SUPABASE_URL + SUPABASE_ANON_KEY from /api/config.
@@ -92,14 +61,14 @@
         cfg.supabaseAnonKey,
         {
           auth: {
-            persistSession:    true,
-            autoRefreshToken:  true,
+            persistSession:     true,
+            autoRefreshToken:   true,
             detectSessionInUrl: false
           }
         }
       );
 
-      /* Keep the raw client available for advanced use. */
+      /* Keep the raw client available for direct database queries */
       TN.client = client;
 
       /* --------------------------------------------------------------
@@ -107,46 +76,44 @@
          -------------------------------------------------------------- */
 
       /* Sign up. Returns { data: { user, session }, error }. */
-      TN.signUp = function (fullPhone, password) {
-        var email = phoneToEmail(fullPhone);
+      TN.signUp = function (email, password, metadata) {
         return client.auth.signUp({
           email: email,
           password: password,
           options: {
-            data: { phone: fullPhone }
+            data: metadata || {}
           }
         });
       };
 
-      /* Sign in. Same shape as signUp. */
-      TN.signIn = function (fullPhone, password) {
-        var email = phoneToEmail(fullPhone);
+      /* Sign in with email and password. */
+      TN.signIn = function (email, password) {
         return client.auth.signInWithPassword({
           email: email,
           password: password
         });
       };
 
+      /* Sign out of the current session. */
       TN.signOut = function () {
         return client.auth.signOut();
       };
 
-      /* Current session, or null. */
+      /* Get the current session, or null. */
       TN.getSession = function () {
         return client.auth.getSession().then(function (r) {
           return r.data.session;
         });
       };
 
-      /* Current user, or null. */
+      /* Get the current user object, or null. */
       TN.getUser = function () {
         return client.auth.getUser().then(function (r) {
           return r.data.user;
         });
       };
 
-      /* Subscribe to auth state changes.
-         Callback receives (event, session). */
+      /* Subscribe to auth state changes (e.g. token refresh, sign out). */
       TN.onAuthChange = function (callback) {
         return client.auth.onAuthStateChange(callback);
       };
