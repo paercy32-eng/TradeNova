@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0e13">
+<title>Dashboard — Trade Nova</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  /* Dashboard specific styles */
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+  }
+  
+  /* Wallet Card */
+  .wallet-card {
+    background: linear-gradient(135deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .wallet-balance {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    margin: 0.2rem 0;
+  }
+  .wallet-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Lead Trader Grid */
+  .trader-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  @media (min-width: 760px) {
+    .trader-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1040px) {
+    .trader-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  
+  .trader-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .trader-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .trader-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    background: var(--bg);
+    padding: 0.8rem;
+    border-radius: 8px;
+  }
+  .trader-stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .trader-stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+  .trader-stat-val { font-weight: 600; font-size: 0.95rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="dashboard.html">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Trade Nova</span>
+    </a>
+    <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:auto">Log out</button>
+  </div>
+</header>
+
+<main class="wrap" style="padding-bottom: 4rem;">
+  
+  <!-- User Header -->
+  <div class="dash-header">
+    <div class="user-profile">
+      <div class="avatar" id="userInitial">U</div>
+      <div>
+        <h2 id="userName" style="margin:0; font-size:1.2rem;">Loading...</h2>
+        <p id="userLocation" style="margin:0; font-size:0.85rem; color:var(--muted);">—</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet -->
+  <div class="wallet-card">
+    <div>
+      <div class="wallet-label">Available Balance</div>
+      <div class="wallet-balance" id="walletBalance">$0.00</div>
+      <div style="font-size:0.8rem; color:var(--green);">Ready to copy</div>
+    </div>
+    <div style="display:flex; gap:0.5rem;">
+      <button class="btn btn-primary">Deposit Funds</button>
+    </div>
+  </div>
+
+  <!-- Lead Traders Section -->
+  <div>
+    <h3 style="font-size:1.3rem; margin-bottom:0.2rem;">Top Lead Traders</h3>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">Copy their trades automatically.</p>
+    
+    <div class="trader-grid" id="traderGrid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- My Subscriptions (Hidden by default) -->
+  <div id="activeSubsSection" style="display:none; margin-top:3rem;">
+    <h3 style="font-size:1.3rem; margin-bottom:0.2rem;">Your Active Copies</h3>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">Traders you are currently following.</p>
+    <div id="activeSubsList" class="trader-grid"></div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Mock balance for demo purposes until MarzPay/Binance is hooked up
+  const DEMO_BALANCE = 1500.00;
+
+  // Mock lead traders (fallback if table is empty)
+  const MOCK_TRADERS = [
+    { id: '11111111-1111-1111-1111-111111111111', display_name: 'Kwame Crypto', country: 'Ghana', roi_30d: 14.5, win_rate: 68, followers_count: 1240 },
+    { id: '22222222-2222-2222-2222-222222222222', display_name: 'Nairobi Whale', country: 'Kenya', roi_30d: 22.1, win_rate: 74, followers_count: 3850 },
+    { id: '33333333-3333-3333-3333-333333333333', display_name: 'Lagos Scalper', country: 'Nigeria', roi_30d: 8.3, win_rate: 61, followers_count: 890 }
+  ];
+
+  function formatMoney(amount) {
+    return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function initDashboard() {
+    TN.ready.then(function () {
+      return TN.getSession();
+    }).then(function (session) {
+      if (!session) {
+        // Not logged in -> redirect
+        window.location.replace('login.html');
+        return;
+      }
+
+      // 1. Fetch user profile from the database
+      return TN.client
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+        
+    }).then(function (profileRes) {
+      if (!profileRes || !profileRes.data) return;
+
+      const profile = profileRes.data;
+      
+      // Update Header UI
+      document.getElementById('userName').textContent = profile.full_name || 'Trader';
+      document.getElementById('userLocation').textContent = `${profile.country || 'Unknown'} • ${profile.role || 'Follower'}`;
+      document.getElementById('userInitial').textContent = (profile.full_name || 'U').charAt(0);
+      document.getElementById('walletBalance').textContent = formatMoney(DEMO_BALANCE);
+
+      // 2. Render Traders
+      renderTraders(MOCK_TRADERS);
+
+      // 3. Fetch Active Subscriptions
+      return TN.client
+        .from('copy_subscriptions')
+        .select('*, lead_traders(display_name)')
+        .eq('user_id', session.user.id)
+        .eq('status', 'active');
+        
+    }).then(function (subsRes) {
+      if (subsRes && subsRes.data && subsRes.data.length > 0) {
+        renderSubscriptions(subsRes.data);
+      }
+    }).catch(function (err) {
+      console.error('Dashboard init error:', err);
+    });
+  }
+
+  function renderTraders(traders) {
+    const grid = document.getElementById('traderGrid');
+    grid.innerHTML = traders.map(t => `
+      <div class="trader-card">
+        <div class="trader-card-header">
+          <div class="avatar" style="width:32px; height:32px; font-size:1rem;">${t.display_name.charAt(0)}</div>
+          <div>
+            <div style="font-weight:700;">${t.display_name}</div>
+            <div style="font-size:0.75rem; color:var(--muted);">${t.country} • ${t.followers_count} copiers</div>
+          </div>
+        </div>
+        
+        <div class="trader-stats">
+          <div class="trader-stat-item">
+            <span class="trader-stat-label">30D ROI</span>
+            <span class="trader-stat-val pos">+${t.roi_30d}%</span>
+          </div>
+          <div class="trader-stat-item">
+            <span class="trader-stat-label">Win Rate</span>
+            <span class="trader-stat-val">${t.win_rate}%</span>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-block" onclick="startCopy('${t.id}', this)">
+          Copy Trader
+        </button>
+      </div>
+    `).join('');
+  }
+
+  function renderSubscriptions(subs) {
+    const section = document.getElementById('activeSubsSection');
+    const list = document.getElementById('activeSubsList');
+    section.style.display = 'block';
+    
+    list.innerHTML = subs.map(s => `
+      <div class="trader-card" style="border-color:var(--blue);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; color:var(--blue);">${s.lead_traders ? s.lead_traders.display_name : 'Unknown Trader'}</div>
+            <div style="font-size:0.8rem; color:var(--muted);">Allocated: ${formatMoney(s.allocated_usd)}</div>
+          </div>
+          <div class="badge badge-long">ACTIVE</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Global function for the button click
+  window.startCopy = function(leadTraderId, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Starting...';
+
+    TN.getUser().then(user => {
+      if (!user) return;
+      
+      // Insert subscription into Supabase
+      return TN.client.from('copy_subscriptions').insert({
+        user_id: user.id,
+        lead_trader_id: leadTraderId,
+        allocated_usd: 100.00, // Default allocation for demo
+        status: 'active'
+      });
+    }).then(res => {
+      if (res.error) throw res.error;
+      btn.textContent = 'Copied!';
+      btn.style.background = 'var(--green)';
+      btn.style.borderColor = 'var(--green)';
+      
+      // Reload page to show active sub
+      setTimeout(() => window.location.reload(), 1000);
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      btn.disabled = false;
+      btn.textContent = 'Error - Try Again';
+      alert('Database error: Did you seed the lead_traders table?');
+    });
+  };
+
+  // Logout handler
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    TN.signOut().then(() => {
+      window.location.replace('login.html');
+    });
+  });
+
+  // Boot
+  initDashboard();
+
+})();
+</script>
+</body>
+</html>
