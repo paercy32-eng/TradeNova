@@ -4,83 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a0e13">
-<meta name="description" content="Create your Trade Nova account.">
+<meta name="description" content="Join Trade Nova — copy top crypto traders across Africa.">
 <title>Create account — Trade Nova</title>
 <link rel="stylesheet" href="css/styles.css">
 <style>
-/* Auth-page styles — scoped to auth pages only. Will be extracted to
-   css/auth.css once login.html also needs them. */
-
-.auth-page {
-  min-height: calc(100vh - 60px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.15rem;
-}
-.auth-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--surface, #111820);
-  border: 1px solid var(--border, #22303f);
-  border-radius: 16px;
-  padding: 2rem 1.6rem;
-}
-.auth-card h1 { font-size: 1.5rem; margin: 0 0 .35rem; }
-.auth-sub { color: var(--muted, #8fa3b8); font-size: .88rem; margin: 0 0 1.5rem; }
-.auth-card .field { margin-bottom: .9rem; }
-.auth-card .btn { margin-top: .4rem; }
-.field-hint { font-size: .75rem; color: var(--muted, #8fa3b8); margin: .3rem 0 0; opacity: .8; }
-
-.phone-input {
-  display: flex;
-  border: 1px solid var(--border, #22303f);
-  border-radius: 9px;
-  overflow: hidden;
-  background: var(--surface, #111820);
-}
-.phone-input:focus-within {
-  outline: 2px solid #4f8cff;
-  outline-offset: 1px;
-  border-color: #4f8cff;
-}
-.dial-code {
-  display: flex; align-items: center; justify-content: center;
-  padding: 0 .8rem;
-  background: var(--surface-2, #16202b);
-  color: var(--text, #e8eef6);
-  font-size: .92rem; font-weight: 600;
-  border-right: 1px solid var(--border, #22303f);
-  min-width: 3.5rem;
-}
-.phone-input input {
-  border: none; background: transparent; border-radius: 0;
-  flex: 1; min-width: 0;
-  font: inherit; font-size: .92rem;
-  padding: .65rem .8rem;
-  color: var(--text, #e8eef6);
-}
-.phone-input input:focus { outline: none; }
-
-.check-terms {
-  display: flex; align-items: flex-start; gap: .55rem;
-  font-size: .82rem; color: var(--muted, #8fa3b8);
-  margin: .4rem 0 1rem; cursor: pointer; line-height: 1.5;
-}
-.check-terms input {
-  margin-top: .2rem; flex-shrink: 0;
-  accent-color: #4f8cff;
-  width: 16px; height: 16px;
-}
-.check-terms a { color: #4f8cff; text-decoration: underline; text-underline-offset: 2px; }
-
-.auth-foot {
-  text-align: center; font-size: .85rem; color: var(--muted, #8fa3b8);
-  margin: 1.3rem 0 0; padding-top: 1.3rem;
-  border-top: 1px solid var(--border, #22303f);
-}
-.auth-foot a { color: #4f8cff; font-weight: 600; }
-.auth-foot a:hover { text-decoration: underline; }
+/* Auth-page styles — self-contained. Will extract to css/auth.css later. */
+.auth-page{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:2rem 1.15rem}
+.auth-card{width:100%;max-width:440px;background:var(--surface,#111820);border:1px solid var(--border,#22303f);border-radius:16px;padding:2rem 1.6rem}
+.auth-card h1{font-size:1.5rem;margin:0 0 .35rem}
+.auth-sub{color:var(--muted,#8fa3b8);font-size:.88rem;margin:0 0 1.5rem}
+.auth-card .field{margin-bottom:.85rem}
+.field-hint{font-size:.73rem;color:var(--muted,#8fa3b8);margin:.28rem 0 0;opacity:.8}
+.phone-input{display:flex;border:1px solid var(--border,#22303f);border-radius:9px;overflow:hidden;background:var(--surface,#111820)}
+.phone-input:focus-within{outline:2px solid #4f8cff;outline-offset:1px;border-color:#4f8cff}
+.dial-code{display:flex;align-items:center;justify-content:center;padding:0 .75rem;background:var(--surface-2,#16202b);color:var(--text,#e8eef6);font-size:.9rem;font-weight:600;border-right:1px solid var(--border,#22303f);min-width:3.2rem}
+.phone-input input{border:none;background:transparent;border-radius:0;flex:1;min-width:0;font:inherit;font-size:.92rem;padding:.65rem .8rem;color:var(--text,#e8eef6)}
+.phone-input input:focus{outline:none}
+.check-terms{display:flex;align-items:flex-start;gap:.55rem;font-size:.8rem;color:var(--muted,#8fa3b8);margin:.5rem 0 .9rem;cursor:pointer;line-height:1.5}
+.check-terms input{margin-top:.2rem;flex-shrink:0;accent-color:#4f8cff;width:16px;height:16px}
+.check-terms a{color:#4f8cff;text-decoration:underline;text-underline-offset:2px}
+.auth-foot{text-align:center;font-size:.85rem;color:var(--muted,#8fa3b8);margin:1.2rem 0 0;padding-top:1.2rem;border-top:1px solid var(--border,#22303f)}
+.auth-foot a{color:#4f8cff;font-weight:600}
+.trust-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1rem 0 0;font-size:.72rem;color:var(--muted,#8fa3b8)}
+.trust-row span{display:flex;align-items:center;gap:.25rem}
+.trust-row svg{width:12px;height:12px}
 </style>
 </head>
 <body>
@@ -89,8 +36,7 @@
   <div class="wrap header-inner">
     <a class="brand" href="index.html">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2"
-              stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span>Trade Nova</span>
     </a>
@@ -101,29 +47,43 @@
 <main class="auth-page">
   <div class="auth-card">
     <h1>Create your account</h1>
-    <p class="auth-sub">Free forever. No card required.</p>
+    <p class="auth-sub">Copy top crypto traders. No card required.</p>
 
     <form id="registerForm" novalidate>
+
+      <!-- Full name -->
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="Amina Okoro" required>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      </div>
+
+      <!-- Country + phone -->
       <div class="field">
         <label for="country">Country</label>
         <select id="country" name="country" required>
-          <option value="" data-code="">Select your country</option>
+          <option value="" data-code="">Select country</option>
           <optgroup label="East Africa">
-            <option value="UG" data-code="+256">Uganda</option>
             <option value="KE" data-code="+254">Kenya</option>
+            <option value="UG" data-code="+256">Uganda</option>
             <option value="TZ" data-code="+255">Tanzania</option>
             <option value="RW" data-code="+250">Rwanda</option>
-            <option value="BI" data-code="+257">Burundi</option>
-            <option value="SS" data-code="+211">South Sudan</option>
             <option value="ET" data-code="+251">Ethiopia</option>
             <option value="SO" data-code="+252">Somalia</option>
+            <option value="SS" data-code="+211">South Sudan</option>
+            <option value="BI" data-code="+257">Burundi</option>
           </optgroup>
           <optgroup label="Southern Africa">
+            <option value="ZA" data-code="+27">South Africa</option>
             <option value="ZM" data-code="+260">Zambia</option>
             <option value="ZW" data-code="+263">Zimbabwe</option>
-            <option value="ZA" data-code="+27">South Africa</option>
-            <option value="MW" data-code="+265">Malawi</option>
             <option value="MZ" data-code="+258">Mozambique</option>
+            <option value="MW" data-code="+265">Malawi</option>
             <option value="BW" data-code="+267">Botswana</option>
             <option value="NA" data-code="+264">Namibia</option>
             <option value="AO" data-code="+244">Angola</option>
@@ -141,16 +101,6 @@
             <option value="DZ" data-code="+213">Algeria</option>
             <option value="TN" data-code="+216">Tunisia</option>
           </optgroup>
-          <optgroup label="Rest of world">
-            <option value="GB" data-code="+44">United Kingdom</option>
-            <option value="US" data-code="+1">United States</option>
-            <option value="CA" data-code="+1">Canada</option>
-            <option value="IN" data-code="+91">India</option>
-            <option value="AE" data-code="+971">United Arab Emirates</option>
-            <option value="AU" data-code="+61">Australia</option>
-            <option value="DE" data-code="+49">Germany</option>
-            <option value="FR" data-code="+33">France</option>
-          </optgroup>
         </select>
       </div>
 
@@ -158,110 +108,123 @@
         <label for="phone">Phone number</label>
         <div class="phone-input">
           <span class="dial-code" id="dialCode">+</span>
-          <input id="phone" name="phone" type="tel" inputmode="numeric"
-                 autocomplete="tel-national" placeholder="712 345 678" required>
+          <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="712 345 678" required>
         </div>
         <p class="field-hint">Without the country code — we'll add it from your country.</p>
       </div>
 
+      <!-- Passwords -->
       <div class="field">
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" required minlength="8"
-               autocomplete="new-password" placeholder="At least 8 characters">
+        <input id="password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters">
         <p class="field-hint">At least 8 characters, with a letter and a number.</p>
       </div>
 
       <div class="field">
         <label for="confirm">Confirm password</label>
-        <input id="confirm" name="confirm" type="password" required
-               autocomplete="new-password" placeholder="Re-enter your password">
+        <input id="confirm" name="confirm" type="password" required autocomplete="new-password" placeholder="Re-enter password">
+      </div>
+
+      <!-- Invitation code (optional) -->
+      <div class="field">
+        <label for="inviteCode">Invitation code <span style="font-weight:400;opacity:.6">(optional)</span></label>
+        <input id="inviteCode" name="inviteCode" type="text" placeholder="e.g. TRADER2026" style="text-transform:uppercase">
+        <p class="field-hint">Have a code from a friend? Enter it to link your accounts.</p>
       </div>
 
       <label class="check-terms">
         <input type="checkbox" id="terms" required>
-        <span>I agree to the <a href="#" target="_blank" rel="noopener">Terms of Service</a>
-              and <a href="#" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+        <span>I agree to the <a href="#" target="_blank" rel="noopener">Terms</a> and <a href="#" target="_blank" rel="noopener">Privacy Policy</a>. I understand crypto trading carries risk of loss.</span>
       </label>
 
-      <button class="btn btn-primary btn-block" type="submit" id="submitBtn">
-        Create account
-      </button>
+      <button class="btn btn-primary btn-block" type="submit" id="submitBtn">Create account</button>
       <p class="form-msg" id="formMsg" role="status"></p>
     </form>
+
+    <div class="trust-row">
+      <span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Bank-grade encryption
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        No card required
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        2-minute setup
+      </span>
+    </div>
 
     <p class="auth-foot">Already have an account? <a href="login.html">Sign in</a></p>
   </div>
 </main>
 
-<!-- Load order matters: SDK first, then our wrapper -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script>
 (function () {
   'use strict';
 
-  var form     = document.getElementById('registerForm');
-  var country  = document.getElementById('country');
-  var phone    = document.getElementById('phone');
-  var passwd   = document.getElementById('password');
-  var confirm  = document.getElementById('confirm');
-  var terms    = document.getElementById('terms');
-  var dialCode = document.getElementById('dialCode');
-  var msg      = document.getElementById('formMsg');
-  var submit   = document.getElementById('submitBtn');
-
-  var STORAGE_PREFILL = 'tradenova_prefill_phone';
+  var form      = document.getElementById('registerForm');
+  var fullName  = document.getElementById('fullName');
+  var email     = document.getElementById('email');
+  var country   = document.getElementById('country');
+  var phone     = document.getElementById('phone');
+  var passwd    = document.getElementById('password');
+  var confirm   = document.getElementById('confirm');
+  var inviteCode= document.getElementById('inviteCode');
+  var terms     = document.getElementById('terms');
+  var dialCode  = document.getElementById('dialCode');
+  var msg       = document.getElementById('formMsg');
+  var submit    = document.getElementById('submitBtn');
 
   function setMsg(kind, text) {
-    msg.className   = 'form-msg' + (kind ? ' ' + kind : '');
+    msg.className = 'form-msg' + (kind ? ' ' + kind : '');
     msg.textContent = text;
   }
 
-  /* Country select → live dial-code preview */
   country.addEventListener('change', function () {
     var opt = country.options[country.selectedIndex];
     dialCode.textContent = (opt && opt.dataset.code) || '+';
     if (msg.className.indexOf('err') !== -1) setMsg('', '');
   });
 
-  /* Wait for TN.ready (Supabase client from /api/config), then check session */
+  // If already signed in, skip registration
   TN.ready.then(function () {
-    /* If already signed in, skip registration */
     return TN.getSession().then(function (session) {
-      if (session) {
-        window.location.replace('index.html');
-        throw new Error('__redirect');
-      }
+      if (session) { window.location.replace('dashboard.html'); throw new Error('__redirect'); }
     });
   }).catch(function (err) {
     if (err && err.message === '__redirect') return;
-    setMsg('err', 'Could not reach the server. Refresh and try again.');
+    setMsg('err', 'Could not reach server. Refresh and try again.');
   });
 
-  /* ------------------------------------------------------------------
-     Submit
-     ------------------------------------------------------------------ */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     var opt  = country.options[country.selectedIndex];
     var code = (opt && opt.dataset.code) || '';
 
-    /* Validate */
+    // Validation cascade
+    if (!fullName.value.trim() || fullName.value.trim().length < 2) {
+      setMsg('err', 'Enter your full name.'); fullName.focus(); return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+      setMsg('err', 'Enter a valid email address.'); email.focus(); return;
+    }
     if (!country.value || !code) {
-      setMsg('err', 'Please select your country.'); country.focus(); return;
+      setMsg('err', 'Select your country.'); country.focus(); return;
     }
     var local = phone.value.replace(/\D/g, '').replace(/^0+/, '');
     if (local.length < 7 || local.length > 12) {
-      setMsg('err', 'Enter a valid phone number (7–12 digits, without the country code).');
-      phone.focus(); return;
+      setMsg('err', 'Enter a valid phone number (7–12 digits, without country code).'); phone.focus(); return;
     }
     if (passwd.value.length < 8) {
       setMsg('err', 'Password must be at least 8 characters.'); passwd.focus(); return;
     }
     if (!/[A-Za-z]/.test(passwd.value) || !/[0-9]/.test(passwd.value)) {
-      setMsg('err', 'Password must contain at least one letter and one number.');
-      passwd.focus(); return;
+      setMsg('err', 'Password must contain a letter and a number.'); passwd.focus(); return;
     }
     if (passwd.value !== confirm.value) {
       setMsg('err', 'Passwords do not match.'); confirm.focus(); return;
@@ -270,36 +233,54 @@
       setMsg('err', 'Please agree to the Terms and Privacy Policy.'); terms.focus(); return;
     }
 
-    var fullPhone = code.replace(/\D/g, '') + local;   // e.g. "256712345678"
+    var fullPhone = code.replace(/\D/g, '') + local;
+    var invite    = inviteCode.value.trim().toUpperCase();
 
     submit.disabled = true;
     setMsg('', 'Creating your account…');
 
     TN.ready.then(function () {
-      return TN.signUp(fullPhone, passwd.value);
+      return TN.signUp(email.value.trim(), passwd.value);
     }).then(function (result) {
       if (result.error) throw result.error;
 
-      /* With email confirmation disabled, signUp auto-creates a session.
-         We sign out immediately to preserve the "register then login"
-         flow you asked for. */
-      return TN.signOut().then(function () {
-        try { sessionStorage.setItem(STORAGE_PREFILL, '+' + fullPhone); } catch (e) {}
+      var user = result.data.user;
+      if (!user) throw new Error('Signup returned no user — check Supabase email confirmation setting.');
 
+      // Write the profile row + claim invitation code
+      return TN.client.from('profiles').insert({
+        id:           user.id,
+        full_name:    fullName.value.trim(),
+        email:        email.value.trim(),
+        phone:        fullPhone,
+        country:      country.value,
+        country_code: code,
+        invite_code:  invite || null
+      });
+
+    }).then(function (profileResult) {
+      if (profileResult.error) {
+        // If profile insert failed, we still have an auth user — tell them to sign in and we'll repair
+        console.warn('Profile insert failed:', profileResult.error);
+        throw new Error('Account created but profile setup failed. Sign in and we will fix it.');
+      }
+
+      // Sign out to force explicit login (matches your requested flow)
+      return TN.signOut().then(function () {
         setMsg('ok', 'Account created. Taking you to sign in…');
         form.reset();
-        setTimeout(function () {
-          window.location.href = 'login.html';
-        }, 900);
+        setTimeout(function () { window.location.href = 'login.html'; }, 900);
       });
+
     }).catch(function (err) {
       console.error('[register]', err);
       var m = (err && err.message) || '';
-
       if (/already registered|already exists|User already/i.test(m)) {
-        setMsg('err', 'An account with this phone number already exists. Try signing in instead.');
-      } else if (/Password/i.test(m)) {
-        setMsg('err', 'Password rejected — use at least 8 characters with a letter and a number.');
+        setMsg('err', 'An account with this email already exists. Sign in instead.');
+      } else if (/duplicate key|profiles_phone_key/i.test(m)) {
+        setMsg('err', 'That phone number is already linked to another account.');
+      } else if (/relation .* does not exist/i.test(m)) {
+        setMsg('err', 'Database tables missing — run the SQL migration first.');
       } else {
         setMsg('err', m || 'Something went wrong. Please try again.');
       }
