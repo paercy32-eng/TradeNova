@@ -172,36 +172,24 @@
     setMsg('', 'Creating your account…');
 
     TN.ready.then(function () {
-      return TN.signUp(email.value.trim(), passwd.value);
+      // Pass all the data directly to the Supabase Auth trigger
+      return TN.client.auth.signUp({
+        email: email.value.trim(),
+        password: passwd.value,
+        options: {
+          data: {
+            full_name: fullName.value.trim(),
+            phone: fullPhone,
+            country: country.value,
+            country_code: code,
+            invite_code: finalRef || null
+          }
+        }
+      });
     }).then(function (result) {
       if (result.error) throw result.error;
-      var user = result.data.user;
-      if (!user) throw new Error('Check Supabase email confirm settings.');
-
-      // Look up the referrer ID if a code was provided
-      var referrerPromise = Promise.resolve(null);
-      if (finalRef) {
-        referrerPromise = TN.client.rpc('get_referrer_id', { ref_code: finalRef }).then(function(rpcRes) {
-          return rpcRes.data; // Returns the UUID or null
-        });
-      }
-
-      return referrerPromise.then(function(referrerId) {
-  return TN.client.from('profiles').upsert({
-    id:           user.id,
-    full_name:    fullName.value.trim(),
-    email:        email.value.trim(),
-    phone:        fullPhone,
-    country:      country.value,
-    country_code: code,
-    referred_by:  referrerId,
-    invite_code:  finalRef || null
-  }, { onConflict: 'id' }); // This line fixes the crash
-});
-
-    }).then(function (profileResult) {
-      if (profileResult.error) throw profileResult.error;
       
+      // The database trigger has now created the profile automatically!
       return TN.signOut().then(function () {
         setMsg('ok', 'Account created. Taking you to sign in…');
         form.reset();
@@ -213,8 +201,6 @@
       var m = (err && err.message) || '';
       if (/already registered|User already/i.test(m)) {
         setMsg('err', 'An account with this email already exists.');
-      } else if (/relation .* does not exist/i.test(m)) {
-        setMsg('err', 'Database tables missing.');
       } else {
         setMsg('err', m || 'Something went wrong.');
       }
