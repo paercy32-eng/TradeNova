@@ -38,7 +38,7 @@
   <!-- Deposits Section -->
   <div class="admin-section">
     <h3>Pending Crypto Deposits</h3>
-    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">Verify the TXID on BscScan before approving.</p>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">Verify the TXID on BscScan. Approving will set their Deposit Principal and unlock signals.</p>
     <div id="depositsTableContainer">
       <div class="empty-state">Loading deposits...</div>
     </div>
@@ -64,8 +64,6 @@
     TN.ready.then(() => TN.getSession())
     .then(session => {
       if (!session) throw new Error('No session');
-      
-      // Check if user is admin
       return TN.client.from('profiles').select('role').eq('id', session.user.id).single();
     })
     .then(res => {
@@ -74,8 +72,6 @@
         window.location.replace('dashboard.html');
         return;
       }
-      
-      // Load Data
       loadDeposits();
       loadWithdrawals();
     })
@@ -99,14 +95,13 @@
         }
 
         let html = `<table class="data-table">
-          <thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+          <thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
         
         res.data.forEach(d => {
           html += `<tr>
             <td>${d.profiles ? d.profiles.full_name : 'Unknown'}<br><span style="color:var(--muted); font-size:0.75rem">${d.profiles ? d.profiles.email : ''}</span></td>
             <td style="font-weight:bold; color:var(--green);">$${d.amount_usd}</td>
-            <td style="font-family:monospace; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
-            <td>${new Date(d.created_at).toLocaleDateString()}</td>
+            <td style="font-family:monospace; font-size:0.75rem; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
             <td>
               <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
               <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
@@ -120,21 +115,23 @@
   }
 
   window.approveDeposit = async function(depositId, userId, amount) {
-    if (!confirm(`Confirm you received $${amount} in Binance?`)) return;
+    if (!confirm(`Confirm you received $${amount} in Binance? This will unlock their trading tier.`)) return;
 
     try {
-      // 1. Get current user profile
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
+      // 1. Update deposit_amount to unlock signals
+      const { data: profile } = await TN.client.from('profiles').select('deposit_amount').eq('id', userId).single();
+      const newDepositAmount = Number(profile.deposit_amount || 0) + Number(amount);
       
-      // 2. Update balance
-      const newBalance = Number(profile.balance_usd || 0) + Number(amount);
-      await TN.client.from('profiles').update({ balance_usd: newBalance }).eq('id', userId);
+      await TN.client.from('profiles').update({ 
+        deposit_amount: newDepositAmount,
+        active_day: 1 // Reset plan to day 1
+      }).eq('id', userId);
 
-      // 3. Mark deposit as verified
+      // 2. Mark deposit as verified
       await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
 
-      alert('Deposit Approved!');
-      loadDeposits(); // Reload table
+      alert('Deposit Approved! User tier unlocked.');
+      loadDeposits();
     } catch (err) {
       console.error(err);
       alert('Error approving deposit: ' + err.message);
@@ -161,14 +158,13 @@
         }
 
         let html = `<table class="data-table">
-          <thead><tr><th>User</th><th>Amount</th><th>Mobile Money</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+          <thead><tr><th>User</th><th>Amount</th><th>Mobile Money</th><th>Actions</th></tr></thead><tbody>`;
         
         res.data.forEach(w => {
           html += `<tr>
             <td>${w.profiles ? w.profiles.full_name : 'Unknown'}<br><span style="color:var(--muted); font-size:0.75rem">${w.profiles ? w.profiles.email : ''}</span></td>
             <td style="font-weight:bold; color:var(--red);">-$${w.amount_usd}</td>
             <td><strong>${w.mobile_money_provider}</strong><br>${w.mobile_money_number}</td>
-            <td>${new Date(w.created_at).toLocaleDateString()}</td>
             <td>
               <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
               <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
@@ -185,18 +181,15 @@
     if (!confirm(`Confirm you sent $${amount} worth of Mobile Money to this user?`)) return;
 
     try {
-      // 1. Get current balance
       const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
       
-      // 2. Deduct balance
+      // Deduct balance
       const newBalance = Number(profile.balance_usd || 0) - Number(amount);
       await TN.client.from('profiles').update({ balance_usd: newBalance }).eq('id', userId);
-
-      // 3. Mark as approved
       await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
 
       alert('Withdrawal Approved!');
-      loadWithdrawals(); // Reload table
+      loadWithdrawals();
     } catch (err) {
       console.error(err);
       alert('Error: ' + err.message);
