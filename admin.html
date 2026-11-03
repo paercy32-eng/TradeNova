@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard — Trade Nova</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+  .admin-section { margin-bottom: 3rem; }
+  .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
+  .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  .data-table th { background: var(--surface-2); color: var(--muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .action-btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+  .btn-approve { background: var(--green); color: #fff; }
+  .btn-reject { background: var(--red-soft); color: var(--red); margin-left: 0.5rem; }
+  .empty-state { padding: 2rem; text-align: center; color: var(--muted); background: var(--surface); border-radius: var(--radius); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="admin.html">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Trade Nova Admin</span>
+    </a>
+    <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:auto">Log out</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="admin-header">
+    <h2>Admin Control Panel</h2>
+  </div>
+
+  <!-- Deposits Section -->
+  <div class="admin-section">
+    <h3>Pending Crypto Deposits</h3>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">Verify the TXID on BscScan before approving.</p>
+    <div id="depositsTableContainer">
+      <div class="empty-state">Loading deposits...</div>
+    </div>
+  </div>
+
+  <!-- Withdrawals Section -->
+  <div class="admin-section">
+    <h3>Pending Mobile Money Withdrawals</h3>
+    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">Send the money to the user's phone, then click Approve.</p>
+    <div id="withdrawalsTableContainer">
+      <div class="empty-state">Loading withdrawals...</div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function initAdmin() {
+    TN.ready.then(() => TN.getSession())
+    .then(session => {
+      if (!session) throw new Error('No session');
+      
+      // Check if user is admin
+      return TN.client.from('profiles').select('role').eq('id', session.user.id).single();
+    })
+    .then(res => {
+      if (res.data.role !== 'admin') {
+        alert('Access Denied. You are not an admin.');
+        window.location.replace('dashboard.html');
+        return;
+      }
+      
+      // Load Data
+      loadDeposits();
+      loadWithdrawals();
+    })
+    .catch(err => {
+      console.error(err);
+      if (err.message === 'No session') window.location.replace('login.html');
+    });
+  }
+
+  // --- DEPOSITS ---
+  function loadDeposits() {
+    TN.client.from('pending_deposits')
+      .select('*, profiles(full_name, email)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .then(res => {
+        const container = document.getElementById('depositsTableContainer');
+        if (!res.data || res.data.length === 0) {
+          container.innerHTML = '<div class="empty-state">No pending deposits.</div>';
+          return;
+        }
+
+        let html = `<table class="data-table">
+          <thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+        
+        res.data.forEach(d => {
+          html += `<tr>
+            <td>${d.profiles ? d.profiles.full_name : 'Unknown'}<br><span style="color:var(--muted); font-size:0.75rem">${d.profiles ? d.profiles.email : ''}</span></td>
+            <td style="font-weight:bold; color:var(--green);">$${d.amount_usd}</td>
+            <td style="font-family:monospace; font-size:0.75rem; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
+            <td>${new Date(d.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
+              <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
+            </td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+      });
+  }
+
+  window.approveDeposit = async function(depositId, userId, amount) {
+    if (!confirm(`Confirm you received $${amount} in Binance?`)) return;
+
+    try {
+      // 1. Get current user profile
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
+      
+      // 2. Update balance
+      const newBalance = Number(profile.balance_usd || 0) + Number(amount);
+      await TN.client.from('profiles').update({ balance_usd: newBalance }).eq('id', userId);
+
+      // 3. Mark deposit as verified
+      await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
+
+      alert('Deposit Approved!');
+      loadDeposits(); // Reload table
+    } catch (err) {
+      console.error(err);
+      alert('Error approving deposit: ' + err.message);
+    }
+  };
+
+  window.rejectDeposit = async function(depositId) {
+    if (!confirm('Reject this deposit?')) return;
+    await TN.client.from('pending_deposits').update({ status: 'rejected' }).eq('id', depositId);
+    loadDeposits();
+  };
+
+  // --- WITHDRAWALS ---
+  function loadWithdrawals() {
+    TN.client.from('withdrawal_requests')
+      .select('*, profiles(full_name, email)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .then(res => {
+        const container = document.getElementById('withdrawalsTableContainer');
+        if (!res.data || res.data.length === 0) {
+          container.innerHTML = '<div class="empty-state">No pending withdrawals.</div>';
+          return;
+        }
+
+        let html = `<table class="data-table">
+          <thead><tr><th>User</th><th>Amount</th><th>Mobile Money</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+        
+        res.data.forEach(w => {
+          html += `<tr>
+            <td>${w.profiles ? w.profiles.full_name : 'Unknown'}<br><span style="color:var(--muted); font-size:0.75rem">${w.profiles ? w.profiles.email : ''}</span></td>
+            <td style="font-weight:bold; color:var(--red);">-$${w.amount_usd}</td>
+            <td><strong>${w.mobile_money_provider}</strong><br>${w.mobile_money_number}</td>
+            <td>${new Date(w.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
+              <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
+            </td>
+          </tr>`;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+      });
+  }
+
+  window.approveWithdrawal = async function(withdrawalId, userId, amount) {
+    if (!confirm(`Confirm you sent $${amount} worth of Mobile Money to this user?`)) return;
+
+    try {
+      // 1. Get current balance
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
+      
+      // 2. Deduct balance
+      const newBalance = Number(profile.balance_usd || 0) - Number(amount);
+      await TN.client.from('profiles').update({ balance_usd: newBalance }).eq('id', userId);
+
+      // 3. Mark as approved
+      await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
+
+      alert('Withdrawal Approved!');
+      loadWithdrawals(); // Reload table
+    } catch (err) {
+      console.error(err);
+      alert('Error: ' + err.message);
+    }
+  };
+
+  window.rejectWithdrawal = async function(withdrawalId) {
+    if (!confirm('Reject this withdrawal?')) return;
+    await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
+    loadWithdrawals();
+  };
+
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    TN.signOut().then(() => window.location.replace('login.html'));
+  });
+
+  initAdmin();
+})();
+</script>
+</body>
+</html>
