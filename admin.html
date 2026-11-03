@@ -6,15 +6,32 @@
 <title>Admin Dashboard — Trade Nova</title>
 <link rel="stylesheet" href="css/styles.css">
 <style>
-  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
-  .admin-section { margin-bottom: 3rem; }
-  .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
-  .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-  .data-table th { background: var(--surface-2); color: var(--muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  
+  /* KPI Cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: center; }
+  .kpi-val { font-size: 1.3rem; font-weight: 800; color: var(--blue); margin-bottom: 0.2rem; }
+  .kpi-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  .tab-btn { background: none; border: none; color: var(--muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
+  .tab-btn.active { background: var(--surface-2); color: var(--text); }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; margin-bottom: 2rem; }
+  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .data-table th { background: var(--surface-2); color: var(--muted); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
   .data-table tr:last-child td { border-bottom: none; }
-  .action-btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+  
+  .action-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
   .btn-approve { background: var(--green); color: #fff; }
   .btn-reject { background: var(--red-soft); color: var(--red); margin-left: 0.5rem; }
+  
+  .tier-group { margin-bottom: 2rem; }
+  .tier-title { font-size: 1.1rem; font-weight: 700; color: var(--blue); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .tier-badge { background: var(--blue-soft); color: var(--blue); font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
   .empty-state { padding: 2rem; text-align: center; color: var(--muted); background: var(--surface); border-radius: var(--radius); }
 </style>
 </head>
@@ -30,28 +47,47 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" style="padding-bottom: 4rem;">
   <div class="admin-header">
     <h2>Admin Control Panel</h2>
   </div>
 
-  <!-- Deposits Section -->
-  <div class="admin-section">
-    <h3>Pending Crypto Deposits</h3>
-    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">Verify the TXID on BscScan. Approving will set their Deposit Principal and unlock signals.</p>
-    <div id="depositsTableContainer">
-      <div class="empty-state">Loading deposits...</div>
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpiUsers">-</div>
+      <div class="kpi-lbl">Total Users</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpiDeposits" style="color:var(--green);">-</div>
+      <div class="kpi-lbl">Total Deposited</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpiWithdrawals" style="color:var(--red);">-</div>
+      <div class="kpi-lbl">Total Withdrawn</div>
     </div>
   </div>
 
-  <!-- Withdrawals Section -->
-  <div class="admin-section">
-    <h3>Pending Mobile Money Withdrawals</h3>
-    <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1rem;">Send the money to the user's phone, then click Approve.</p>
-    <div id="withdrawalsTableContainer">
-      <div class="empty-state">Loading withdrawals...</div>
-    </div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pending')">Pending Actions</button>
+    <button class="tab-btn" onclick="switchTab('users')">All Users</button>
   </div>
+
+  <!-- TAB 1: Pending Actions -->
+  <div id="tab-pending">
+    <h3 style="margin-bottom:0.5rem;">Pending Crypto Deposits</h3>
+    <div id="depositsContainer" class="empty-state">Loading...</div>
+
+    <h3 style="margin-top:2rem; margin-bottom:0.5rem;">Pending Withdrawals</h3>
+    <div id="withdrawalsContainer" class="empty-state">Loading...</div>
+  </div>
+
+  <!-- TAB 2: All Users -->
+  <div id="tab-users" style="display:none;">
+    <div id="usersContainer">Loading users...</div>
+  </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -59,6 +95,8 @@
 <script>
 (function () {
   'use strict';
+
+  let allUsers = [];
 
   function initAdmin() {
     TN.ready.then(() => TN.getSession())
@@ -68,12 +106,17 @@
     })
     .then(res => {
       if (res.data.role !== 'admin') {
-        alert('Access Denied. You are not an admin.');
+        alert('Access Denied.');
         window.location.replace('dashboard.html');
         return;
       }
+      
+      // Fetch all data for dashboard
+      fetchKPIs();
       loadDeposits();
       loadWithdrawals();
+      loadUsers();
+
     })
     .catch(err => {
       console.error(err);
@@ -81,126 +124,191 @@
     });
   }
 
-  // --- DEPOSITS ---
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.getElementById('tab-pending').style.display = tab === 'pending' ? 'block' : 'none';
+    document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
+  };
+
+  // --- KPIs ---
+  function fetchKPIs() {
+    // Total Users
+    TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
+      document.getElementById('kpiUsers').textContent = res.count || 0;
+    });
+
+    // Total Deposited (Verified only)
+    TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
+      const total = res.data.reduce((sum, d) => sum + Number(d.amount_usd), 0);
+      document.getElementById('kpiDeposits').textContent = '$' + total.toLocaleString();
+    });
+
+    // Total Withdrawn (Approved only)
+    TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
+      const total = res.data.reduce((sum, w) => sum + Number(w.amount_usd), 0);
+      document.getElementById('kpiWithdrawals').textContent = '$' + total.toLocaleString();
+    });
+  }
+
+  // --- PENDING DEPOSITS ---
   function loadDeposits() {
     TN.client.from('pending_deposits')
       .select('*, profiles(full_name, email)')
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
       .then(res => {
-        const container = document.getElementById('depositsTableContainer');
+        const container = document.getElementById('depositsContainer');
         if (!res.data || res.data.length === 0) {
-          container.innerHTML = '<div class="empty-state">No pending deposits.</div>';
-          return;
+          container.innerHTML = 'No pending deposits.'; return;
         }
 
-        let html = `<table class="data-table">
-          <thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
-        
+        let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
         res.data.forEach(d => {
           html += `<tr>
-            <td>${d.profiles ? d.profiles.full_name : 'Unknown'}<br><span style="color:var(--muted); font-size:0.75rem">${d.profiles ? d.profiles.email : ''}</span></td>
+            <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
             <td style="font-weight:bold; color:var(--green);">$${d.amount_usd}</td>
-            <td style="font-family:monospace; font-size:0.75rem; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
+            <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
             <td>
               <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
               <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
             </td>
           </tr>`;
         });
-        
-        html += '</tbody></table>';
-        container.innerHTML = html;
+        container.innerHTML = html + '</tbody></table>';
       });
   }
 
   window.approveDeposit = async function(depositId, userId, amount) {
-    if (!confirm(`Confirm you received $${amount} in Binance? This will unlock their trading tier.`)) return;
-
+    if (!confirm(`Confirm $${amount} received? This unlocks their tier.`)) return;
     try {
-      // 1. Update deposit_amount to unlock signals
       const { data: profile } = await TN.client.from('profiles').select('deposit_amount').eq('id', userId).single();
-      const newDepositAmount = Number(profile.deposit_amount || 0) + Number(amount);
-      
       await TN.client.from('profiles').update({ 
-        deposit_amount: newDepositAmount,
-        active_day: 1 // Reset plan to day 1
+        deposit_amount: Number(profile.deposit_amount || 0) + Number(amount),
+        active_day: 1
       }).eq('id', userId);
-
-      // 2. Mark deposit as verified
       await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
-
-      alert('Deposit Approved! User tier unlocked.');
-      loadDeposits();
-    } catch (err) {
-      console.error(err);
-      alert('Error approving deposit: ' + err.message);
-    }
+      alert('Approved!'); 
+      fetchKPIs(); loadDeposits(); loadUsers();
+    } catch (err) { alert(err.message); }
   };
 
   window.rejectDeposit = async function(depositId) {
-    if (!confirm('Reject this deposit?')) return;
+    if (!confirm('Reject?')) return;
     await TN.client.from('pending_deposits').update({ status: 'rejected' }).eq('id', depositId);
     loadDeposits();
   };
 
-  // --- WITHDRAWALS ---
+  // --- PENDING WITHDRAWALS ---
   function loadWithdrawals() {
     TN.client.from('withdrawal_requests')
       .select('*, profiles(full_name, email)')
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
       .then(res => {
-        const container = document.getElementById('withdrawalsTableContainer');
+        const container = document.getElementById('withdrawalsContainer');
         if (!res.data || res.data.length === 0) {
-          container.innerHTML = '<div class="empty-state">No pending withdrawals.</div>';
-          return;
+          container.innerHTML = 'No pending withdrawals.'; return;
         }
 
-        let html = `<table class="data-table">
-          <thead><tr><th>User</th><th>Amount</th><th>Mobile Money</th><th>Actions</th></tr></thead><tbody>`;
-        
+        let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
         res.data.forEach(w => {
           html += `<tr>
-            <td>${w.profiles ? w.profiles.full_name : 'Unknown'}<br><span style="color:var(--muted); font-size:0.75rem">${w.profiles ? w.profiles.email : ''}</span></td>
+            <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
             <td style="font-weight:bold; color:var(--red);">-$${w.amount_usd}</td>
-            <td><strong>${w.mobile_money_provider}</strong><br>${w.mobile_money_number}</td>
+            <td>${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
             <td>
               <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
               <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
             </td>
           </tr>`;
         });
-        
-        html += '</tbody></table>';
-        container.innerHTML = html;
+        container.innerHTML = html + '</tbody></table>';
       });
   }
 
   window.approveWithdrawal = async function(withdrawalId, userId, amount) {
-    if (!confirm(`Confirm you sent $${amount} worth of Mobile Money to this user?`)) return;
-
+    if (!confirm(`Confirm you sent $${amount} to this user?`)) return;
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
-      
-      // Deduct balance
-      const newBalance = Number(profile.balance_usd || 0) - Number(amount);
-      await TN.client.from('profiles').update({ balance_usd: newBalance }).eq('id', userId);
+      await TN.client.from('profiles').update({ balance_usd: Number(profile.balance_usd) - Number(amount) }).eq('id', userId);
       await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
-
-      alert('Withdrawal Approved!');
-      loadWithdrawals();
-    } catch (err) {
-      console.error(err);
-      alert('Error: ' + err.message);
-    }
+      alert('Withdrawal Approved!'); 
+      fetchKPIs(); loadWithdrawals(); loadUsers();
+    } catch (err) { alert(err.message); }
   };
 
   window.rejectWithdrawal = async function(withdrawalId) {
-    if (!confirm('Reject this withdrawal?')) return;
+    if (!confirm('Reject?')) return;
     await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
     loadWithdrawals();
   };
+
+  // --- ALL USERS (GROUPED) ---
+  function loadUsers() {
+    TN.client.from('profiles').select('*').order('deposit_amount', { ascending: false }).then(res => {
+      if (!res.data) return;
+      allUsers = res.data;
+      renderGroupedUsers();
+    });
+  }
+
+  function renderGroupedUsers() {
+    const container = document.getElementById('usersContainer');
+    container.innerHTML = '';
+
+    // Define Tiers
+    const groups = {
+      'VIP ($5000+)': [],
+      'Tier 7 ($2000 - $4999)': [],
+      'Tier 6 ($1000 - $1999)': [],
+      'Tier 5 ($500 - $999)': [],
+      'Tier 4 ($300 - $499)': [],
+      'Tier 3 ($200 - $299)': [],
+      'Tier 2 ($100 - $199)': [],
+      'Tier 1 ($50 - $99)': [],
+      'No Deposit (<$50)': []
+    };
+
+    allUsers.forEach(u => {
+      const dep = Number(u.deposit_amount || 0);
+      if (dep >= 5000) groups['VIP ($5000+)'].push(u);
+      else if (dep >= 2000) groups['Tier 7 ($2000 - $4999)'].push(u);
+      else if (dep >= 1000) groups['Tier 6 ($1000 - $1999)'].push(u);
+      else if (dep >= 500) groups['Tier 5 ($500 - $999)'].push(u);
+      else if (dep >= 300) groups['Tier 4 ($300 - $499)'].push(u);
+      else if (dep >= 200) groups['Tier 3 ($200 - $299)'].push(u);
+      else if (dep >= 100) groups['Tier 2 ($100 - $199)'].push(u);
+      else if (dep >= 50) groups['Tier 1 ($50 - $99)'].push(u);
+      else groups['No Deposit (<$50)'].push(u);
+    });
+
+    let html = '';
+    for (const [tierName, users] of Object.entries(groups)) {
+      if (users.length === 0) continue;
+      
+      html += `<div class="tier-group">
+        <div class="tier-title">${tierName} <span class="tier-badge">${users.length} users</span></div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Deposit</th><th>Balance</th></tr></thead><tbody>`;
+      
+      users.forEach(u => {
+        html += `<tr>
+          <td>${u.full_name || 'N/A'}</td>
+          <td>${u.email}</td>
+          <td>${u.phone || 'N/A'}</td>
+          <td style="color:var(--green); font-weight:bold;">$${u.deposit_amount}</td>
+          <td>$${u.balance_usd}</td>
+        </tr>`;
+      });
+      
+      html += `</tbody></table></div>`;
+    }
+
+    if (html === '') html = '<div class="empty-state">No users found.</div>';
+    container.innerHTML = html;
+  }
 
   document.getElementById('logoutBtn').addEventListener('click', function() {
     TN.signOut().then(() => window.location.replace('login.html'));
