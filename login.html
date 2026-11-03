@@ -85,9 +85,9 @@
       }
     });
   }).catch(function (err) {
-    if (err && err.message === '__redirect') return;
-    setMsg('err', 'Could not reach server. Refresh and try again.');
-  });
+  if (err && err.message === '__redirect') return;
+  setMsg('err', 'Error: ' + (err.message || 'Unknown error'));
+});
 
   // 2. Handle form submission
   form.addEventListener('submit', function (e) {
