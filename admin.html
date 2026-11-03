@@ -111,7 +111,6 @@
         return;
       }
       
-      // Fetch all data for dashboard
       fetchKPIs();
       loadDeposits();
       loadWithdrawals();
@@ -126,7 +125,8 @@
 
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (event && event.target) event.target.classList.add('active');
+    else document.querySelector(`.tab-btn[onclick*="${tab}"]`).classList.add('active');
     
     document.getElementById('tab-pending').style.display = tab === 'pending' ? 'block' : 'none';
     document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
@@ -134,20 +134,17 @@
 
   // --- KPIs ---
   function fetchKPIs() {
-    // Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    // Total Deposited (Verified only)
     TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
-      const total = res.data.reduce((sum, d) => sum + Number(d.amount_usd), 0);
+      const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
       document.getElementById('kpiDeposits').textContent = '$' + total.toLocaleString();
     });
 
-    // Total Withdrawn (Approved only)
     TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
-      const total = res.data.reduce((sum, w) => sum + Number(w.amount_usd), 0);
+      const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
       document.getElementById('kpiWithdrawals').textContent = '$' + total.toLocaleString();
     });
   }
@@ -183,13 +180,20 @@
   window.approveDeposit = async function(depositId, userId, amount) {
     if (!confirm(`Confirm $${amount} received? This unlocks their tier.`)) return;
     try {
-      const { data: profile } = await TN.client.from('profiles').select('deposit_amount').eq('id', userId).single();
+      const { data: profile } = await TN.client.from('profiles').select('deposit_amount, total_deposited').eq('id', userId).single();
+      
+      const newDepositAmount = Number(profile.deposit_amount || 0) + Number(amount);
+      const newTotalDeposited = Number(profile.total_deposited || 0) + Number(amount);
+
       await TN.client.from('profiles').update({ 
-        deposit_amount: Number(profile.deposit_amount || 0) + Number(amount),
+        deposit_amount: newDepositAmount,
+        total_deposited: newTotalDeposited,
         active_day: 1
       }).eq('id', userId);
+
       await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
-      alert('Approved!'); 
+      
+      alert('Approved! Commission paid & Tier unlocked.'); 
       fetchKPIs(); loadDeposits(); loadUsers();
     } catch (err) { alert(err.message); }
   };
@@ -231,9 +235,18 @@
   window.approveWithdrawal = async function(withdrawalId, userId, amount) {
     if (!confirm(`Confirm you sent $${amount} to this user?`)) return;
     try {
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
-      await TN.client.from('profiles').update({ balance_usd: Number(profile.balance_usd) - Number(amount) }).eq('id', userId);
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_withdrawn').eq('id', userId).single();
+      
+      const newBalance = Number(profile.balance_usd || 0) - Number(amount);
+      const newTotalWithdrawn = Number(profile.total_withdrawn || 0) + Number(amount);
+
+      await TN.client.from('profiles').update({ 
+        balance_usd: newBalance,
+        total_withdrawn: newTotalWithdrawn 
+      }).eq('id', userId);
+
       await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
+      
       alert('Withdrawal Approved!'); 
       fetchKPIs(); loadWithdrawals(); loadUsers();
     } catch (err) { alert(err.message); }
@@ -258,7 +271,6 @@
     const container = document.getElementById('usersContainer');
     container.innerHTML = '';
 
-    // Define Tiers
     const groups = {
       'VIP ($5000+)': [],
       'Tier 7 ($2000 - $4999)': [],
