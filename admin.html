@@ -21,6 +21,15 @@
   .kpi-val { font-size: 1.3rem; font-weight: 800; color: #ec4899; margin-bottom: 0.2rem; }
   .kpi-lbl { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; font-weight: bold; }
 
+  /* Signal Generator Box */
+  .signal-box { background: #fdf2f8; border: 1px solid #fbcfe8; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; }
+  .signal-box h3 { color: #ec4899; margin-bottom: 0.5rem; }
+  .signal-box p { color: #6b7280; font-size: 0.85rem; margin-bottom: 1rem; }
+  .signal-btns { display: flex; gap: 1rem; justify-content: center; }
+  .btn-signal { padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; color: #fff; }
+  .btn-sig-up { background: #10b981; }
+  .btn-sig-down { background: #ef4444; }
+
   /* Tabs */
   .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; }
   .tab-btn { background: none; border: none; color: #6b7280; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
@@ -76,6 +85,17 @@
   </div>
 
   <div id="tab-pending">
+    
+    <!-- SIGNAL GENERATOR -->
+    <div class="signal-box">
+      <h3>Generate Live Signal</h3>
+      <p>Select the winning direction. All PENDING trades will be resolved instantly.</p>
+      <div class="signal-btns">
+        <button class="btn-signal btn-sig-up" onclick="resolveTrades('UP')">UP Signal</button>
+        <button class="btn-signal btn-sig-down" onclick="resolveTrades('DOWN')">DOWN Signal</button>
+      </div>
+    </div>
+
     <h3 style="margin-bottom:0.5rem; color:#111827;">Pending Crypto Deposits (Manual)</h3>
     <div id="depositsContainer" class="empty-state">Loading...</div>
 
@@ -95,6 +115,19 @@
   'use strict';
 
   let allUsers = [];
+  
+  // Must match the tiers in dashboard.html to calculate payouts correctly
+  const TIERS = [
+    { amount: 10,   profit: 1.5 },
+    { amount: 30,   profit: 2.5 },
+    { amount: 50,   profit: 5 },
+    { amount: 100,  profit: 9.8 },
+    { amount: 300,  profit: 13.5 },
+    { amount: 500,  profit: 17 },
+    { amount: 1000, profit: 25.8 },
+    { amount: 2000, profit: 45.5 },
+    { amount: 5000, profit: 100 }
+  ];
 
   function initAdmin() {
     TN.ready.then(() => TN.getSession())
@@ -142,6 +175,49 @@
     });
   }
 
+  // --- SIGNAL RESOLUTION LOGIC ---
+  window.resolveTrades = async function(direction) {
+    if (!confirm(`Are you sure the signal was ${direction}? This will payout all matching pending trades.`)) return;
+    
+    // 1. Fetch all pending trades
+    const { data: pending, error } = await TN.client.from('trades').select('*, profiles(deposit_amount)').eq('result', 'PENDING');
+    
+    if (error) return alert(error.message);
+    if (!pending || pending.length === 0) return alert('No pending trades found for this round.');
+
+    let wins = 0;
+    let losses = 0;
+
+    // 2. Loop through and process each trade
+    for (let trade of pending) {
+      const isWin = (trade.user_choice === direction);
+      let profit = 0;
+
+      if (isWin) {
+        // Find user's tier based on their active deposit_amount
+        const dep = Number(trade.profiles.deposit_amount || 0);
+        let tier = TIERS.slice().reverse().find(t => dep >= t.amount); // Get highest matching tier
+        
+        if (tier) {
+          profit = tier.profit;
+          // Add profit to balance
+          const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', trade.user_id).single();
+          await TN.client.from('profiles').update({ balance_usd: Number(profile.balance_usd) + profit }).eq('id', trade.user_id);
+        }
+        wins++;
+      } else {
+        losses++;
+      }
+
+      // Update the trade record
+      await TN.client.from('trades').update({ result: isWin ? 'WIN' : 'LOSS', profit_usd: profit }).eq('id', trade.id);
+    }
+
+    alert(`Signal Resolved!\nWins: ${wins}\nLosses: ${losses}`);
+    loadUsers(); // Refresh balances
+  };
+
+  // --- PENDING DEPOSITS ---
   function loadDeposits() {
     TN.client.from('pending_deposits')
       .select('*, profiles(full_name, email)')
@@ -168,7 +244,7 @@
   }
 
   window.approveDeposit = async function(depositId, userId, amount) {
-    if (!confirm(`Confirm $${amount} received in Binance? This will add to their Available Balance.`)) return;
+    if (!confirm(`Confirm $${amount} received in Binance?`)) return;
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
       
@@ -182,7 +258,7 @@
 
       await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
       
-      alert('Approved! User balance updated.'); 
+      alert('Approved!'); 
       fetchKPIs(); loadDeposits(); loadUsers();
     } catch (err) { alert(err.message); }
   };
@@ -193,6 +269,7 @@
     loadDeposits();
   };
 
+  // --- PENDING WITHDRAWALS ---
   function loadWithdrawals() {
     TN.client.from('withdrawal_requests')
       .select('*, profiles(full_name, email)')
@@ -257,7 +334,6 @@
     const container = document.getElementById('usersContainer');
     container.innerHTML = '';
 
-    // Group users by country
     const groups = {};
 
     allUsers.forEach(u => {
@@ -268,7 +344,6 @@
 
     let html = '';
     
-    // Loop through each country group
     for (const [countryName, users] of Object.entries(groups)) {
       
       html += `<div class="country-group">
