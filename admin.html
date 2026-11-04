@@ -153,10 +153,6 @@
   let allUsers = [];
   let currentFilter = 'ALL';
   let searchQuery = '';
-  
-  // Exchange rates from dashboard logic
-  const EXCHANGE_RATES = { UG: 4102, KE: 129.89, RW: 1472, ZM: 20.27, CM: 582.68, TZ: 2600, NG: 1500, GH: 14.50, ZA: 18.50 };
-  const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF', TZ: 'TZS', NG: 'NGN', GH: 'GHS', ZA: 'ZAR' };
 
   const TIERS = [
     { amount: 10,   profit: 1.5 },
@@ -365,11 +361,9 @@
         : `<span class="status-badge status-inactive">Inactive</span>`;
       
       const countryCode = u.country || 'Unknown';
-      const rate = EXCHANGE_RATES[countryCode] || 1;
-      const currency = CURRENCIES[countryCode] || 'USD';
       
-      const localBalance = Number(u.balance_usd || 0) * rate;
-      const displayBalance = currency === 'USD' ? `$${Number(u.balance_usd).toFixed(2)}` : `${currency} ${localBalance.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+      // BALANCE IS NOW STRICTLY IN USD
+      const displayBalance = '$' + Number(u.balance_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       html += `
         <div class="user-card">
