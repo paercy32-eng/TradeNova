@@ -2,73 +2,111 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0a0e13">
-<title>Trade Nova — Loading</title>
-<link rel="stylesheet" href="css/styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#05080f">
+<title>Nova Trade — Power Your Trades</title>
 <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
   body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #05080f;
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Full-screen splash container */
+  .splash {
+    height: 100vh;
+    width: 100vw;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    margin: 0;
+    position: relative;
+    /* Dark gradient over a crypto background image */
+    background: linear-gradient(180deg, rgba(5,8,15,0.6) 0%, rgba(5,8,15,0.95) 80%, rgba(5,8,15,1) 100%), 
+                url('https://images.unsplash.com/photo-1621761191319-c6fb62004040?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+  }
+
+  /* Neon Logo */
+  .logo-container {
     text-align: center;
-    background: var(--bg);
-    color: var(--text);
+    animation: fadeInDown 1s ease-out;
   }
-  .loader {
-    border: 3px solid var(--border);
-    border-top: 3px solid var(--blue);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1.5rem auto;
+
+  .logo-text {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
   }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+  .logo-text span {
+    color: #00d2ff;
+    text-shadow: 0 0 30px rgba(0, 210, 255, 0.8), 0 0 60px rgba(0, 210, 255, 0.4);
   }
-  .status { font-size: 0.9rem; color: var(--muted); }
+
+  .tagline {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #a0aabf;
+    font-weight: 600;
+  }
+
+  /* Enter Button */
+  .enter-btn {
+    position: absolute;
+    bottom: 60px;
+    background: #00d2ff;
+    color: #05080f;
+    text-decoration: none;
+    padding: 1.1rem 4rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    transition: all 0.3s ease;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .enter-btn:hover, .enter-btn:active {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 40px rgba(0, 210, 255, 0.8);
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
 
-<div>
-  <div class="loader"></div>
-  <div class="status" id="statusText">Checking session...</div>
+<div class="splash">
+  
+  <!-- Central Logo Area -->
+  <div class="logo-container">
+    <div class="logo-text">Nova<span>Trade</span></div>
+    <div class="tagline">Power Your Trades</div>
+  </div>
+
+  <!-- Action Button -->
+  <a href="login.html" class="enter-btn">Enter Now</a>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase.js"></script>
-<script>
-(function () {
-  'use strict';
-
-  // Wait for Supabase to initialize
-  if (!window.TN || !TN.ready) {
-    document.getElementById('statusText').textContent = 'System failed to load. Refresh.';
-    return;
-  }
-
-  TN.ready.then(function () {
-    return TN.getSession();
-  }).then(function (session) {
-    if (session) {
-      // User IS logged in -> Send to Dashboard
-      window.location.replace('dashboard.html');
-    } else {
-      // User is NOT logged in -> Send to Login Page
-      window.location.replace('login.html');
-    }
-  }).catch(function (err) {
-    console.error('[gatekeeper]', err);
-    // If there is an error, force them to login page
-    window.location.replace('login.html');
-  });
-
-})();
-</script>
 </body>
 </html>
