@@ -78,12 +78,12 @@
   .stat-box.withdrawn .val { color: #ea3943; }
 
   .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
-  .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #a0aabf; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; }
+  .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #a0aabf; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; }
   .action-icon { width: 50px; height: 50px; border-radius: 14px; background: rgba(0, 210, 255, 0.05); border: 1px solid rgba(0, 210, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #00d2ff; }
   .action-item:active .action-icon { background: rgba(0, 210, 255, 0.15); }
 
   .menu-list { background: #0a111a; border: 1px solid #1a2636; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
-  .menu-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #1a2636; text-decoration: none; color: #fff; }
+  .menu-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #1a2636; text-decoration: none; color: #fff; cursor: pointer; }
   .menu-item:last-child { border-bottom: none; }
   .menu-icon { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 210, 255, 0.1); color: #00d2ff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-right: 1rem; }
   .menu-text { flex: 1; }
@@ -112,6 +112,17 @@
   .btn-primary { width: 100%; padding: 0.9rem; background: #00d2ff; color: #05080f; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
   .btn-primary:disabled { opacity: 0.5; }
   .form-msg { text-align: center; font-size: 0.8rem; margin-top: 0.8rem; }
+
+  /* History Items */
+  .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #1a2636; }
+  .history-item:last-child { border-bottom: none; }
+  .hist-info { display: flex; flex-direction: column; gap: 0.2rem; }
+  .hist-title { font-weight: bold; font-size: 0.9rem; }
+  .hist-date { font-size: 0.7rem; color: #a0aabf; }
+  .hist-amount { font-weight: bold; font-size: 0.95rem; text-align: right; }
+  .status-success { color: #16c784; }
+  .status-pending { color: #f0b90b; }
+  .status-failed { color: #ea3943; }
 </style>
 </head>
 <body>
@@ -219,7 +230,7 @@
     </div>
 
     <div class="menu-list">
-      <div class="menu-item">
+      <div class="menu-item" onclick="openHistory()">
         <div class="menu-icon">🕒</div>
         <div class="menu-text"><strong>TRANSACTION HISTORY</strong></div>
         <div class="menu-arrow">›</div>
@@ -244,9 +255,26 @@
   <div class="nav-item" onclick="switchTab('profile', this)"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</div>
 </div>
 
-<!-- HIDDEN BUTTONS (Fixes the crash) -->
+<!-- HIDDEN BUTTONS -->
 <button id="depositBtn" style="display:none;"></button>
 <button id="withdrawBtn" style="display:none;"></button>
+
+<!-- HISTORY MODAL -->
+<dialog id="historyDialog" class="modal">
+  <div class="modal-head">
+    <div><h3 style="margin:0;">Transaction History</h3></div>
+    <button class="icon-btn" onclick="document.getElementById('historyDialog').close()">✕</button>
+  </div>
+  
+  <div class="deposit-tabs" style="margin-bottom:1rem;">
+    <div class="dep-tab active" id="tab-btn-deposits" onclick="switchHistoryTab('deposits')">Deposits</div>
+    <div class="dep-tab" id="tab-btn-withdrawals" onclick="switchHistoryTab('withdrawals')">Withdrawals</div>
+  </div>
+
+  <div id="historyList" style="max-height: 60vh; overflow-y: auto;">
+    <div style="text-align:center; padding:2rem; color:#a0aabf;">Loading...</div>
+  </div>
+</dialog>
 
 <!-- DEPOSIT MODAL -->
 <dialog id="cryptoDepositDialog" class="modal">
@@ -322,6 +350,10 @@
   let chart = null;
   let candleSeries = null;
   let lastPrice = 64200;
+  
+  let currentHistoryTab = 'deposits';
+  let userDeposits = [];
+  let userWithdrawals = [];
 
   const EXCHANGE_RATES = { UG: 3800, KE: 130, RW: 1300, ZM: 26, CM: 600 };
   const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF' };
@@ -485,6 +517,78 @@
     }
   }
 
+  // --- HISTORY LOGIC ---
+  window.openHistory = function() {
+    document.getElementById('historyDialog').showModal();
+    fetchHistory();
+  };
+
+  function fetchHistory() {
+    document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#a0aabf;">Loading...</div>';
+    
+    TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).then(res => {
+      userDeposits = res.data || [];
+      return TN.client.from('withdrawal_requests').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+    }).then(res => {
+      userWithdrawals = res.data || [];
+      renderHistory();
+    }).catch(err => {
+      document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#ea3943;">Failed to load history.</div>';
+    });
+  }
+
+  window.switchHistoryTab = function(tab) {
+    currentHistoryTab = tab;
+    document.getElementById('tab-btn-deposits').classList.toggle('active', tab === 'deposits');
+    document.getElementById('tab-btn-withdrawals').classList.toggle('active', tab === 'withdrawals');
+    renderHistory();
+  };
+
+  function renderHistory() {
+    const list = document.getElementById('historyList');
+    let data = currentHistoryTab === 'deposits' ? userDeposits : userWithdrawals;
+    let type = currentHistoryTab === 'deposits' ? 'Deposit' : 'Withdrawal';
+
+    if (data.length === 0) {
+      list.innerHTML = '<div style="text-align:center; color:#a0aabf; padding:2rem 0;">No transactions yet.</div>';
+      return;
+    }
+
+    list.innerHTML = data.map(item => {
+      let statusClass = '';
+      let statusText = '';
+      
+      if (item.status === 'verified' || item.status === 'approved') {
+        statusClass = 'status-success';
+        statusText = 'Successful';
+      } else if (item.status === 'pending') {
+        statusClass = 'status-pending';
+        statusText = 'Pending';
+      } else {
+        statusClass = 'status-failed';
+        statusText = 'Failed';
+      }
+
+      let amountDisplay = type === 'Deposit' ? `+$${item.amount_usd}` : `-$${item.amount_usd}`;
+      let amountClass = type === 'Deposit' ? 'color:#16c784;' : 'color:#ea3943;';
+      let date = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <div class="history-item">
+          <div class="hist-info">
+            <div class="hist-title">${type}</div>
+            <div class="hist-date">${date}</div>
+          </div>
+          <div>
+            <div class="hist-amount" style="${amountClass}">${amountDisplay}</div>
+            <div class="hist-date ${statusClass}" style="text-align:right; font-weight:bold;">${statusText}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // --- MODAL ACTIONS ---
   window.switchDepositTab = function(tab) {
     document.querySelectorAll('.dep-tab').forEach(t => t.classList.remove('active'));
     document.getElementById(`tab-btn-${tab}`).classList.add('active');
@@ -651,4 +755,4 @@
 })();
 </script>
 </body>
-                                                                                           </html>
+           </html>
