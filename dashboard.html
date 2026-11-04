@@ -116,6 +116,14 @@
 </head>
 <body>
 
+<script>
+  // Catch all errors and show them in a red box so we can debug on mobile
+  window.onerror = function(msg, url, line) {
+    document.body.innerHTML = '<div style="color:white; background:red; padding:20px; font-family:monospace; z-index:9999; position:fixed; top:0; left:0; right:0; bottom:0; overflow-y:auto;"><h2>Javascript Error</h2><p>' + msg + '</p><p>Line: ' + line + '</p><p>URL: ' + url + '</p><button onclick="location.reload()" style="padding:10px; margin-top:20px;">Reload Page</button></div>' + document.body.innerHTML;
+    return false;
+  };
+</script>
+
 <!-- Header -->
 <div class="app-header">
   <div class="brand">Nova<span>Trade</span></div>
@@ -397,7 +405,7 @@
     `;
   }
 
-  // --- FIXED INIT APP (NO CRASHES) ---
+  // --- INIT APP ---
   function initApp() {
     TN.ready.then(() => TN.getSession())
     .then(session => {
@@ -406,10 +414,9 @@
       return TN.client.from('profiles').select('*').eq('id', session.user.id).single();
     })
     .then(res => {
-      if (!res.data) throw new Error('No profile');
+      if (!res.data) throw new Error('No profile data found.');
       currentProfile = res.data;
       
-      // Safely fetch trades. If the table is missing, default to an empty array.
       const today = new Date().toISOString().split('T')[0];
       return TN.client.from('trades').select('*').eq('user_id', currentUser.id).gte('created_at', today)
         .then(tradesRes => tradesRes.data || [])
@@ -420,7 +427,6 @@
     })
     .then(tradesData => {
       userTradesToday = tradesData;
-      // Always render UI, even if trades failed
       renderUI();
       initLiveChart();
       updateTickerPrices(lastPrice);
@@ -430,7 +436,8 @@
       if (err.message === 'No session') {
         window.location.replace('login.html');
       } else {
-        alert("Error loading dashboard data. Check console.");
+        // If error, show it on the screen
+        document.body.innerHTML = '<div style="color:white; background:red; padding:20px; font-family:monospace; z-index:9999; position:fixed; top:0; left:0; right:0; bottom:0;"><h2>Setup Error</h2><p>' + err.message + '</p></div>';
       }
     });
   }
@@ -654,4 +661,4 @@
 })();
 </script>
 </body>
- </html>
+</html>
