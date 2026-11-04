@@ -4,11 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a0e13">
-<meta name="description" content="Sign in to Trade Nova — copy top crypto traders across Africa.">
 <title>Sign in — Trade Nova</title>
 <link rel="stylesheet" href="css/styles.css">
 <style>
-/* Same auth styles as register.html */
 .auth-page{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:2rem 1.15rem}
 .auth-card{width:100%;max-width:440px;background:var(--surface,#111820);border:1px solid var(--border,#22303f);border-radius:16px;padding:2rem 1.6rem}
 .auth-card h1{font-size:1.5rem;margin:0 0 .35rem}
@@ -76,18 +74,16 @@
     msg.textContent = text;
   }
 
-  // 1. If already signed in, redirect to dashboard
+  // 1. If already signed in, check role and redirect
   TN.ready.then(function () {
     return TN.getSession().then(function (session) {
       if (session) { 
-        window.location.replace('dashboard.html'); 
-        throw new Error('__redirect'); 
+        return checkRoleAndRedirect(session.user.id);
       }
     });
   }).catch(function (err) {
-  if (err && err.message === '__redirect') return;
-  setMsg('err', 'Error: ' + (err.message || 'Unknown error'));
-});
+    console.error(err);
+  });
 
   // 2. Handle form submission
   form.addEventListener('submit', function (e) {
@@ -96,15 +92,11 @@
     var userEmail = email.value.trim();
     
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
-      setMsg('err', 'Enter a valid email address.'); 
-      email.focus(); 
-      return;
+      setMsg('err', 'Enter a valid email address.'); email.focus(); return;
     }
     
     if (!passwd.value) {
-      setMsg('err', 'Enter your password.'); 
-      passwd.focus(); 
-      return;
+      setMsg('err', 'Enter your password.'); passwd.focus(); return;
     }
 
     submit.disabled = true;
@@ -115,26 +107,33 @@
     }).then(function (result) {
       if (result.error) throw result.error;
 
-      setMsg('ok', 'Signed in. Loading your dashboard…');
-      setTimeout(function () {
-        window.location.href = 'dashboard.html';
-      }, 400);
+      setMsg('ok', 'Signed in. Loading…');
+      return checkRoleAndRedirect(result.data.user.id);
+      
     }).catch(function (err) {
       console.error('[login]', err);
       var m = (err && err.message) || '';
 
       if (/Invalid login credentials/i.test(m)) {
         setMsg('err', 'Wrong email or password.');
-      } else if (/Email not confirmed/i.test(m)) {
-        setMsg('err', 'Account not confirmed. Check your email inbox.');
-      } else if (/rate limit|too many/i.test(m)) {
-        setMsg('err', 'Too many attempts. Wait a minute, then try again.');
       } else {
-        setMsg('err', m || 'Something went wrong. Please try again.');
+        setMsg('err', m || 'Something went wrong.');
       }
       submit.disabled = false;
     });
   });
+
+  // 3. Helper function to check role and redirect
+  function checkRoleAndRedirect(userId) {
+    return TN.client.from('profiles').select('role').eq('id', userId).single()
+    .then(function(res) {
+      if (res.data && res.data.role === 'admin') {
+        window.location.replace('admin.html');
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    });
+  }
 
 })();
 </script>
