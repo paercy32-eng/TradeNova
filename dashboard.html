@@ -68,10 +68,24 @@
   .chat-input-area input { flex: 1; border: 1px solid #e5e7eb; border-radius: 20px; padding: 0.5rem 1rem; font-size: 0.85rem; outline: none; }
   .chat-input-area button { background: #ec4899; color: #fff; border: none; border-radius: 20px; padding: 0 1rem; font-weight: bold; }
 
-  /* Team Tab */
-  .ref-box { background: #ffffff; border: 1px dashed #ec4899; border-radius: 12px; padding: 1.2rem; text-align: center; margin-bottom: 1.5rem; }
-  .ref-link { background: #fdf2f8; border: 1px solid #fbcfe8; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin: 0.5rem 0; word-break: break-all; color: #ec4899; }
-  .profile-stat { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; font-size: 0.95rem; }
+  /* --- TEAM TAB REDESIGN --- */
+  .commission-card { background: linear-gradient(135deg, #6b21a8, #ec4899); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
+  .commission-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem; }
+  .commission-amount { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+  
+  .ref-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.2rem; text-align: center; margin-bottom: 2rem; }
+  .ref-box h4 { font-size: 0.9rem; color: #111827; margin-bottom: 0.8rem; }
+  .ref-input-group { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .ref-input-group input { flex: 1; background: #f9fafb; border: 1px solid #e5e7eb; padding: 0.8rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #6b7280; outline: none; }
+  .ref-input-group button { background: #ec4899; color: #fff; border: none; padding: 0 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  
+  .ref-list-title { font-size: 1.1rem; font-weight: 800; color: #111827; margin-bottom: 1rem; }
+  .ref-user-card { display: flex; align-items: center; gap: 1rem; background: #ffffff; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 12px; margin-bottom: 0.8rem; }
+  .ref-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
+  .ref-info { flex: 1; }
+  .ref-info h5 { font-size: 0.95rem; color: #111827; margin-bottom: 0.1rem; }
+  .ref-info p { font-size: 0.75rem; color: #6b7280; }
+  .ref-status { font-size: 0.75rem; font-weight: bold; color: #10b981; background: #d1fae5; padding: 0.3rem 0.6rem; border-radius: 6px; }
   
   /* Profile Tab */
   .profile-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
@@ -202,21 +216,24 @@
     </div>
   </div>
 
-  <!-- TEAM TAB -->
+  <!-- TEAM TAB (REDESIGNED) -->
   <div class="app-content" id="tab-team">
-    <h3 style="margin-bottom:1rem;">Invite & Earn</h3>
+    <div class="commission-card">
+      <div class="commission-label">Total Commission Earned</div>
+      <div class="commission-amount" id="teamCommission">$0.00</div>
+      <p style="font-size:0.75rem; opacity:0.9;">Earn 10% when your direct referrals deposit.</p>
+    </div>
+    
     <div class="ref-box">
-      <p style="font-size:0.85rem; color:#111827; margin-bottom:0.5rem; font-weight:bold;">Your Referral Link</p>
-      <div class="ref-link" id="refLink">Loading...</div>
-      <button class="btn-primary" id="copyRefBtn" style="margin-top:0.5rem; font-size:0.85rem; padding:0.7rem;">Copy Link</button>
-      <p style="font-size:0.75rem; color:#6b7280; margin-top:1rem; line-height:1.4;">Earn 10% commission when direct referrals deposit.</p>
+      <h4>Your Referral Link</h4>
+      <div class="ref-input-group">
+        <input type="text" id="refLink" readonly>
+        <button id="copyRefBtn">Copy</button>
+      </div>
     </div>
-    <div class="profile-stat">
-      <span>Team Commission</span>
-      <strong style="color:#10b981;" id="teamCommission">$0.00</strong>
-    </div>
-    <h4 style="margin:1.5rem 0 0.5rem; font-size:0.9rem; color:#6b7280;">Your Direct Referrals</h4>
-    <div id="refListContainer" style="font-size:0.85rem;">Loading...</div>
+
+    <div class="ref-list-title">Your Direct Referrals</div>
+    <div id="refListContainer">Loading...</div>
   </div>
 
   <!-- PROFILE TAB -->
@@ -394,10 +411,20 @@
   let userDeposits = [];
   let userWithdrawals = [];
 
-  const EXCHANGE_RATES = { UG: 3800, KE: 130, RW: 1300, ZM: 26, CM: 600 };
-  const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF' };
+  // UPDATED EXCHANGE RATES
+  const EXCHANGE_RATES = { 
+    UG: 4102, 
+    KE: 129.89, 
+    RW: 1472, 
+    ZM: 20.27, 
+    CM: 582.68,
+    TZ: 2600, // added fallbacks
+    NG: 1500,
+    GH: 14.50,
+    ZA: 18.50
+  };
+  const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF', TZ: 'TZS', NG: 'NGN', GH: 'GHS', ZA: 'ZAR' };
 
-  // UPDATED TIERS
   const TIERS = [
     { amount: 10,   name: 'Starter Level', slots: ['3PM'], profit: '1.5' },
     { amount: 30,   name: 'Basic Level', slots: ['3PM'], profit: '2.5' },
@@ -415,8 +442,16 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     if (el) el.classList.add('active');
+    
+    // Force chart to resize and scroll to latest candle when switching to trade tab
     if (tab === 'trade' && chart) {
-      setTimeout(() => chart.resize(document.getElementById('tvchart').clientWidth, 300), 50);
+      setTimeout(() => {
+        const chartEl = document.getElementById('tvchart');
+        if (chartEl) {
+          chart.resize(chartEl.clientWidth, 300);
+          chart.timeScale().scrollToRealTime();
+        }
+      }, 50);
     }
   };
 
@@ -430,6 +465,7 @@
     return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  // --- FIXED LIVE CHART ---
   function initLiveChart() {
     const chartEl = document.getElementById('tvchart');
     if (!chartEl) return;
@@ -443,6 +479,7 @@
     candleSeries = chart.addCandlestickSeries({
       upColor: '#ec4899', downColor: '#9d174d', wickUpColor: '#ec4899', wickDownColor: '#9d174d', borderVisible: false
     });
+    
     const data = [];
     let time = Math.floor(Date.now() / 1000) - (50 * 60);
     for (let i = 0; i < 50; i++) {
@@ -453,6 +490,8 @@
       time += 60;
     }
     candleSeries.setData(data);
+
+    // This updates the chart every 2 seconds to keep it "live"
     setInterval(() => {
       const open = lastPrice;
       const close = open + (Math.random() - 0.5) * 80;
@@ -549,17 +588,39 @@
       `;
     }).join('');
 
-    document.getElementById('refLink').textContent = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
+    // --- TEAM TAB DATA ---
+    document.getElementById('refLink').value = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
     document.getElementById('teamCommission').textContent = formatMoney(p.team_commission || 0);
     
-    TN.client.from('profiles').select('full_name, deposit_amount').eq('referred_by', currentUser.id).then(res => {
+    TN.client.from('profiles').select('full_name, deposit_amount, created_at').eq('referred_by', currentUser.id).then(res => {
       const list = document.getElementById('refListContainer');
-      if (!res.data || res.data.length === 0) { list.innerHTML = '<div style="color:#6b7280; padding:1rem 0;">No referrals yet.</div>'; return; }
-      list.innerHTML = res.data.map(r => `<div class="profile-stat"><span>${r.full_name || 'User'}</span><strong>$${r.deposit_amount} active</strong></div>`).join('');
+      if (!res.data || res.data.length === 0) { 
+        list.innerHTML = '<div style="color:#6b7280; padding:1rem 0; text-align:center; background:#fff; border-radius:12px; border:1px dashed #e5e7eb;">No referrals yet. Share your link to start earning!</div>'; 
+        return; 
+      }
+      
+      list.innerHTML = res.data.map(r => {
+        const initial = r.full_name ? r.full_name.charAt(0).toUpperCase() : 'U';
+        const isActive = Number(r.deposit_amount) > 0;
+        const statusLabel = isActive ? 'Active' : 'Inactive';
+        const statusColor = isActive ? '#10b981' : '#6b7280';
+        
+        return `
+          <div class="ref-user-card">
+            <div class="ref-avatar">${initial}</div>
+            <div class="ref-info">
+              <h5>${r.full_name || 'User'}</h5>
+              <p>Joined ${new Date(r.created_at).toLocaleDateString()}</p>
+            </div>
+            <div style="color:${statusColor}; font-size:0.8rem; font-weight:bold;">${statusLabel}</div>
+          </div>
+        `;
+      }).join('');
     }).catch(() => {
       document.getElementById('refListContainer').innerHTML = '<div style="color:#6b7280; padding:1rem 0;">Could not load referrals.</div>';
     });
 
+    // --- PROFILE TAB DATA ---
     document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Trader';
     document.getElementById('profInitial').textContent = p.full_name ? p.full_name.charAt(0).toUpperCase() : 'N';
     document.getElementById('profBalance').textContent = bal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -567,7 +628,7 @@
     document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
     document.getElementById('profPhone').textContent = p.phone || 'Not bound';
 
-    const allowedMomoCountries = ['UG', 'KE', 'RW', 'ZM', 'CM'];
+    const allowedMomoCountries = ['UG', 'KE', 'RW', 'ZM', 'CM', 'TZ', 'NG', 'GH', 'ZA'];
     if (allowedMomoCountries.includes(p.country) || !p.country) {
       document.getElementById('tab-btn-momo').style.display = 'block';
       document.getElementById('localCurrency').textContent = CURRENCIES[p.country] || 'UGX';
@@ -750,7 +811,7 @@
   window.calcLocalAmount = function() {
     const usd = parseFloat(document.getElementById('momoUsdAmount').value) || 0;
     const country = currentProfile.country || 'UG';
-    const rate = EXCHANGE_RATES[country] || 3800;
+    const rate = EXCHANGE_RATES[country] || 4102;
     document.getElementById('localAmountDisplay').textContent = (usd * rate).toLocaleString();
   };
 
@@ -764,7 +825,7 @@
     if (usdAmount < 10) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is $10.'; return; }
     if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
 
-    const rate = EXCHANGE_RATES[country] || 3800;
+    const rate = EXCHANGE_RATES[country] || 4102;
     const localAmount = Math.round(usdAmount * rate);
 
     btn.disabled = true; btn.textContent = 'Sending Prompt...';
@@ -815,7 +876,7 @@
   });
 
   document.getElementById('withdrawBtn').addEventListener('click', () => {
-    const day = new Date().getDay(); // 1 = Monday, 3 = Wednesday
+    const day = new Date().getDay();
     if (day !== 1 && day !== 3) { alert('Withdrawals are only on Mondays and Wednesdays.'); return; }
     document.getElementById('withdrawDialog').showModal();
   });
@@ -834,8 +895,12 @@
   });
 
   document.getElementById('copyRefBtn').addEventListener('click', function() {
-    navigator.clipboard.writeText(document.getElementById('refLink').textContent);
-    this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 1500);
+    const input = document.getElementById('refLink');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value);
+    this.textContent = 'Copied!'; 
+    setTimeout(() => this.textContent = 'Copy', 1500);
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -846,4 +911,4 @@
 })();
 </script>
 </body>
-</html>
+         </html>
