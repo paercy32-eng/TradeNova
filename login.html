@@ -3,59 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0a0e13">
-<title>Sign in — Trade Nova</title>
-<link rel="stylesheet" href="css/styles.css">
+<meta name="theme-color" content="#05080f">
+<title>Sign in — Nova Trade</title>
 <style>
-.auth-page{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:2rem 1.15rem}
-.auth-card{width:100%;max-width:440px;background:var(--surface,#111820);border:1px solid var(--border,#22303f);border-radius:16px;padding:2rem 1.6rem}
-.auth-card h1{font-size:1.5rem;margin:0 0 .35rem}
-.auth-sub{color:var(--muted,#8fa3b8);font-size:.88rem;margin:0 0 1.5rem}
-.auth-card .field{margin-bottom:.85rem}
-.field-hint{font-size:.73rem;color:var(--muted,#8fa3b8);margin:.28rem 0 0;opacity:.8}
-.auth-foot{text-align:center;font-size:.85rem;color:var(--muted,#8fa3b8);margin:1.2rem 0 0;padding-top:1.2rem;border-top:1px solid var(--border,#22303f)}
-.auth-foot a{color:#4f8cff;font-weight:600}
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  
+  body {
+    background: #05080f;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  /* Centered Auth Card */
+  .auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: #0a111a;
+    border: 1px solid #1a2636;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Logo */
+  .logo-container { text-align: center; margin-bottom: 2rem; }
+  .logo-text {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+  }
+  .logo-text span {
+    color: #00d2ff;
+    text-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+  }
+
+  h1 { font-size: 1.4rem; margin-bottom: 0.4rem; text-align: center; }
+  .subtitle { color: #a0aabf; font-size: 0.85rem; text-align: center; margin-bottom: 2rem; }
+
+  /* Form Fields */
+  .field { margin-bottom: 1.2rem; }
+  .field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #a0aabf;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: #05080f;
+    border: 1px solid #1a2636;
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    transition: 0.2s;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: #00d2ff;
+    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.1);
+  }
+
+  /* Button */
+  .btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: #00d2ff;
+    color: #05080f;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: 0.2s;
+  }
+  .btn-submit:hover { background: #00b8e6; transform: translateY(-2px); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* Messages & Links */
+  .form-msg { text-align: center; font-size: 0.85rem; margin-top: 1rem; min-height: 1.2rem; }
+  .form-msg.err { color: #ea3943; }
+  .form-msg.ok { color: #16c784; }
+
+  .auth-foot { text-align: center; font-size: 0.85rem; color: #a0aabf; margin-top: 2rem; }
+  .auth-foot a { color: #00d2ff; text-decoration: none; font-weight: 600; }
+  .auth-foot a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="index.html">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-        <path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>Trade Nova</span>
-    </a>
-    <a class="btn btn-ghost btn-sm" href="register.html" style="margin-left:auto">Register</a>
+<div class="auth-card">
+  
+  <div class="logo-container">
+    <div class="logo-text">Nova<span>Trade</span></div>
   </div>
-</header>
 
-<main class="auth-page">
-  <div class="auth-card">
-    <h1>Welcome back</h1>
-    <p class="auth-sub">Sign in to manage your copy trading portfolio.</p>
+  <h1>Welcome Back</h1>
+  <p class="subtitle">Sign in to manage your portfolio.</p>
 
-    <form id="loginForm" novalidate>
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-      </div>
+  <form id="loginForm" novalidate>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required>
+    </div>
 
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Your password">
-      </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autocomplete="current-password">
+    </div>
 
-      <button class="btn btn-primary btn-block" type="submit" id="submitBtn">
-        Sign in
-      </button>
-      <p class="form-msg" id="formMsg" role="status"></p>
-    </form>
+    <button class="btn-submit" type="submit" id="submitBtn">Sign In</button>
+    <p class="form-msg" id="formMsg"></p>
+  </form>
 
-    <p class="auth-foot">New to Trade Nova? <a href="register.html">Create an account</a></p>
-  </div>
-</main>
+  <p class="auth-foot">New to Nova Trade? <a href="register.html">Create an account</a></p>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
@@ -74,7 +145,7 @@
     msg.textContent = text;
   }
 
-  // 1. If already signed in, check role and redirect
+  // Redirect if already logged in
   TN.ready.then(function () {
     return TN.getSession().then(function (session) {
       if (session) { 
@@ -85,18 +156,15 @@
     console.error(err);
   });
 
-  // 2. Handle form submission
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     var userEmail = email.value.trim();
-    
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
-      setMsg('err', 'Enter a valid email address.'); email.focus(); return;
+      setMsg('err', 'Enter a valid email address.'); return;
     }
-    
     if (!passwd.value) {
-      setMsg('err', 'Enter your password.'); passwd.focus(); return;
+      setMsg('err', 'Enter your password.'); return;
     }
 
     submit.disabled = true;
@@ -106,14 +174,10 @@
       return TN.signIn(userEmail, passwd.value);
     }).then(function (result) {
       if (result.error) throw result.error;
-
       setMsg('ok', 'Signed in. Loading…');
       return checkRoleAndRedirect(result.data.user.id);
-      
     }).catch(function (err) {
-      console.error('[login]', err);
       var m = (err && err.message) || '';
-
       if (/Invalid login credentials/i.test(m)) {
         setMsg('err', 'Wrong email or password.');
       } else {
@@ -123,7 +187,6 @@
     });
   });
 
-  // 3. Helper function to check role and redirect
   function checkRoleAndRedirect(userId) {
     return TN.client.from('profiles').select('role').eq('id', userId).single()
     .then(function(res) {
