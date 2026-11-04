@@ -36,24 +36,25 @@
   /* Home Tab */
   .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }
   .plan-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-  .plan-card.active-plan { border-color: #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.15); }
+  .plan-card.active-plan { border-color: #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.15); background: #fdf2f8; }
   .plan-info h4 { margin: 0 0 0.2rem; font-size: 1.1rem; color: #111827; }
   .plan-info p { margin: 0; font-size: 0.8rem; color: #6b7280; }
-  .plan-return { text-align: right; }
+  .plan-return { text-align: right; margin-left: 0.5rem; }
   .plan-return strong { display: block; color: #10b981; font-size: 1.1rem; }
   .plan-return span { font-size: 0.7rem; color: #9ca3af; }
+  .btn-activate { background: #ec4899; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: pointer; margin-top: 0.5rem; width: 100%; }
+  .btn-activated { background: #10b981; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: default; margin-top: 0.5rem; width: 100%; }
 
   /* Trade Tab */
   .chart-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; height: 300px; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
   #tvchart { width: 100%; height: 100%; }
   
-  /* Trade Actions (Only visible when time) */
   .trade-action-box { display: none; background: #ffffff; border: 2px solid #ec4899; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; text-align: center; box-shadow: 0 0 20px rgba(236, 72, 153, 0.2); }
   .trade-action-box h3 { color: #ec4899; margin-bottom: 0.8rem; }
   .trade-btns { display: flex; gap: 0.8rem; }
   .btn-trade { flex: 1; padding: 1rem; border-radius: 8px; font-weight: 800; font-size: 1.1rem; border: none; cursor: pointer; text-align: center; color: #fff; }
-  .btn-up { background: #ec4899; } /* Pink for UP */
-  .btn-down { background: #6b21a8; } /* Purple for DOWN */
+  .btn-up { background: #ec4899; }
+  .btn-down { background: #6b21a8; }
   .btn-trade:active { opacity: 0.8; }
 
   /* Chat UI */
@@ -163,17 +164,21 @@
   <!-- HOME TAB -->
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Trader</div>
-    <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1.5rem;">Welcome to Nova Trade Markets.</p>
+    <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1rem;">Welcome to Nova Trade Markets.</p>
+    
+    <!-- Notice if no plan is active -->
+    <div id="noPlanNotice" style="display:none; background:#fdf2f8; border:1px solid #fbcfe8; color:#ec4899; padding:1rem; border-radius:12px; margin-bottom:1.5rem; font-size:0.9rem; text-align:center;">
+      You need to activate a plan below to start trading and earning.
+    </div>
+
     <h3 style="margin-bottom:1rem;">Trading Plans</h3>
     <div id="plansContainer"></div>
   </div>
 
   <!-- TRADE TAB -->
   <div class="app-content" id="tab-trade">
-    <!-- The Chart -->
     <div class="chart-container"><div id="tvchart"></div></div>
     
-    <!-- Trade Buttons (Only visible when it's time) -->
     <div id="tradeActionContainer" class="trade-action-box">
       <h3 id="tradeActionTitle">Trade is Open!</h3>
       <div class="trade-btns">
@@ -182,7 +187,6 @@
       </div>
     </div>
 
-    <!-- The Chat -->
     <div class="chat-container">
       <div class="chat-header">
         <div style="width:8px; height:8px; border-radius:50%; background:#10b981;"></div>
@@ -425,14 +429,13 @@
     return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // --- PINK & WHITE CHART ---
   function initLiveChart() {
     const chartEl = document.getElementById('tvchart');
     if (!chartEl) return;
     chart = LightweightCharts.createChart(chartEl, {
       width: chartEl.clientWidth, height: 300,
-      layout: { background: { color: '#ffffff' }, textColor: '#6b7280' }, // White background, gray text
-      grid: { vertLines: { color: '#f3f4f6' }, horzLines: { color: '#f3f4f6' } }, // Light gray grid
+      layout: { background: { color: '#ffffff' }, textColor: '#6b7280' },
+      grid: { vertLines: { color: '#f3f4f6' }, horzLines: { color: '#f3f4f6' } },
       rightPriceScale: { borderColor: '#e5e7eb' },
       timeScale: { borderColor: '#e5e7eb', timeVisible: true, secondsVisible: true },
     });
@@ -495,7 +498,7 @@
       renderUI();
       initLiveChart();
       updateTickerPrices(lastPrice);
-      checkTradeTime(); // Check if it's time to trade
+      checkTradeTime();
     })
     .catch(err => {
       console.error('Init error:', err);
@@ -509,19 +512,39 @@
 
   function renderUI() {
     const p = currentProfile;
-    const dep = Number(p.deposit_amount || 0);
+    const dep = Number(p.deposit_amount || 0); // This is the active plan amount
+    const bal = Number(p.balance_usd || 0);
 
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Trader'}`;
+    
+    // Render Plans with Activate buttons
+    let hasActivePlan = dep >= 50; // If they have at least $50 active plan
+    document.getElementById('noPlanNotice').style.display = hasActivePlan ? 'none' : 'block';
+
     document.getElementById('plansContainer').innerHTML = TIERS.map(t => {
-      const isActive = (dep >= t.amount && (TIERS.find(x => dep >= x.amount)?.amount === t.amount));
+      const isActive = (dep === t.amount); // Exact match for active plan
+      
+      let actionHtml = '';
+      if (isActive) {
+        actionHtml = `<button class="btn-activated" disabled>Active Plan</button>`;
+      } else if (dep > 0) {
+         actionHtml = `<div style="text-align:center; font-size:0.7rem; color:#9ca3af; margin-top:0.5rem;">Plan already active</div>`;
+      } else {
+         actionHtml = `<button class="btn-activate" onclick="activatePlan(${t.amount})">Activate Plan</button>`;
+      }
+
       return `
         <div class="plan-card ${isActive ? 'active-plan' : ''}">
           <div class="plan-info">
             <h4>${t.name}</h4>
-            <p>$${t.amount} Deposit</p>
+            <p>Cost: $${t.amount}</p>
             <p style="margin-top:0.3rem; font-size:0.7rem; color:#ec4899;">Signals: ${t.slots.join(', ')}</p>
+            ${actionHtml}
           </div>
-          <div class="plan-return"><strong>$${t.profit}</strong><span>Est. Daily</span></div>
+          <div class="plan-return">
+            <strong>$${t.profit}</strong>
+            <span>Est. Daily</span>
+          </div>
         </div>
       `;
     }).join('');
@@ -532,14 +555,14 @@
     TN.client.from('profiles').select('full_name, deposit_amount').eq('referred_by', currentUser.id).then(res => {
       const list = document.getElementById('refListContainer');
       if (!res.data || res.data.length === 0) { list.innerHTML = '<div style="color:#6b7280; padding:1rem 0;">No referrals yet.</div>'; return; }
-      list.innerHTML = res.data.map(r => `<div class="profile-stat"><span>${r.full_name || 'User'}</span><strong>$${r.deposit_amount} deposited</strong></div>`).join('');
+      list.innerHTML = res.data.map(r => `<div class="profile-stat"><span>${r.full_name || 'User'}</span><strong>$${r.deposit_amount} active</strong></div>`).join('');
     }).catch(() => {
       document.getElementById('refListContainer').innerHTML = '<div style="color:#6b7280; padding:1rem 0;">Could not load referrals.</div>';
     });
 
     document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Trader';
     document.getElementById('profInitial').textContent = p.full_name ? p.full_name.charAt(0).toUpperCase() : 'N';
-    document.getElementById('profBalance').textContent = Number(p.balance_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById('profBalance').textContent = bal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     document.getElementById('profDeposited').textContent = formatMoney(p.total_deposited || 0);
     document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
     document.getElementById('profPhone').textContent = p.phone || 'Not bound';
@@ -553,6 +576,30 @@
     }
   }
 
+  // --- ACTIVATE PLAN LOGIC ---
+  window.activatePlan = function(planAmount) {
+    const balance = Number(currentProfile.balance_usd || 0);
+    if (balance < planAmount) {
+      alert(`Insufficient balance! You need $${planAmount} to activate this plan. Please fund your account.`);
+      return;
+    }
+
+    if (!confirm(`Activate this plan for $${planAmount}? $${planAmount} will be deducted from your wallet.`)) return;
+
+    // Deduct from balance, set deposit_amount, reset day
+    const newBalance = balance - planAmount;
+    
+    TN.client.from('profiles').update({
+      balance_usd: newBalance,
+      deposit_amount: planAmount,
+      active_day: 1
+    }).eq('id', currentUser.id).then(res => {
+      if (res.error) throw res.error;
+      alert('Plan activated successfully!');
+      window.location.reload();
+    }).catch(err => alert(err.message));
+  };
+
   // --- TRADE LOGIC & TIME CHECK ---
   function checkTradeTime() {
     const tier = getUserTier(Number(currentProfile.deposit_amount || 0));
@@ -563,6 +610,8 @@
     const slots = ['8AM', '3PM', '5PM', '8PM'];
     let isTime = false;
     let activeSlot = '';
+
+    if (Number(currentProfile.deposit_amount) < 50) return; // No plan active
 
     slots.forEach(slot => {
       if (!tier.slots.includes(slot)) return;
@@ -590,7 +639,6 @@
     }
   }
   
-  // Check every minute if the trade window opened
   setInterval(() => {
     if (currentProfile) checkTradeTime();
   }, 60000);
@@ -602,24 +650,20 @@
     .catch(err => alert(err.message));
   };
 
-  // --- CHAT LOGIC (UI ONLY FOR NOW) ---
+  // --- CHAT LOGIC ---
   window.sendChat = function() {
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text) return;
     
     const chatBox = document.getElementById('chatMessages');
-    
-    // Add user message
     const userMsg = document.createElement('div');
     userMsg.className = 'msg msg-user';
     userMsg.textContent = text;
     chatBox.appendChild(userMsg);
-    
     input.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Simulate a bot reply after 1 second
     setTimeout(() => {
       const botMsg = document.createElement('div');
       botMsg.className = 'msg msg-bot';
@@ -667,19 +711,10 @@
     }
 
     list.innerHTML = data.map(item => {
-      let statusClass = '';
-      let statusText = '';
-      
-      if (item.status === 'verified' || item.status === 'approved') {
-        statusClass = 'status-success';
-        statusText = 'Successful';
-      } else if (item.status === 'pending') {
-        statusClass = 'status-pending';
-        statusText = 'Pending';
-      } else {
-        statusClass = 'status-failed';
-        statusText = 'Failed';
-      }
+      let statusClass = ''; let statusText = '';
+      if (item.status === 'verified' || item.status === 'approved') { statusClass = 'status-success'; statusText = 'Successful'; } 
+      else if (item.status === 'pending') { statusClass = 'status-pending'; statusText = 'Pending'; } 
+      else { statusClass = 'status-failed'; statusText = 'Failed'; }
 
       let amountDisplay = type === 'Deposit' ? `+$${item.amount_usd}` : `-$${item.amount_usd}`;
       let amountClass = type === 'Deposit' ? 'color:#10b981;' : 'color:#ef4444;';
@@ -812,4 +847,4 @@
 })();
 </script>
 </body>
-           </html>
+   </html>
