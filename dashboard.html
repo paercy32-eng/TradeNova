@@ -3,22 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#05080f">
-<title>Trade Nova</title>
+<meta name="theme-color" content="#ffffff">
+<title>Nova Trade</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { padding-bottom: 70px; background: #05080f; color: #fff; }
+  body { padding-bottom: 70px; background: #f9fafb; color: #111827; }
   
   /* Header & Ticker */
-  .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #0a111a; border-bottom: 1px solid #1a2636; position: sticky; top: 0; z-index: 10; }
-  .brand { font-weight: 800; font-size: 1.2rem; }
-  .brand span { color: #00d2ff; text-shadow: 0 0 10px rgba(0, 210, 255, 0.4); }
-  .ticker-wrap { background: #000; border-bottom: 1px solid #1a2636; overflow: hidden; white-space: nowrap; padding: 0.4rem 0; font-size: 0.75rem; }
+  .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
+  .brand { font-weight: 800; font-size: 1.2rem; color: #111827; }
+  .brand span { color: #ec4899; text-shadow: 0 0 10px rgba(236, 72, 153, 0.2); }
+  .btn-logout { background: #fdf2f8; border: 1px solid #fbcfe8; color: #ec4899; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+  
+  .ticker-wrap { background: #ffffff; border-bottom: 1px solid #e5e7eb; overflow: hidden; white-space: nowrap; padding: 0.4rem 0; font-size: 0.75rem; }
   .ticker { display: inline-block; animation: ticker 20s linear infinite; }
   .ticker span { margin-right: 1.5rem; }
   @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-  .text-green { color: #16c784; }
-  .text-red { color: #ea3943; }
+  .text-green { color: #10b981; font-weight: bold; }
+  .text-red { color: #ef4444; font-weight: bold; }
 
   /* App Content */
   .app-content { padding: 1.15rem; display: none; }
@@ -26,103 +28,115 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
   /* Bottom Nav */
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0a111a; border-top: 1px solid #1a2636; display: flex; justify-content: space-around; padding: 0.6rem 0; z-index: 20; padding-bottom: env(safe-area-inset-bottom, 0.6rem); }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: #a0aabf; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-around; padding: 0.6rem 0; z-index: 20; padding-bottom: env(safe-area-inset-bottom, 0.6rem); }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: #9ca3af; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
   .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
-  .nav-item.active { color: #00d2ff; }
+  .nav-item.active { color: #ec4899; }
 
   /* Home Tab */
   .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }
-  .plan-card { background: #0a111a; border: 1px solid #1a2636; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-  .plan-card.active-plan { border-color: #00d2ff; box-shadow: 0 0 15px rgba(0, 210, 255, 0.15); }
-  .plan-info h4 { margin: 0 0 0.2rem; font-size: 1.1rem; color: #fff; }
-  .plan-info p { margin: 0; font-size: 0.8rem; color: #a0aabf; }
+  .plan-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+  .plan-card.active-plan { border-color: #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.15); }
+  .plan-info h4 { margin: 0 0 0.2rem; font-size: 1.1rem; color: #111827; }
+  .plan-info p { margin: 0; font-size: 0.8rem; color: #6b7280; }
   .plan-return { text-align: right; }
-  .plan-return strong { display: block; color: #16c784; font-size: 1.1rem; }
-  .plan-return span { font-size: 0.7rem; color: #a0aabf; }
+  .plan-return strong { display: block; color: #10b981; font-size: 1.1rem; }
+  .plan-return span { font-size: 0.7rem; color: #9ca3af; }
 
   /* Trade Tab */
-  .chart-container { background: #0a111a; border: 1px solid #1a2636; border-radius: 12px; height: 240px; margin-bottom: 1.5rem; overflow: hidden; }
+  .chart-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; height: 300px; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
   #tvchart { width: 100%; height: 100%; }
-  .signal-box { background: #0a111a; border: 1px solid #1a2636; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
-  .signal-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+  
+  /* Trade Actions (Only visible when time) */
+  .trade-action-box { display: none; background: #ffffff; border: 2px solid #ec4899; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; text-align: center; box-shadow: 0 0 20px rgba(236, 72, 153, 0.2); }
+  .trade-action-box h3 { color: #ec4899; margin-bottom: 0.8rem; }
   .trade-btns { display: flex; gap: 0.8rem; }
-  .btn-trade { flex: 1; padding: 0.8rem; border-radius: 8px; font-weight: 800; font-size: 1rem; border: none; cursor: pointer; text-align: center; }
-  .btn-up { background: #16c784; color: #fff; }
-  .btn-down { background: #ea3943; color: #fff; }
-  .btn-trade:disabled { opacity: 0.5; cursor: not-allowed; }
-  .status-pill { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+  .btn-trade { flex: 1; padding: 1rem; border-radius: 8px; font-weight: 800; font-size: 1.1rem; border: none; cursor: pointer; text-align: center; color: #fff; }
+  .btn-up { background: #ec4899; } /* Pink for UP */
+  .btn-down { background: #6b21a8; } /* Purple for DOWN */
+  .btn-trade:active { opacity: 0.8; }
+
+  /* Chat UI */
+  .chat-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; display: flex; flex-direction: column; height: 300px; }
+  .chat-header { padding: 0.8rem; border-bottom: 1px solid #e5e7eb; font-weight: bold; color: #111827; display: flex; align-items: center; gap: 0.5rem; }
+  .chat-messages { flex: 1; padding: 0.8rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; }
+  .msg { max-width: 80%; padding: 0.6rem 0.8rem; border-radius: 12px; font-size: 0.85rem; }
+  .msg-bot { background: #fdf2f8; color: #9d174d; align-self: flex-start; border-bottom-left-radius: 2px; }
+  .msg-user { background: #ec4899; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+  .chat-input-area { display: flex; padding: 0.5rem; border-top: 1px solid #e5e7eb; gap: 0.5rem; }
+  .chat-input-area input { flex: 1; border: 1px solid #e5e7eb; border-radius: 20px; padding: 0.5rem 1rem; font-size: 0.85rem; outline: none; }
+  .chat-input-area button { background: #ec4899; color: #fff; border: none; border-radius: 20px; padding: 0 1rem; font-weight: bold; }
 
   /* Team Tab */
-  .ref-box { background: #0a111a; border: 1px dashed #00d2ff; border-radius: 12px; padding: 1.2rem; text-align: center; margin-bottom: 1.5rem; }
-  .ref-link { background: #05080f; border: 1px solid #1a2636; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin: 0.5rem 0; word-break: break-all; color: #00d2ff; }
-  .profile-stat { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #1a2636; font-size: 0.95rem; }
+  .ref-box { background: #ffffff; border: 1px dashed #ec4899; border-radius: 12px; padding: 1.2rem; text-align: center; margin-bottom: 1.5rem; }
+  .ref-link { background: #fdf2f8; border: 1px solid #fbcfe8; padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin: 0.5rem 0; word-break: break-all; color: #ec4899; }
+  .profile-stat { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; font-size: 0.95rem; }
   
-  /* --- PROFILE TAB DESIGN --- */
+  /* Profile Tab */
   .profile-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-  .prof-avatar { width: 45px; height: 45px; border-radius: 12px; background: #6b46c1; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; box-shadow: 0 0 15px rgba(107, 70, 193, 0.4); }
+  .prof-avatar { width: 45px; height: 45px; border-radius: 12px; background: #ec4899; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); }
   .prof-info { flex: 1; }
-  .prof-info h2 { font-size: 1.2rem; margin-bottom: 0.1rem; letter-spacing: 0.5px; }
-  .prof-info span { font-size: 0.7rem; color: #00d2ff; font-weight: 700; letter-spacing: 1px; }
-  .signed-in { text-align: right; font-size: 0.65rem; color: #a0aabf; letter-spacing: 0.5px; }
-  .signed-in strong { display: block; font-size: 0.9rem; color: #fff; margin-top: 0.2rem; }
+  .prof-info h2 { font-size: 1.2rem; margin-bottom: 0.1rem; letter-spacing: 0.5px; color: #111827; }
+  .prof-info span { font-size: 0.7rem; color: #ec4899; font-weight: 700; letter-spacing: 1px; }
+  .signed-in { text-align: right; font-size: 0.65rem; color: #6b7280; letter-spacing: 0.5px; }
+  .signed-in strong { display: block; font-size: 0.9rem; color: #111827; margin-top: 0.2rem; }
 
-  .wallet-card-new { background: linear-gradient(145deg, #0e1320, #161c2a); border: 1px solid #2a3548; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-  .wallet-label { font-size: 0.7rem; color: #a0aabf; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.2rem; }
+  .wallet-card-new { background: linear-gradient(145deg, #ec4899, #db2777); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3); color: #fff; }
+  .wallet-label { font-size: 0.7rem; opacity: 0.9; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.2rem; }
   .wallet-bal { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; }
-  .wallet-bal span { color: #00d2ff; font-size: 1.5rem; margin-right: 0.2rem; }
+  .wallet-bal span { font-size: 1.5rem; margin-right: 0.2rem; }
   .wallet-stats { display: flex; gap: 1rem; }
-  .stat-box { flex: 1; background: rgba(255,255,255,0.03); border-radius: 10px; padding: 0.8rem; }
-  .stat-box .lbl { font-size: 0.65rem; color: #a0aabf; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
-  .stat-box .val { font-size: 1rem; font-weight: 700; color: #00d2ff; }
-  .stat-box.withdrawn .val { color: #ea3943; }
+  .stat-box { flex: 1; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 0.8rem; }
+  .stat-box .lbl { font-size: 0.65rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
+  .stat-box .val { font-size: 1rem; font-weight: 700; }
 
   .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
-  .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #a0aabf; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; }
-  .action-icon { width: 50px; height: 50px; border-radius: 14px; background: rgba(0, 210, 255, 0.05); border: 1px solid rgba(0, 210, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #00d2ff; }
-  .action-item:active .action-icon { background: rgba(0, 210, 255, 0.15); }
+  .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #6b7280; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; }
+  .action-icon { width: 50px; height: 50px; border-radius: 14px; background: #fdf2f8; border: 1px solid #fbcfe8; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #ec4899; }
+  .action-item:active .action-icon { background: #fce7f3; }
 
-  .menu-list { background: #0a111a; border: 1px solid #1a2636; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
-  .menu-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #1a2636; text-decoration: none; color: #fff; cursor: pointer; }
+  .menu-list { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
+  .menu-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb; text-decoration: none; color: #111827; cursor: pointer; }
   .menu-item:last-child { border-bottom: none; }
-  .menu-icon { width: 35px; height: 35px; border-radius: 10px; background: rgba(0, 210, 255, 0.1); color: #00d2ff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-right: 1rem; }
+  .menu-icon { width: 35px; height: 35px; border-radius: 10px; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-right: 1rem; }
   .menu-text { flex: 1; }
   .menu-text strong { display: block; font-size: 0.9rem; }
-  .menu-text span { display: block; font-size: 0.75rem; color: #a0aabf; margin-top: 0.2rem; }
-  .menu-arrow { color: #a0aabf; font-size: 1.2rem; }
+  .menu-text span { display: block; font-size: 0.75rem; color: #6b7280; margin-top: 0.2rem; }
+  .menu-arrow { color: #9ca3af; font-size: 1.2rem; }
 
-  /* Modals & Tabs */
-  .modal { width: 90vw; max-width: 400px; background: #0a111a; border: 1px solid #1a2636; border-radius: 16px; color: #fff; padding: 1.2rem; }
-  .modal::backdrop { background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+  /* Modals */
+  .modal { width: 90vw; max-width: 400px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; color: #111827; padding: 1.2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+  .modal::backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
   .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .icon-btn { background: none; border: 1px solid #1a2636; color: #a0aabf; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
+  .icon-btn { background: #f3f4f6; border: none; color: #6b7280; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
+  
   .deposit-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .dep-tab { flex: 1; padding: 0.7rem; text-align: center; background: #05080f; border: 1px solid #1a2636; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #a0aabf; }
-  .dep-tab.active { background: rgba(0, 210, 255, 0.1); color: #00d2ff; border-color: #00d2ff; }
+  .dep-tab { flex: 1; padding: 0.7rem; text-align: center; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #6b7280; }
+  .dep-tab.active { background: #fdf2f8; color: #ec4899; border-color: #ec4899; }
   
   .deposit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
-  .deposit-btn { background: #05080f; border: 1px solid #1a2636; padding: 0.8rem; border-radius: 8px; text-align: center; font-weight: 700; cursor: pointer; color: #fff; }
-  .deposit-btn:active { border-color: #00d2ff; color: #00d2ff; }
+  .deposit-btn { background: #f9fafb; border: 1px solid #e5e7eb; padding: 0.8rem; border-radius: 8px; text-align: center; font-weight: 700; cursor: pointer; color: #111827; }
+  .deposit-btn:active { border-color: #ec4899; color: #ec4899; }
   
   .field { margin-bottom: 1rem; }
-  .field label { display: block; font-size: 0.75rem; color: #a0aabf; margin-bottom: 0.4rem; }
-  .field input, .field select { width: 100%; padding: 0.8rem; background: #05080f; border: 1px solid #1a2636; border-radius: 8px; color: #fff; font-size: 0.9rem; }
-  .field input:focus { outline: none; border-color: #00d2ff; }
+  .field label { display: block; font-size: 0.75rem; color: #6b7280; margin-bottom: 0.4rem; }
+  .field input, .field select { width: 100%; padding: 0.8rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; color: #111827; font-size: 0.9rem; }
+  .field input:focus { outline: none; border-color: #ec4899; }
   
-  .btn-primary { width: 100%; padding: 0.9rem; background: #00d2ff; color: #05080f; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
+  .btn-primary { width: 100%; padding: 0.9rem; background: #ec4899; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
   .btn-primary:disabled { opacity: 0.5; }
   .form-msg { text-align: center; font-size: 0.8rem; margin-top: 0.8rem; }
 
   /* History Items */
-  .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #1a2636; }
+  .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #e5e7eb; }
   .history-item:last-child { border-bottom: none; }
   .hist-info { display: flex; flex-direction: column; gap: 0.2rem; }
   .hist-title { font-weight: bold; font-size: 0.9rem; }
-  .hist-date { font-size: 0.7rem; color: #a0aabf; }
+  .hist-date { font-size: 0.7rem; color: #6b7280; }
   .hist-amount { font-weight: bold; font-size: 0.95rem; text-align: right; }
-  .status-success { color: #16c784; }
-  .status-pending { color: #f0b90b; }
-  .status-failed { color: #ea3943; }
+  .status-success { color: #10b981; }
+  .status-pending { color: #f59e0b; }
+  .status-failed { color: #ef4444; }
 </style>
 </head>
 <body>
@@ -137,7 +151,7 @@
 <!-- Header -->
 <div class="app-header">
   <div class="brand">Nova<span>Trade</span></div>
-  <button class="btn" id="logoutBtn" style="background:none; border:1px solid #1a2636; color:#a0aabf; padding:0.4rem 0.8rem; border-radius:6px; font-size:0.75rem;">Log out</button>
+  <button class="btn-logout" id="logoutBtn">Log out</button>
 </div>
 
 <!-- Live Market Ticker -->
@@ -149,34 +163,56 @@
   <!-- HOME TAB -->
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Trader</div>
-    <p style="color:#a0aabf; font-size:0.85rem; margin-bottom:1.5rem;">Welcome to Nova Trade Markets.</p>
+    <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1.5rem;">Welcome to Nova Trade Markets.</p>
     <h3 style="margin-bottom:1rem;">Trading Plans</h3>
     <div id="plansContainer"></div>
   </div>
 
   <!-- TRADE TAB -->
   <div class="app-content" id="tab-trade">
-    <h3 style="margin-bottom:0.5rem;">Live Market Chart (BTC/USDT)</h3>
+    <!-- The Chart -->
     <div class="chart-container"><div id="tvchart"></div></div>
-    <h3 style="margin-bottom:0.5rem;">Today's Signals</h3>
-    <p style="color:#a0aabf; font-size:0.8rem; margin-bottom:1rem;">Buttons unlock for 10 minutes exactly at signal time.</p>
-    <div id="signalsContainer"></div>
+    
+    <!-- Trade Buttons (Only visible when it's time) -->
+    <div id="tradeActionContainer" class="trade-action-box">
+      <h3 id="tradeActionTitle">Trade is Open!</h3>
+      <div class="trade-btns">
+        <button class="btn-trade btn-up" onclick="placeTrade('MANUAL', 'UP')">UP</button>
+        <button class="btn-trade btn-down" onclick="placeTrade('MANUAL', 'DOWN')">DOWN</button>
+      </div>
+    </div>
+
+    <!-- The Chat -->
+    <div class="chat-container">
+      <div class="chat-header">
+        <div style="width:8px; height:8px; border-radius:50%; background:#10b981;"></div>
+        Admin Live Chat
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg msg-bot">Welcome to the trading room! Signals will drop here.</div>
+        <div class="msg msg-bot">Please wait for the next trade window.</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" placeholder="Type a message..." id="chatInput">
+        <button onclick="sendChat()">Send</button>
+      </div>
+    </div>
   </div>
 
   <!-- TEAM TAB -->
   <div class="app-content" id="tab-team">
     <h3 style="margin-bottom:1rem;">Invite & Earn</h3>
     <div class="ref-box">
-      <p style="font-size:0.85rem; color:#fff; margin-bottom:0.5rem;">Your Referral Link</p>
+      <p style="font-size:0.85rem; color:#111827; margin-bottom:0.5rem; font-weight:bold;">Your Referral Link</p>
       <div class="ref-link" id="refLink">Loading...</div>
       <button class="btn-primary" id="copyRefBtn" style="margin-top:0.5rem; font-size:0.85rem; padding:0.7rem;">Copy Link</button>
-      <p style="font-size:0.75rem; color:#a0aabf; margin-top:1rem; line-height:1.4;">Earn 10% commission when direct referrals deposit.</p>
+      <p style="font-size:0.75rem; color:#6b7280; margin-top:1rem; line-height:1.4;">Earn 10% commission when direct referrals deposit.</p>
     </div>
     <div class="profile-stat">
       <span>Team Commission</span>
-      <strong style="color:#16c784;" id="teamCommission">$0.00</strong>
+      <strong style="color:#10b981;" id="teamCommission">$0.00</strong>
     </div>
-    <h4 style="margin:1.5rem 0 0.5rem; font-size:0.9rem; color:#a0aabf;">Your Direct Referrals</h4>
+    <h4 style="margin:1.5rem 0 0.5rem; font-size:0.9rem; color:#6b7280;">Your Direct Referrals</h4>
     <div id="refListContainer" style="font-size:0.85rem;">Loading...</div>
   </div>
 
@@ -216,15 +252,15 @@
         <span>FUND ACCOUNT</span>
       </div>
       <div class="action-item" onclick="document.getElementById('withdrawBtn').click()">
-        <div class="action-icon" style="color:#ea3943; border-color:rgba(234,57,67,0.3); background:rgba(234,57,67,0.1);">↑</div>
+        <div class="action-icon">↑</div>
         <span>WITHDRAW</span>
       </div>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
-        <div class="action-icon" style="color:#6b46c1; border-color:rgba(107,70,193,0.3); background:rgba(107,70,193,0.1);">💬</div>
+        <div class="action-icon">💬</div>
         <span>SERVICE</span>
       </a>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
-        <div class="action-icon" style="color:#3b82f6; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.1);">✈️</div>
+        <div class="action-icon">✈️</div>
         <span>GROUP</span>
       </a>
     </div>
@@ -236,7 +272,7 @@
         <div class="menu-arrow">›</div>
       </div>
       <div class="menu-item">
-        <div class="menu-icon" style="color:#16c784; background:rgba(22,199,132,0.1);">🔒</div>
+        <div class="menu-icon">🔒</div>
         <div class="menu-text">
           <strong>BIND ACCOUNT</strong>
           <span id="profPhone">Loading...</span>
@@ -272,7 +308,7 @@
   </div>
 
   <div id="historyList" style="max-height: 60vh; overflow-y: auto;">
-    <div style="text-align:center; padding:2rem; color:#a0aabf;">Loading...</div>
+    <div style="text-align:center; padding:2rem; color:#6b7280;">Loading...</div>
   </div>
 </dialog>
 
@@ -291,12 +327,12 @@
 
     <div id="deposit-crypto">
       <div class="deposit-grid" id="depositGrid"></div>
-      <hr style="border:0; border-top:1px solid #1a2636; margin: 1.5rem 0;">
+      <hr style="border:0; border-top:1px solid #e5e7eb; margin: 1.5rem 0;">
       <div class="field">
         <label>Binance Wallet (BEP20)</label>
         <div style="display:flex; gap:0.5rem;">
-          <input type="text" id="binanceAddress" value="YOUR_BINANCE_ADDRESS_HERE" readonly style="font-family:monospace;">
-          <button class="btn" onclick="navigator.clipboard.writeText('YOUR_BINANCE_ADDRESS_HERE');this.textContent='Copied';" style="background:#1a2636; color:#fff; border:none; padding:0 1rem; border-radius:8px;">Copy</button>
+          <input type="text" id="binanceAddress" value="YOUR_BINANCE_ADDRESS_HERE" readonly style="font-family:monospace; background:#f9fafb;">
+          <button class="btn" onclick="navigator.clipboard.writeText('YOUR_BINANCE_ADDRESS_HERE');this.textContent='Copied';" style="background:#ec4899; color:#fff; border:none; padding:0 1rem; border-radius:8px;">Copy</button>
         </div>
       </div>
       <form id="depositForm" style="display:none; flex-direction:column; gap:1rem; margin-top:1rem;">
@@ -311,7 +347,7 @@
       <div class="field">
         <label>Amount (USD) to Deposit</label>
         <input type="number" id="momoUsdAmount" min="50" step="1" placeholder="Min $50" oninput="calcLocalAmount()">
-        <p style="font-size:0.75rem; color:#a0aabf; margin-top:0.4rem;">You will pay: <strong id="localAmountDisplay" style="color:#00d2ff;">0</strong> <span id="localCurrency"></span></p>
+        <p style="font-size:0.75rem; color:#6b7280; margin-top:0.4rem;">You will pay: <strong id="localAmountDisplay" style="color:#ec4899;">0</strong> <span id="localCurrency"></span></p>
       </div>
       <div class="field">
         <label>Phone Number (with Country Code)</label>
@@ -331,7 +367,7 @@
       <div class="field"><label>Amount (USD)</label><input type="number" id="withdrawAmount" min="50" placeholder="Min $50" required></div>
       <div class="field"><label>Provider</label><select id="mmProvider"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
       <div class="field"><label>Phone Number</label><input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required></div>
-      <button type="submit" class="btn-primary" style="background:#ea3943; color:#fff;">Request Withdrawal</button>
+      <button type="submit" class="btn-primary" style="background:#111827;">Request Withdrawal</button>
     </form>
     <p class="form-msg" id="withdrawMsg"></p>
   </div>
@@ -375,7 +411,7 @@
     document.getElementById('tab-' + tab).classList.add('active');
     if (el) el.classList.add('active');
     if (tab === 'trade' && chart) {
-      setTimeout(() => chart.resize(document.getElementById('tvchart').clientWidth, 240), 50);
+      setTimeout(() => chart.resize(document.getElementById('tvchart').clientWidth, 300), 50);
     }
   };
 
@@ -389,18 +425,19 @@
     return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  // --- PINK & WHITE CHART ---
   function initLiveChart() {
     const chartEl = document.getElementById('tvchart');
     if (!chartEl) return;
     chart = LightweightCharts.createChart(chartEl, {
-      width: chartEl.clientWidth, height: 240,
-      layout: { background: { color: '#0a111a' }, textColor: '#a0aabf' },
-      grid: { vertLines: { color: '#1a2636' }, horzLines: { color: '#1a2636' } },
-      rightPriceScale: { borderColor: '#1a2636' },
-      timeScale: { borderColor: '#1a2636', timeVisible: true, secondsVisible: true },
+      width: chartEl.clientWidth, height: 300,
+      layout: { background: { color: '#ffffff' }, textColor: '#6b7280' }, // White background, gray text
+      grid: { vertLines: { color: '#f3f4f6' }, horzLines: { color: '#f3f4f6' } }, // Light gray grid
+      rightPriceScale: { borderColor: '#e5e7eb' },
+      timeScale: { borderColor: '#e5e7eb', timeVisible: true, secondsVisible: true },
     });
     candleSeries = chart.addCandlestickSeries({
-      upColor: '#16c784', downColor: '#ea3943', wickUpColor: '#16c784', wickDownColor: '#ea3943', borderVisible: false
+      upColor: '#ec4899', downColor: '#9d174d', wickUpColor: '#ec4899', wickDownColor: '#9d174d', borderVisible: false
     });
     const data = [];
     let time = Math.floor(Date.now() / 1000) - (50 * 60);
@@ -458,6 +495,7 @@
       renderUI();
       initLiveChart();
       updateTickerPrices(lastPrice);
+      checkTradeTime(); // Check if it's time to trade
     })
     .catch(err => {
       console.error('Init error:', err);
@@ -481,24 +519,22 @@
           <div class="plan-info">
             <h4>${t.name}</h4>
             <p>$${t.amount} Deposit</p>
-            <p style="margin-top:0.3rem; font-size:0.7rem; color:#00d2ff;">Signals: ${t.slots.join(', ')}</p>
+            <p style="margin-top:0.3rem; font-size:0.7rem; color:#ec4899;">Signals: ${t.slots.join(', ')}</p>
           </div>
           <div class="plan-return"><strong>$${t.profit}</strong><span>Est. Daily</span></div>
         </div>
       `;
     }).join('');
 
-    renderSignals(dep);
-
     document.getElementById('refLink').textContent = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
     document.getElementById('teamCommission').textContent = formatMoney(p.team_commission || 0);
     
     TN.client.from('profiles').select('full_name, deposit_amount').eq('referred_by', currentUser.id).then(res => {
       const list = document.getElementById('refListContainer');
-      if (!res.data || res.data.length === 0) { list.innerHTML = '<div style="color:#a0aabf; padding:1rem 0;">No referrals yet.</div>'; return; }
+      if (!res.data || res.data.length === 0) { list.innerHTML = '<div style="color:#6b7280; padding:1rem 0;">No referrals yet.</div>'; return; }
       list.innerHTML = res.data.map(r => `<div class="profile-stat"><span>${r.full_name || 'User'}</span><strong>$${r.deposit_amount} deposited</strong></div>`).join('');
     }).catch(() => {
-      document.getElementById('refListContainer').innerHTML = '<div style="color:#a0aabf; padding:1rem 0;">Could not load referrals.</div>';
+      document.getElementById('refListContainer').innerHTML = '<div style="color:#6b7280; padding:1rem 0;">Could not load referrals.</div>';
     });
 
     document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Trader';
@@ -517,6 +553,82 @@
     }
   }
 
+  // --- TRADE LOGIC & TIME CHECK ---
+  function checkTradeTime() {
+    const tier = getUserTier(Number(currentProfile.deposit_amount || 0));
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    
+    const slots = ['8AM', '3PM', '5PM', '8PM'];
+    let isTime = false;
+    let activeSlot = '';
+
+    slots.forEach(slot => {
+      if (!tier.slots.includes(slot)) return;
+      
+      let signalHour = 0;
+      if (slot === '8AM') signalHour = 8;
+      if (slot === '3PM') signalHour = 15;
+      if (slot === '5PM') signalHour = 17;
+      if (slot === '8PM') signalHour = 20;
+
+      if (currentHour === signalHour && currentMinute < 10) {
+        isTime = true;
+        activeSlot = slot;
+      }
+    });
+
+    const actionBox = document.getElementById('tradeActionContainer');
+    const actionTitle = document.getElementById('tradeActionTitle');
+
+    if (isTime) {
+      actionBox.style.display = 'block';
+      actionTitle.textContent = `Trade Open for ${activeSlot}!`;
+    } else {
+      actionBox.style.display = 'none';
+    }
+  }
+  
+  // Check every minute if the trade window opened
+  setInterval(() => {
+    if (currentProfile) checkTradeTime();
+  }, 60000);
+
+  window.placeTrade = function(slot, choice) {
+    if (!confirm(`Confirm ${choice} trade?`)) return;
+    TN.client.from('trades').insert({ user_id: currentUser.id, signal_time: slot, user_choice: choice, result: 'PENDING' })
+    .then(res => { if (res.error) throw res.error; alert('Trade placed!'); })
+    .catch(err => alert(err.message));
+  };
+
+  // --- CHAT LOGIC (UI ONLY FOR NOW) ---
+  window.sendChat = function() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    const chatBox = document.getElementById('chatMessages');
+    
+    // Add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg msg-user';
+    userMsg.textContent = text;
+    chatBox.appendChild(userMsg);
+    
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Simulate a bot reply after 1 second
+    setTimeout(() => {
+      const botMsg = document.createElement('div');
+      botMsg.className = 'msg msg-bot';
+      botMsg.textContent = "Message received. An admin will be with you shortly.";
+      chatBox.appendChild(botMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 1000);
+  };
+
   // --- HISTORY LOGIC ---
   window.openHistory = function() {
     document.getElementById('historyDialog').showModal();
@@ -524,7 +636,7 @@
   };
 
   function fetchHistory() {
-    document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#a0aabf;">Loading...</div>';
+    document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#6b7280;">Loading...</div>';
     
     TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).then(res => {
       userDeposits = res.data || [];
@@ -533,7 +645,7 @@
       userWithdrawals = res.data || [];
       renderHistory();
     }).catch(err => {
-      document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#ea3943;">Failed to load history.</div>';
+      document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Failed to load history.</div>';
     });
   }
 
@@ -550,7 +662,7 @@
     let type = currentHistoryTab === 'deposits' ? 'Deposit' : 'Withdrawal';
 
     if (data.length === 0) {
-      list.innerHTML = '<div style="text-align:center; color:#a0aabf; padding:2rem 0;">No transactions yet.</div>';
+      list.innerHTML = '<div style="text-align:center; color:#6b7280; padding:2rem 0;">No transactions yet.</div>';
       return;
     }
 
@@ -570,7 +682,7 @@
       }
 
       let amountDisplay = type === 'Deposit' ? `+$${item.amount_usd}` : `-$${item.amount_usd}`;
-      let amountClass = type === 'Deposit' ? 'color:#16c784;' : 'color:#ea3943;';
+      let amountClass = type === 'Deposit' ? 'color:#10b981;' : 'color:#ef4444;';
       let date = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
       return `
@@ -615,8 +727,8 @@
     const btn = document.getElementById('momoSubmitBtn');
     const country = currentProfile.country || 'UG';
 
-    if (usdAmount < 50) { msg.style.color = '#ea3943'; msg.textContent = 'Minimum deposit is $50.'; return; }
-    if (!phone || phone.length < 9) { msg.style.color = '#ea3943'; msg.textContent = 'Enter a valid phone number.'; return; }
+    if (usdAmount < 50) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is $50.'; return; }
+    if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
 
     const rate = EXCHANGE_RATES[country] || 3800;
     const localAmount = Math.round(usdAmount * rate);
@@ -633,70 +745,15 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to initiate payment');
 
-      msg.style.color = '#16c784';
+      msg.style.color = '#10b981';
       msg.textContent = 'USSD prompt sent! Check your phone to approve.';
       
       await TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: data.reference, amount_usd: usdAmount });
       setTimeout(() => { btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }, 3000);
     } catch (err) {
-      msg.style.color = '#ea3943'; msg.textContent = err.message;
+      msg.style.color = '#ef4444'; msg.textContent = err.message;
       btn.disabled = false; btn.textContent = 'Pay via Mobile Money';
     }
-  };
-
-  function renderSignals(deposit) {
-    const tier = getUserTier(deposit);
-    const allSlots = ['8AM', '3PM', '5PM', '8PM'];
-    let html = '';
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-
-    allSlots.forEach(slot => {
-      const isUnlocked = tier.slots.includes(slot);
-      const trade = userTradesToday.find(t => t.signal_time === slot);
-      let actionHtml = ''; let statusPill = '';
-
-      if (!isUnlocked) {
-        statusPill = `<span class="status-pill" style="background:#1a2636; color:#a0aabf;">Locked</span>`;
-        actionHtml = `<div style="color:#a0aabf; font-weight:bold; text-align:center; padding:0.8rem; font-size:0.8rem;">Upgrade your plan to access this signal.</div>`;
-      } else if (trade) {
-        if (trade.result === 'PENDING') {
-          statusPill = `<span class="status-pill" style="background:rgba(0,210,255,0.1); color:#00d2ff;">Pending</span>`;
-          actionHtml = `<div style="color:#00d2ff; font-weight:bold; text-align:center; padding:0.8rem;">Waiting for result...</div>`;
-        } else if (trade.result === 'WIN') {
-          statusPill = `<span class="status-pill" style="background:rgba(22,199,132,0.1); color:#16c784;">Won</span>`;
-          actionHtml = `<div style="color:#16c784; font-weight:bold; text-align:center; padding:0.8rem;">WON +$${trade.profit_usd}</div>`;
-        } else {
-          statusPill = `<span class="status-pill" style="background:rgba(234,57,67,0.1); color:#ea3943;">Lost</span>`;
-          actionHtml = `<div style="color:#ea3943; font-weight:bold; text-align:center; padding:0.8rem;">LOST</div>`;
-        }
-      } else {
-        let signalHour = 0;
-        if (slot === '8AM') signalHour = 8;
-        if (slot === '3PM') signalHour = 15;
-        if (slot === '5PM') signalHour = 17;
-        if (slot === '8PM') signalHour = 20;
-        const isTradeWindow = (currentHour === signalHour && currentMinute < 10);
-
-        if (isTradeWindow) {
-          statusPill = `<span class="status-pill" style="background:rgba(22,199,132,0.1); color:#16c784;">OPEN</span>`;
-          actionHtml = `<div class="trade-btns"><button class="btn-trade btn-up" onclick="placeTrade('${slot}', 'UP')">UP</button><button class="btn-trade btn-down" onclick="placeTrade('${slot}', 'DOWN')">DOWN</button></div>`;
-        } else {
-          statusPill = `<span class="status-pill" style="background:#1a2636; color:#a0aabf;">Closed</span>`;
-          actionHtml = `<div style="color:#a0aabf; font-weight:bold; text-align:center; padding:0.8rem; font-size:0.8rem;">Market closed. Wait for ${slot}.</div>`;
-        }
-      }
-      html += `<div class="signal-box"><div class="signal-header"><strong>${slot} Signal</strong>${statusPill}</div>${actionHtml}</div>`;
-    });
-    document.getElementById('signalsContainer').innerHTML = html;
-  }
-
-  window.placeTrade = function(slot, choice) {
-    if (!confirm(`Confirm ${choice} trade for ${slot} signal?`)) return;
-    TN.client.from('trades').insert({ user_id: currentUser.id, signal_time: slot, user_choice: choice, result: 'PENDING' })
-    .then(res => { if (res.error) throw res.error; window.location.reload(); })
-    .catch(err => alert(err.message));
   };
 
   document.getElementById('depositBtn').addEventListener('click', () => {
@@ -718,7 +775,7 @@
       user_id: currentUser.id, txid: document.getElementById('depositTxidInput').value.trim(), amount_usd: parseFloat(document.getElementById('selectedAmount').value)
     }).then(res => {
       if (res.error) throw res.error;
-      document.getElementById('depositMsg').style.color = '#16c784';
+      document.getElementById('depositMsg').style.color = '#10b981';
       document.getElementById('depositMsg').textContent = 'Submitted! Admin will verify.';
     }).catch(err => alert(err.message));
   });
@@ -737,7 +794,7 @@
       user_id: currentUser.id, amount_usd: amt, mobile_money_provider: document.getElementById('mmProvider').value, mobile_money_number: document.getElementById('mmNumber').value
     }).then(res => {
       if (res.error) throw res.error;
-      document.getElementById('withdrawMsg').style.color = '#16c784';
+      document.getElementById('withdrawMsg').style.color = '#10b981';
       document.getElementById('withdrawMsg').textContent = 'Submitted!';
     }).catch(err => alert(err.message));
   });
