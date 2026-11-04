@@ -36,10 +36,15 @@
   .btn-approve { background: #10b981; }
   .btn-reject { background: #ef4444; margin-left: 0.5rem; }
   
-  .tier-group { margin-bottom: 2rem; }
-  .tier-title { font-size: 1.1rem; font-weight: 700; color: #ec4899; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-  .tier-badge { background: #fdf2f8; color: #ec4899; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+  .country-group { margin-bottom: 2rem; }
+  .country-title { font-size: 1.1rem; font-weight: 800; color: #111827; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid #ec4899; padding-bottom: 0.3rem; display: inline-block; }
+  .country-badge { background: #fdf2f8; color: #ec4899; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; vertical-align: middle; }
   .empty-state { padding: 2rem; text-align: center; color: #6b7280; background: #ffffff; border-radius: 12px; border: 1px dashed #e5e7eb; }
+  
+  /* Status Badges */
+  .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+  .status-active { background: #d1fae5; color: #065f46; }
+  .status-inactive { background: #f3f4f6; color: #6b7280; }
 </style>
 </head>
 <body>
@@ -50,7 +55,6 @@
 </header>
 
 <main class="wrap">
-  <!-- KPIs -->
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-val" id="kpiUsers">-</div>
@@ -66,13 +70,11 @@
     </div>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('pending')">Pending Actions</button>
-    <button class="tab-btn" onclick="switchTab('users')">All Users</button>
+    <button class="tab-btn" onclick="switchTab('users')">Users by Country</button>
   </div>
 
-  <!-- TAB 1: Pending Actions -->
   <div id="tab-pending">
     <h3 style="margin-bottom:0.5rem; color:#111827;">Pending Crypto Deposits (Manual)</h3>
     <div id="depositsContainer" class="empty-state">Loading...</div>
@@ -81,11 +83,9 @@
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
 
-  <!-- TAB 2: All Users -->
   <div id="tab-users" style="display:none;">
     <div id="usersContainer">Loading users...</div>
   </div>
-
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -122,12 +122,10 @@
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
-    
     document.getElementById('tab-pending').style.display = tab === 'pending' ? 'block' : 'none';
     document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
   };
 
-  // --- KPIs ---
   function fetchKPIs() {
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
@@ -144,7 +142,6 @@
     });
   }
 
-  // --- PENDING DEPOSITS (MANUAL CRYPTO) ---
   function loadDeposits() {
     TN.client.from('pending_deposits')
       .select('*, profiles(full_name, email)')
@@ -152,9 +149,7 @@
       .order('created_at', { ascending: false })
       .then(res => {
         const container = document.getElementById('depositsContainer');
-        if (!res.data || res.data.length === 0) {
-          container.innerHTML = 'No pending crypto deposits.'; return;
-        }
+        if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending crypto deposits.'; return; }
 
         let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
         res.data.forEach(d => {
@@ -177,7 +172,6 @@
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
       
-      // ADD TO BALANCE (Wallet), NOT DEPOSIT_AMOUNT (Plan)
       const newBalance = Number(profile.balance_usd || 0) + Number(amount);
       const newTotalDeposited = Number(profile.total_deposited || 0) + Number(amount);
 
@@ -199,7 +193,6 @@
     loadDeposits();
   };
 
-  // --- PENDING WITHDRAWALS ---
   function loadWithdrawals() {
     TN.client.from('withdrawal_requests')
       .select('*, profiles(full_name, email)')
@@ -207,9 +200,7 @@
       .order('created_at', { ascending: false })
       .then(res => {
         const container = document.getElementById('withdrawalsContainer');
-        if (!res.data || res.data.length === 0) {
-          container.innerHTML = 'No pending withdrawals.'; return;
-        }
+        if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
 
         let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
         res.data.forEach(w => {
@@ -253,9 +244,9 @@
     loadWithdrawals();
   };
 
-  // --- ALL USERS (GROUPED) ---
+  // --- USERS GROUPED BY COUNTRY ---
   function loadUsers() {
-    TN.client.from('profiles').select('*').order('deposit_amount', { ascending: false }).then(res => {
+    TN.client.from('profiles').select('*').order('created_at', { ascending: false }).then(res => {
       if (!res.data) return;
       allUsers = res.data;
       renderGroupedUsers();
@@ -266,47 +257,40 @@
     const container = document.getElementById('usersContainer');
     container.innerHTML = '';
 
-    const groups = {
-      'VIP ($5000+)': [],
-      'Tier 7 ($2000 - $4999)': [],
-      'Tier 6 ($1000 - $1999)': [],
-      'Tier 5 ($500 - $999)': [],
-      'Tier 4 ($300 - $499)': [],
-      'Tier 3 ($200 - $299)': [],
-      'Tier 2 ($100 - $199)': [],
-      'Tier 1 ($50 - $99)': [],
-      'No Active Plan': []
-    };
+    // Group users by country
+    const groups = {};
 
     allUsers.forEach(u => {
-      const dep = Number(u.deposit_amount || 0);
-      if (dep >= 5000) groups['VIP ($5000+)'].push(u);
-      else if (dep >= 2000) groups['Tier 7 ($2000 - $4999)'].push(u);
-      else if (dep >= 1000) groups['Tier 6 ($1000 - $1999)'].push(u);
-      else if (dep >= 500) groups['Tier 5 ($500 - $999)'].push(u);
-      else if (dep >= 300) groups['Tier 4 ($300 - $499)'].push(u);
-      else if (dep >= 200) groups['Tier 3 ($200 - $299)'].push(u);
-      else if (dep >= 100) groups['Tier 2 ($100 - $199)'].push(u);
-      else if (dep >= 50) groups['Tier 1 ($50 - $99)'].push(u);
-      else groups['No Active Plan'].push(u);
+      const country = u.country || 'Unknown';
+      if (!groups[country]) groups[country] = [];
+      groups[country].push(u);
     });
 
     let html = '';
-    for (const [tierName, users] of Object.entries(groups)) {
-      if (users.length === 0) continue;
+    
+    // Loop through each country group
+    for (const [countryName, users] of Object.entries(groups)) {
       
-      html += `<div class="tier-group">
-        <div class="tier-title">${tierName} <span class="tier-badge">${users.length} users</span></div>
+      html += `<div class="country-group">
+        <div class="country-title">${countryName} <span class="country-badge">${users.length} users</span></div>
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Active Plan</th><th>Wallet Bal</th></tr></thead><tbody>`;
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Wallet</th><th>Status</th></tr></thead><tbody>`;
       
       users.forEach(u => {
+        const dep = Number(u.deposit_amount || 0);
+        const isActive = dep > 0;
+        
+        const statusHtml = isActive 
+          ? `<span class="status-badge status-active">Active</span>`
+          : `<span class="status-badge status-inactive">Inactive</span>`;
+
         html += `<tr>
           <td>${u.full_name || 'N/A'}</td>
           <td>${u.email}</td>
           <td>${u.phone || 'N/A'}</td>
-          <td style="color:#ec4899; font-weight:bold;">$${u.deposit_amount}</td>
+          <td style="color:#ec4899; font-weight:bold;">$${dep}</td>
           <td style="color:#10b981; font-weight:bold;">$${u.balance_usd}</td>
+          <td>${statusHtml}</td>
         </tr>`;
       });
       
