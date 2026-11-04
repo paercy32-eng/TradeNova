@@ -3,57 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1120">
 <title>Admin Dashboard — Nova Trade</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: #f9fafb; color: #111827; padding-bottom: 2rem; }
+  body { background: #0b1120; color: #ffffff; padding-bottom: 2rem; }
   
-  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.5rem; }
-  .brand { font-weight: 800; font-size: 1.2rem; color: #111827; }
-  .brand span { color: #ec4899; }
-  .btn-logout { background: #fdf2f8; border: 1px solid #fbcfe8; color: #ec4899; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #0f172a; border-bottom: 1px solid #1e293b; margin-bottom: 1.5rem; }
+  .brand { font-weight: 800; font-size: 1.2rem; color: #ffffff; }
+  .brand span { color: #10b981; }
+  .btn-logout { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
 
-  .wrap { padding: 0 1.15rem; max-width: 1000px; margin: 0 auto; }
+  .wrap { padding: 0 1.15rem; max-width: 800px; margin: 0 auto; }
   
+  /* Tabs */
+  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; }
+  .tab-btn { background: none; border: none; color: #94a3b8; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
+  .tab-btn.active { background: #1e293b; color: #10b981; }
+
   /* KPI Cards */
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
-  .kpi-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-  .kpi-val { font-size: 1.3rem; font-weight: 800; color: #ec4899; margin-bottom: 0.2rem; }
-  .kpi-lbl { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; font-weight: bold; }
+  .kpi-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 1rem; text-align: center; }
+  .kpi-val { font-size: 1.3rem; font-weight: 800; color: #10b981; margin-bottom: 0.2rem; }
+  .kpi-lbl { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
 
   /* Signal Generator Box */
-  .signal-box { background: #fdf2f8; border: 1px solid #fbcfe8; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; }
-  .signal-box h3 { color: #ec4899; margin-bottom: 0.5rem; }
-  .signal-box p { color: #6b7280; font-size: 0.85rem; margin-bottom: 1rem; }
+  .signal-box { background: #0f172a; border: 1px solid #1e293b; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; }
+  .signal-box h3 { color: #ffffff; margin-bottom: 0.5rem; }
+  .signal-box p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem; }
   .signal-btns { display: flex; gap: 1rem; justify-content: center; }
   .btn-signal { padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; color: #fff; }
   .btn-sig-up { background: #10b981; }
   .btn-sig-down { background: #ef4444; }
 
-  /* Tabs */
-  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; }
-  .tab-btn { background: none; border: none; color: #6b7280; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
-  .tab-btn.active { background: #fdf2f8; color: #ec4899; }
-
-  /* Tables */
-  .data-table { width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border: 1px solid #e5e7eb; }
-  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 0.85rem; }
-  .data-table th { background: #f9fafb; color: #6b7280; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
-  .data-table tr:last-child td { border-bottom: none; }
-  
+  /* Tables for Pending */
+  .data-table { width: 100%; border-collapse: collapse; background: #0f172a; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; border: 1px solid #1e293b; }
+  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #1e293b; font-size: 0.85rem; }
+  .data-table th { background: #0b1120; color: #94a3b8; text-transform: uppercase; font-size: 0.7rem; }
   .action-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: #fff; }
   .btn-approve { background: #10b981; }
   .btn-reject { background: #ef4444; margin-left: 0.5rem; }
+  .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #0f172a; border-radius: 12px; border: 1px dashed #1e293b; }
+
+  /* --- MANAGE USERS LAYOUT --- */
+  .search-bar { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; align-items: center; padding: 0 1rem; margin-bottom: 1rem; }
+  .search-bar input { background: transparent; border: none; padding: 1rem 0.5rem; color: #fff; width: 100%; outline: none; font-size: 0.95rem; }
+  .search-bar svg { stroke: #64748b; }
   
-  .country-group { margin-bottom: 2rem; }
-  .country-title { font-size: 1.1rem; font-weight: 800; color: #111827; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid #ec4899; padding-bottom: 0.3rem; display: inline-block; }
-  .country-badge { background: #fdf2f8; color: #ec4899; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; vertical-align: middle; }
-  .empty-state { padding: 2rem; text-align: center; color: #6b7280; background: #ffffff; border-radius: 12px; border: 1px dashed #e5e7eb; }
+  .country-filters { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 0.5rem; scrollbar-width: none; }
+  .country-filters::-webkit-scrollbar { display: none; }
+  .filter-pill { background: #0f172a; border: 1px solid #1e293b; padding: 0.6rem 1rem; border-radius: 20px; color: #94a3b8; font-size: 0.85rem; font-weight: bold; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 0.4rem; }
+  .filter-pill.active { background: #10b981; color: #fff; border-color: #10b981; }
   
-  /* Status Badges */
-  .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
-  .status-active { background: #d1fae5; color: #065f46; }
-  .status-inactive { background: #f3f4f6; color: #6b7280; }
+  /* User Cards */
+  .user-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+  .user-details { display: flex; flex-direction: column; gap: 0.3rem; }
+  .user-name { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
+  .user-phone { font-size: 0.85rem; color: #64748b; font-family: monospace; }
+  .user-email { font-size: 0.75rem; color: #64748b; }
+  
+  .user-financials { text-align: right; display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+  .user-balance { font-size: 1.1rem; font-weight: 800; color: #10b981; }
+  .user-meta { display: flex; gap: 0.4rem; align-items: center; }
+  .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
+  .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+  .status-inactive { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+  .country-code-badge { border: 1px solid #334155; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; color: #94a3b8; }
 </style>
 </head>
 <body>
@@ -64,29 +79,28 @@
 </header>
 
 <main class="wrap">
-  <div class="kpi-grid">
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpiUsers">-</div>
-      <div class="kpi-lbl">Total Users</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpiDeposits" style="color:#10b981;">-</div>
-      <div class="kpi-lbl">Total Deposited</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpiWithdrawals" style="color:#ef4444;">-</div>
-      <div class="kpi-lbl">Total Withdrawn</div>
-    </div>
-  </div>
-
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('pending')">Pending Actions</button>
-    <button class="tab-btn" onclick="switchTab('users')">Users by Country</button>
+    <button class="tab-btn" onclick="switchTab('users')">Manage Users</button>
   </div>
 
+  <!-- ================= TAB 1: PENDING ACTIONS ================= -->
   <div id="tab-pending">
-    
-    <!-- SIGNAL GENERATOR -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpiUsers">-</div>
+        <div class="kpi-lbl">Users</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpiDeposits">-</div>
+        <div class="kpi-lbl">Deposited</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" id="kpiWithdrawals" style="color:#ef4444;">-</div>
+        <div class="kpi-lbl">Withdrawn</div>
+      </div>
+    </div>
+
     <div class="signal-box">
       <h3>Generate Live Signal</h3>
       <p>Select the winning direction. All PENDING trades will be resolved instantly.</p>
@@ -96,16 +110,38 @@
       </div>
     </div>
 
-    <h3 style="margin-bottom:0.5rem; color:#111827;">Pending Crypto Deposits (Manual)</h3>
+    <h3 style="margin-bottom:1rem; color:#fff;">Pending Crypto Deposits</h3>
     <div id="depositsContainer" class="empty-state">Loading...</div>
 
-    <h3 style="margin-top:2rem; margin-bottom:0.5rem; color:#111827;">Pending Withdrawals</h3>
+    <h3 style="margin-top:2rem; margin-bottom:1rem; color:#fff;">Pending Withdrawals</h3>
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
 
+  <!-- ================= TAB 2: MANAGE USERS ================= -->
   <div id="tab-users" style="display:none;">
-    <div id="usersContainer">Loading users...</div>
+    
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" placeholder="Search by phone number or name..." oninput="renderUserCards()">
+    </div>
+
+    <div class="country-filters" id="countryFilters">
+      <div class="filter-pill active" onclick="filterCountry('ALL', this)">🌍 All</div>
+      <div class="filter-pill" onclick="filterCountry('UG', this)">🇺🇬 Uganda</div>
+      <div class="filter-pill" onclick="filterCountry('KE', this)">🇰🇪 Kenya</div>
+      <div class="filter-pill" onclick="filterCountry('RW', this)">🇷🇼 Rwanda</div>
+      <div class="filter-pill" onclick="filterCountry('ZM', this)">🇿🇲 Zambia</div>
+      <div class="filter-pill" onclick="filterCountry('CM', this)">🇨🇲 Cameroon</div>
+      <div class="filter-pill" onclick="filterCountry('TZ', this)">🇹🇿 Tanzania</div>
+      <div class="filter-pill" onclick="filterCountry('NG', this)">🇳🇬 Nigeria</div>
+      <div class="filter-pill" onclick="filterCountry('GH', this)">🇬🇭 Ghana</div>
+    </div>
+
+    <div id="userCardsContainer">
+      <div class="empty-state">Loading users...</div>
+    </div>
   </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -115,8 +151,13 @@
   'use strict';
 
   let allUsers = [];
+  let currentFilter = 'ALL';
+  let searchQuery = '';
   
-  // Must match the tiers in dashboard.html to calculate payouts correctly
+  // Exchange rates from dashboard logic
+  const EXCHANGE_RATES = { UG: 4102, KE: 129.89, RW: 1472, ZM: 20.27, CM: 582.68, TZ: 2600, NG: 1500, GH: 14.50, ZA: 18.50 };
+  const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF', TZ: 'TZS', NG: 'NGN', GH: 'GHS', ZA: 'ZAR' };
+
   const TIERS = [
     { amount: 10,   profit: 1.5 },
     { amount: 30,   profit: 2.5 },
@@ -175,91 +216,64 @@
     });
   }
 
-  // --- SIGNAL RESOLUTION LOGIC ---
+  // --- SIGNAL RESOLUTION ---
   window.resolveTrades = async function(direction) {
     if (!confirm(`Are you sure the signal was ${direction}? This will payout all matching pending trades.`)) return;
-    
-    // 1. Fetch all pending trades
     const { data: pending, error } = await TN.client.from('trades').select('*, profiles(deposit_amount)').eq('result', 'PENDING');
-    
     if (error) return alert(error.message);
     if (!pending || pending.length === 0) return alert('No pending trades found for this round.');
 
-    let wins = 0;
-    let losses = 0;
-
-    // 2. Loop through and process each trade
+    let wins = 0; let losses = 0;
     for (let trade of pending) {
       const isWin = (trade.user_choice === direction);
       let profit = 0;
-
       if (isWin) {
-        // Find user's tier based on their active deposit_amount
         const dep = Number(trade.profiles.deposit_amount || 0);
-        let tier = TIERS.slice().reverse().find(t => dep >= t.amount); // Get highest matching tier
-        
+        let tier = TIERS.slice().reverse().find(t => dep >= t.amount);
         if (tier) {
           profit = tier.profit;
-          // Add profit to balance
           const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', trade.user_id).single();
           await TN.client.from('profiles').update({ balance_usd: Number(profile.balance_usd) + profit }).eq('id', trade.user_id);
         }
         wins++;
-      } else {
-        losses++;
-      }
-
-      // Update the trade record
+      } else { losses++; }
       await TN.client.from('trades').update({ result: isWin ? 'WIN' : 'LOSS', profit_usd: profit }).eq('id', trade.id);
     }
-
     alert(`Signal Resolved!\nWins: ${wins}\nLosses: ${losses}`);
-    loadUsers(); // Refresh balances
+    loadUsers();
   };
 
   // --- PENDING DEPOSITS ---
   function loadDeposits() {
-    TN.client.from('pending_deposits')
-      .select('*, profiles(full_name, email)')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false })
-      .then(res => {
-        const container = document.getElementById('depositsContainer');
-        if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending crypto deposits.'; return; }
-
-        let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
-        res.data.forEach(d => {
-          html += `<tr>
-            <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
-            <td style="font-weight:bold; color:#10b981;">$${d.amount_usd}</td>
-            <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
-            <td>
-              <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
-              <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
-            </td>
-          </tr>`;
-        });
-        container.innerHTML = html + '</tbody></table>';
+    TN.client.from('pending_deposits').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
+      const container = document.getElementById('depositsContainer');
+      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending crypto deposits.'; return; }
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
+      res.data.forEach(d => {
+        html += `<tr>
+          <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
+          <td style="font-weight:bold; color:#10b981;">$${d.amount_usd}</td>
+          <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
+          <td>
+            <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
+            <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
+          </td>
+        </tr>`;
       });
+      container.innerHTML = html + '</tbody></table>';
+    });
   }
 
   window.approveDeposit = async function(depositId, userId, amount) {
     if (!confirm(`Confirm $${amount} received in Binance?`)) return;
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
-      
-      const newBalance = Number(profile.balance_usd || 0) + Number(amount);
-      const newTotalDeposited = Number(profile.total_deposited || 0) + Number(amount);
-
       await TN.client.from('profiles').update({ 
-        balance_usd: newBalance,
-        total_deposited: newTotalDeposited
+        balance_usd: Number(profile.balance_usd || 0) + Number(amount),
+        total_deposited: Number(profile.total_deposited || 0) + Number(amount)
       }).eq('id', userId);
-
       await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
-      
-      alert('Approved!'); 
-      fetchKPIs(); loadDeposits(); loadUsers();
+      alert('Approved!'); fetchKPIs(); loadDeposits(); loadUsers();
     } catch (err) { alert(err.message); }
   };
 
@@ -271,47 +285,35 @@
 
   // --- PENDING WITHDRAWALS ---
   function loadWithdrawals() {
-    TN.client.from('withdrawal_requests')
-      .select('*, profiles(full_name, email)')
-      .eq('status', 'pending')
-      .order('created_at', { ascending: false })
-      .then(res => {
-        const container = document.getElementById('withdrawalsContainer');
-        if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
-
-        let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
-        res.data.forEach(w => {
-          html += `<tr>
-            <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
-            <td style="font-weight:bold; color:#ef4444;">-$${w.amount_usd}</td>
-            <td>${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
-            <td>
-              <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
-              <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
-            </td>
-          </tr>`;
-        });
-        container.innerHTML = html + '</tbody></table>';
+    TN.client.from('withdrawal_requests').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
+      const container = document.getElementById('withdrawalsContainer');
+      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
+      res.data.forEach(w => {
+        html += `<tr>
+          <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
+          <td style="font-weight:bold; color:#ef4444;">-$${w.amount_usd}</td>
+          <td>${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
+          <td>
+            <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
+            <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
+          </td>
+        </tr>`;
       });
+      container.innerHTML = html + '</tbody></table>';
+    });
   }
 
   window.approveWithdrawal = async function(withdrawalId, userId, amount) {
     if (!confirm(`Confirm you sent $${amount} to this user?`)) return;
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_withdrawn').eq('id', userId).single();
-      
-      const newBalance = Number(profile.balance_usd || 0) - Number(amount);
-      const newTotalWithdrawn = Number(profile.total_withdrawn || 0) + Number(amount);
-
       await TN.client.from('profiles').update({ 
-        balance_usd: newBalance,
-        total_withdrawn: newTotalWithdrawn 
+        balance_usd: Number(profile.balance_usd || 0) - Number(amount),
+        total_withdrawn: Number(profile.total_withdrawn || 0) + Number(amount)
       }).eq('id', userId);
-
       await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
-      
-      alert('Withdrawal Approved!'); 
-      fetchKPIs(); loadWithdrawals(); loadUsers();
+      alert('Withdrawal Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
     } catch (err) { alert(err.message); }
   };
 
@@ -321,60 +323,74 @@
     loadWithdrawals();
   };
 
-  // --- USERS GROUPED BY COUNTRY ---
+  // --- MANAGE USERS TAB ---
   function loadUsers() {
     TN.client.from('profiles').select('*').order('created_at', { ascending: false }).then(res => {
       if (!res.data) return;
       allUsers = res.data;
-      renderGroupedUsers();
+      renderUserCards();
     });
   }
 
-  function renderGroupedUsers() {
-    const container = document.getElementById('usersContainer');
+  window.filterCountry = function(countryCode, el) {
+    currentFilter = countryCode;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderUserCards();
+  };
+
+  window.renderUserCards = function() {
+    searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const container = document.getElementById('userCardsContainer');
     container.innerHTML = '';
 
-    const groups = {};
-
-    allUsers.forEach(u => {
-      const country = u.country || 'Unknown';
-      if (!groups[country]) groups[country] = [];
-      groups[country].push(u);
+    const filteredUsers = allUsers.filter(u => {
+      const matchesCountry = currentFilter === 'ALL' || u.country === currentFilter;
+      const matchesSearch = (u.phone || '').toLowerCase().includes(searchQuery) || 
+                            (u.full_name || '').toLowerCase().includes(searchQuery);
+      return matchesCountry && matchesSearch;
     });
 
-    let html = '';
-    
-    for (const [countryName, users] of Object.entries(groups)) {
-      
-      html += `<div class="country-group">
-        <div class="country-title">${countryName} <span class="country-badge">${users.length} users</span></div>
-        <table class="data-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Wallet</th><th>Status</th></tr></thead><tbody>`;
-      
-      users.forEach(u => {
-        const dep = Number(u.deposit_amount || 0);
-        const isActive = dep > 0;
-        
-        const statusHtml = isActive 
-          ? `<span class="status-badge status-active">Active</span>`
-          : `<span class="status-badge status-inactive">Inactive</span>`;
-
-        html += `<tr>
-          <td>${u.full_name || 'N/A'}</td>
-          <td>${u.email}</td>
-          <td>${u.phone || 'N/A'}</td>
-          <td style="color:#ec4899; font-weight:bold;">$${dep}</td>
-          <td style="color:#10b981; font-weight:bold;">$${u.balance_usd}</td>
-          <td>${statusHtml}</td>
-        </tr>`;
-      });
-      
-      html += `</tbody></table></div>`;
+    if (filteredUsers.length === 0) {
+      container.innerHTML = '<div class="empty-state">No users found matching this filter.</div>';
+      return;
     }
 
-    if (html === '') html = '<div class="empty-state">No users found.</div>';
+    let html = '';
+    filteredUsers.forEach(u => {
+      const dep = Number(u.deposit_amount || 0);
+      const isActive = dep > 0;
+      const statusHtml = isActive 
+        ? `<span class="status-badge status-active">Active</span>`
+        : `<span class="status-badge status-inactive">Inactive</span>`;
+      
+      const countryCode = u.country || 'Unknown';
+      const rate = EXCHANGE_RATES[countryCode] || 1;
+      const currency = CURRENCIES[countryCode] || 'USD';
+      
+      const localBalance = Number(u.balance_usd || 0) * rate;
+      const displayBalance = currency === 'USD' ? `$${Number(u.balance_usd).toFixed(2)}` : `${currency} ${localBalance.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
+
+      html += `
+        <div class="user-card">
+          <div class="user-details">
+            <div class="user-name">${u.full_name || 'User'}</div>
+            <div class="user-phone">${u.phone || 'No phone'}</div>
+            <div class="user-email">${u.email || 'No email'}</div>
+          </div>
+          <div class="user-financials">
+            <div class="user-balance">${displayBalance}</div>
+            <div class="user-meta">
+              ${statusHtml}
+              <span class="country-code-badge">${countryCode}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
     container.innerHTML = html;
-  }
+  };
 
   document.getElementById('logoutBtn').addEventListener('click', function() {
     TN.signOut().then(() => window.location.replace('login.html'));
