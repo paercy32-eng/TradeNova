@@ -40,7 +40,6 @@
   /* Trade Tab */
   .chart-container { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 240px; margin-bottom: 1.5rem; overflow: hidden; position: relative; }
   #tvchart { width: 100%; height: 100%; }
-  
   .signal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
   .signal-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
   .trade-btns { display: flex; gap: 0.8rem; }
@@ -55,6 +54,11 @@
   .ref-link { background: var(--bg); border: 1px solid var(--border); padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin: 0.5rem 0; word-break: break-all; }
   .profile-stat { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
   .profile-stat:last-child { border-bottom: none; }
+
+  /* Deposit Tabs */
+  .deposit-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  .dep-tab { flex: 1; padding: 0.6rem; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+  .dep-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
 </style>
 </head>
 <body>
@@ -77,18 +81,13 @@
     <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Welcome to Trade Nova Markets.</p>
     
     <h3 style="margin-bottom:1rem;">Trading Plans</h3>
-    <div id="plansContainer">
-      <!-- Populated by JS (Sorted from $50 to $5000) -->
-    </div>
+    <div id="plansContainer"></div>
   </div>
 
   <!-- TRADE TAB -->
   <div class="app-content" id="tab-trade">
     <h3 style="margin-bottom:0.5rem;">Live Market Chart (BTC/USDT)</h3>
-    <div class="chart-container">
-      <div id="tvchart"></div>
-    </div>
-
+    <div class="chart-container"><div id="tvchart"></div></div>
     <h3 style="margin-bottom:0.5rem;">Today's Signals</h3>
     <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1rem;">Buttons unlock for 10 minutes exactly at signal time.</p>
     <div id="signalsContainer"></div>
@@ -138,40 +137,63 @@
 
 <!-- Bottom Nav -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="switchTab('home', this)">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    Home
-  </div>
-  <div class="nav-item" onclick="switchTab('trade', this)">
-    <svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-7 4 4"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
-    Trade
-  </div>
-  <div class="nav-item" onclick="switchTab('team', this)">
-    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    Team
-  </div>
-  <div class="nav-item" onclick="switchTab('profile', this)">
-    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    Profile
-  </div>
+  <div class="nav-item active" onclick="switchTab('home', this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</div>
+  <div class="nav-item" onclick="switchTab('trade', this)"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-7 4 4"/><line x1="3" y1="21" x2="21" y2="21"/></svg>Trade</div>
+  <div class="nav-item" onclick="switchTab('team', this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team</div>
+  <div class="nav-item" onclick="switchTab('profile', this)"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</div>
 </div>
 
-<!-- MODALS (Same as before) -->
+<!-- DEPOSIT MODAL -->
 <dialog id="cryptoDepositDialog" class="modal">
-  <div class="modal-head"><div><h3 style="margin:0;">Deposit USDT</h3></div><button class="icon-btn" onclick="document.getElementById('cryptoDepositDialog').close()">✕</button></div>
+  <div class="modal-head">
+    <div><h3 style="margin:0;">Fund Account</h3></div>
+    <button class="icon-btn" onclick="document.getElementById('cryptoDepositDialog').close()">✕</button>
+  </div>
+  
   <div style="padding: 1rem 0;">
-    <div class="deposit-grid" id="depositGrid"></div>
-    <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
-    <div class="field"><label>Binance Wallet (BEP20)</label><div style="display:flex; gap:0.5rem;"><input type="text" id="binanceAddress" value="YOUR_BINANCE_ADDRESS_HERE" readonly style="background:var(--bg); font-family:monospace;"><button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('YOUR_BINANCE_ADDRESS_HERE');this.textContent='Copied';">Copy</button></div></div>
-    <form id="depositForm" style="display:none; flex-direction:column; gap:1rem; margin-top:1rem;">
-      <input type="hidden" id="selectedAmount">
-      <div class="field"><label>TXID for <span id="displayAmount"></span></label><input type="text" id="depositTxidInput" placeholder="Paste TXID" required style="background:var(--bg);"></div>
-      <button type="submit" class="btn btn-primary btn-block">Submit</button>
-    </form>
-    <p class="form-msg" id="depositMsg"></p>
+    <!-- Tabs for Crypto vs Mobile Money -->
+    <div class="deposit-tabs">
+      <div class="dep-tab active" id="tab-btn-crypto" onclick="switchDepositTab('crypto')">Crypto (Binance)</div>
+      <div class="dep-tab" id="tab-btn-momo" onclick="switchDepositTab('momo')">Mobile Money</div>
+    </div>
+
+    <!-- CRYPTO SECTION -->
+    <div id="deposit-crypto">
+      <div class="deposit-grid" id="depositGrid"></div>
+      <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
+      <div class="field">
+        <label>Binance Wallet (BEP20)</label>
+        <div style="display:flex; gap:0.5rem;">
+          <input type="text" id="binanceAddress" value="YOUR_BINANCE_ADDRESS_HERE" readonly style="background:var(--bg); font-family:monospace;">
+          <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('YOUR_BINANCE_ADDRESS_HERE');this.textContent='Copied';">Copy</button>
+        </div>
+      </div>
+      <form id="depositForm" style="display:none; flex-direction:column; gap:1rem; margin-top:1rem;">
+        <input type="hidden" id="selectedAmount">
+        <div class="field"><label>TXID for <span id="displayAmount"></span></label><input type="text" id="depositTxidInput" placeholder="Paste TXID" required style="background:var(--bg);"></div>
+        <button type="submit" class="btn btn-primary btn-block">Submit Crypto Deposit</button>
+      </form>
+      <p class="form-msg" id="depositMsg"></p>
+    </div>
+
+    <!-- MOBILE MONEY SECTION (Hidden by default) -->
+    <div id="deposit-momo" style="display:none;">
+      <div class="field" style="margin-bottom:1rem;">
+        <label>Amount (USD) to Deposit</label>
+        <input type="number" id="momoUsdAmount" min="50" step="1" placeholder="Min $50" style="background:var(--bg);" oninput="calcLocalAmount()">
+        <p class="field-hint" style="margin-top:0.4rem;">You will pay: <strong id="localAmountDisplay" style="color:var(--blue);">0</strong> <span id="localCurrency"></span></p>
+      </div>
+      <div class="field" style="margin-bottom:1rem;">
+        <label>Phone Number (with Country Code)</label>
+        <input type="tel" id="momoPhone" placeholder="e.g. +256 712 345 678" style="background:var(--bg);">
+      </div>
+      <button class="btn btn-primary btn-block" id="momoSubmitBtn" onclick="submitMobileMoney()">Pay via Mobile Money</button>
+      <p class="form-msg" id="momoMsg"></p>
+    </div>
   </div>
 </dialog>
 
+<!-- WITHDRAW MODAL -->
 <dialog id="withdrawDialog" class="modal">
   <div class="modal-head"><div><h3 style="margin:0;">Withdraw</h3></div><button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
@@ -179,13 +201,12 @@
       <div class="field"><label>Amount (USD)</label><input type="number" id="withdrawAmount" min="50" placeholder="Min $50" required style="background:var(--bg);"></div>
       <div class="field"><label>Provider</label><select id="mmProvider" style="background:var(--bg);"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
       <div class="field"><label>Phone Number</label><input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required style="background:var(--bg);"></div>
-      <button type="submit" class="btn btn-primary btn-block" style="background:var(--red);">Request</button>
+      <button type="submit" class="btn btn-primary btn-block" style="background:var(--red);">Request Withdrawal</button>
     </form>
     <p class="form-msg" id="withdrawMsg"></p>
   </div>
 </dialog>
 
-<!-- Load Libraries -->
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
@@ -199,9 +220,11 @@
   let chart = null;
   let candleSeries = null;
   let lastPrice = 64200;
-  let tickerInterval = null;
 
-  // Sorted from cheapest ($50) to most expensive ($5000)
+  // Rough exchange rates for display (1 USD = X Local)
+  const EXCHANGE_RATES = { UG: 3800, KE: 130, RW: 1300, ZM: 26, CM: 600 };
+  const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF' };
+
   const TIERS = [
     { amount: 50,   name: 'Entry Level', slots: ['3PM'], profit: '5' },
     { amount: 100,  name: 'Standard Level', slots: ['3PM'], profit: '7.5' },
@@ -218,8 +241,6 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     if (el) el.classList.add('active');
-    
-    // Fix chart rendering when switching back to trade tab
     if (tab === 'trade' && chart) {
       setTimeout(() => chart.resize(document.getElementById('tvchart').clientWidth, 240), 50);
     }
@@ -243,8 +264,7 @@
     if (!chartEl) return;
 
     chart = LightweightCharts.createChart(chartEl, {
-      width: chartEl.clientWidth,
-      height: 240,
+      width: chartEl.clientWidth, height: 240,
       layout: { background: { color: '#111820' }, textColor: '#8fa3b8' },
       grid: { vertLines: { color: '#16202b' }, horzLines: { color: '#16202b' } },
       rightPriceScale: { borderColor: '#22303f' },
@@ -255,7 +275,6 @@
       upColor: '#16c784', downColor: '#ea3943', wickUpColor: '#16c784', wickDownColor: '#ea3943', borderVisible: false
     });
 
-    // Generate 50 historical candles
     const data = [];
     let time = Math.floor(Date.now() / 1000) - (50 * 60);
     for (let i = 0; i < 50; i++) {
@@ -269,17 +288,12 @@
     }
     candleSeries.setData(data);
 
-    // Animate live candle
     setInterval(() => {
       const open = lastPrice;
       const close = open + (Math.random() - 0.5) * 80;
       const high = Math.max(open, close) + Math.random() * 40;
       const low = Math.min(open, close) - Math.random() * 40;
-      
-      candleSeries.update({
-        time: Math.floor(Date.now() / 1000),
-        open, high, low, close
-      });
+      candleSeries.update({ time: Math.floor(Date.now() / 1000), open, high, low, close });
       lastPrice = close;
       updateTickerPrices(close);
     }, 2000);
@@ -290,16 +304,12 @@
     const isUp = Math.random() > 0.5;
     const color = isUp ? 'text-green' : 'text-red';
     const sign = isUp ? '+' : '';
-    
     ticker.innerHTML = `
       <span>BTC/USDT <strong class="${color}">${price.toFixed(2)} ${sign}${(Math.random()*2).toFixed(2)}%</strong></span>
       <span>ETH/USDT <strong class="text-green">2,259.72 +1.11%</strong></span>
       <span>BNB/USDT <strong class="text-red">695.69 -1.70%</strong></span>
       <span>SOL/USDT <strong class="text-red">92.17 -2.35%</strong></span>
       <span>XRP/USDT <strong class="text-green">1.2546 +0.22%</strong></span>
-      <span>BTC/USDT <strong class="${color}">${price.toFixed(2)} ${sign}${(Math.random()*2).toFixed(2)}%</strong></span>
-      <span>ETH/USDT <strong class="text-green">2,259.72 +1.11%</strong></span>
-      <span>BNB/USDT <strong class="text-red">695.69 -1.70%</strong></span>
     `;
   }
 
@@ -376,7 +386,92 @@
     document.getElementById('profBalance').textContent = formatMoney(p.balance_usd || 0);
     document.getElementById('profDeposited').textContent = formatMoney(p.total_deposited || 0);
     document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
+    
+    // Set up deposit tabs based on country
+    const allowedMomoCountries = ['UG', 'KE', 'RW', 'ZM', 'CM'];
+    if (allowedMomoCountries.includes(p.country)) {
+      document.getElementById('tab-btn-momo').style.display = 'block';
+      document.getElementById('localCurrency').textContent = CURRENCIES[p.country] || '';
+    } else {
+      document.getElementById('tab-btn-momo').style.display = 'none';
+    }
   }
+
+  // --- DEPOSIT TABS LOGIC ---
+  window.switchDepositTab = function(tab) {
+    document.querySelectorAll('.dep-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`tab-btn-${tab}`).classList.add('active');
+    
+    if (tab === 'crypto') {
+      document.getElementById('deposit-crypto').style.display = 'block';
+      document.getElementById('deposit-momo').style.display = 'none';
+    } else {
+      document.getElementById('deposit-crypto').style.display = 'none';
+      document.getElementById('deposit-momo').style.display = 'block';
+    }
+  };
+
+  window.calcLocalAmount = function() {
+    const usd = parseFloat(document.getElementById('momoUsdAmount').value) || 0;
+    const country = currentProfile.country;
+    const rate = EXCHANGE_RATES[country] || 1;
+    document.getElementById('localAmountDisplay').textContent = (usd * rate).toLocaleString();
+  };
+
+  window.submitMobileMoney = async function() {
+    const usdAmount = parseFloat(document.getElementById('momoUsdAmount').value);
+    const phone = document.getElementById('momoPhone').value.trim();
+    const msg = document.getElementById('momoMsg');
+    const btn = document.getElementById('momoSubmitBtn');
+    const country = currentProfile.country;
+
+    if (usdAmount < 50) {
+      msg.className = 'form-msg err'; msg.textContent = 'Minimum deposit is $50.'; return;
+    }
+    if (!phone || phone.length < 9) {
+      msg.className = 'form-msg err'; msg.textContent = 'Enter a valid phone number.'; return;
+    }
+
+    const rate = EXCHANGE_RATES[country] || 1;
+    const localAmount = Math.round(usdAmount * rate);
+
+    btn.disabled = true; btn.textContent = 'Sending Prompt...';
+    msg.className = 'form-msg'; msg.textContent = '';
+
+    try {
+      // Call our secure Vercel API
+      const res = await fetch('/api/marzpay-deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone_number: phone,
+          amount: localAmount,
+          country: country
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to initiate payment');
+
+      msg.className = 'form-msg ok';
+      msg.textContent = 'USSD prompt sent! Check your phone to approve.';
+      
+      // Log the pending deposit
+      await TN.client.from('pending_deposits').insert({
+        user_id: currentUser.id,
+        txid: data.reference, // Store MarzPay reference as TXID
+        amount_usd: usdAmount
+      });
+
+      setTimeout(() => { btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }, 3000);
+
+    } catch (err) {
+      console.error(err);
+      msg.className = 'form-msg err';
+      msg.textContent = err.message;
+      btn.disabled = false; btn.textContent = 'Pay via Mobile Money';
+    }
+  };
 
   function renderSignals(deposit) {
     const tier = getUserTier(deposit);
@@ -409,7 +504,6 @@
           actionHtml = `<div style="color:var(--red); font-weight:bold; text-align:center; padding:0.8rem;">LOST</div>`;
         }
       } else {
-        // Determine if the 10-minute window is open
         let signalHour = 0;
         if (slot === '8AM') signalHour = 8;
         if (slot === '3PM') signalHour = 15;
@@ -456,13 +550,14 @@
     }).catch(err => alert(err.message));
   };
 
-  // --- DEPOSIT & WITHDRAW (Same as before) ---
+  // --- CRYPTO DEPOSIT LOGIC ---
   document.getElementById('depositBtn').addEventListener('click', () => {
     const grid = document.getElementById('depositGrid');
     grid.innerHTML = [50, 100, 200, 300, 500, 1000, 2000, 5000].map(amt => `
       <div class="deposit-btn" onclick="selectDepositAmount(${amt})">$${amt}</div>
     `).join('');
     document.getElementById('cryptoDepositDialog').showModal();
+    switchDepositTab('crypto'); // Default to crypto tab
   });
 
   window.selectDepositAmount = function(amt) {
@@ -482,6 +577,7 @@
     }).catch(err => alert(err.message));
   });
 
+  // --- WITHDRAW LOGIC ---
   document.getElementById('withdrawBtn').addEventListener('click', () => {
     const day = new Date().getDay();
     if (day !== 0 && day !== 6) { alert('Withdrawals are only on Weekends (Sat/Sun).'); return; }
@@ -515,4 +611,4 @@
 })();
 </script>
 </body>
-</html>
+  </html>
