@@ -7,8 +7,7 @@
 <title>Trade Nova</title>
 <link rel="stylesheet" href="css/styles.css">
 <style>
-  /* App Layout */
-  body { padding-bottom: 70px; background: var(--bg); }
+  body { padding-bottom: 70px; background: var(--bg); margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
   .app-content { padding: 1.15rem; display: none; }
   .app-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
@@ -19,6 +18,14 @@
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: var(--muted); font-size: 0.7rem; font-weight: 600; cursor: pointer; }
   .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
   .nav-item.active { color: var(--blue); }
+
+  /* Live Ticker */
+  .ticker-wrap { background: #111; border-bottom: 1px solid #222; overflow: hidden; white-space: nowrap; padding: 0.4rem 0; font-size: 0.75rem; }
+  .ticker { display: inline-block; animation: ticker 20s linear infinite; }
+  .ticker span { margin-right: 1.5rem; }
+  @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
 
   /* Home Tab */
   .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }
@@ -31,7 +38,9 @@
   .plan-return span { font-size: 0.7rem; color: var(--muted); }
 
   /* Trade Tab */
-  .trade-chart { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; flex-direction: column; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+  .chart-container { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 240px; margin-bottom: 1.5rem; overflow: hidden; position: relative; }
+  #tvchart { width: 100%; height: 100%; }
+  
   .signal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
   .signal-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
   .trade-btns { display: flex; gap: 0.8rem; }
@@ -39,18 +48,13 @@
   .btn-up { background: var(--green); color: #fff; }
   .btn-down { background: var(--red); color: #fff; }
   .btn-trade:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status-pill { padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 
-  /* Team Tab */
+  /* Team & Profile */
   .ref-box { background: var(--surface); border: 1px dashed var(--blue); border-radius: 12px; padding: 1.2rem; text-align: center; margin-bottom: 1.5rem; }
   .ref-link { background: var(--bg); border: 1px solid var(--border); padding: 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin: 0.5rem 0; word-break: break-all; }
-  
-  /* Profile Tab */
   .profile-stat { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
   .profile-stat:last-child { border-bottom: none; }
-  .profile-stat span { color: var(--muted); }
-  .profile-stat strong { color: var(--text); }
-  
-  /* Modals reused from previous styles */
 </style>
 </head>
 <body>
@@ -61,48 +65,48 @@
   <button class="btn btn-ghost btn-sm" id="logoutBtn" style="padding:0.3rem 0.6rem; font-size:0.75rem;">Log out</button>
 </div>
 
+<!-- Live Market Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker" id="tickerData">Loading market data...</div>
+</div>
+
 <main>
   <!-- HOME TAB -->
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Trader</div>
-    <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Welcome back to your dashboard.</p>
+    <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem;">Welcome to Trade Nova Markets.</p>
     
-    <h3 style="margin-bottom:1rem;">Investment Plans</h3>
+    <h3 style="margin-bottom:1rem;">Trading Plans</h3>
     <div id="plansContainer">
-      <!-- Populated by JS -->
+      <!-- Populated by JS (Sorted from $50 to $5000) -->
     </div>
   </div>
 
   <!-- TRADE TAB -->
   <div class="app-content" id="tab-trade">
-    <div class="trade-chart">
-      <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--blue)" stroke-width="1.5" style="margin-bottom:0.5rem;"><path d="M3 17l5-6 4 3 5-7 4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div style="font-weight:700; color:var(--text);">Market Chart</div>
-      <div style="font-size:0.75rem; color:var(--muted); margin-top:0.2rem;">Waiting for the next signal...</div>
+    <h3 style="margin-bottom:0.5rem;">Live Market Chart (BTC/USDT)</h3>
+    <div class="chart-container">
+      <div id="tvchart"></div>
     </div>
 
-    <h3 style="margin-bottom:1rem;">Today's Signals</h3>
+    <h3 style="margin-bottom:0.5rem;">Today's Signals</h3>
+    <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1rem;">Buttons unlock for 10 minutes exactly at signal time.</p>
     <div id="signalsContainer"></div>
   </div>
 
   <!-- TEAM TAB -->
   <div class="app-content" id="tab-team">
     <h3 style="margin-bottom:1rem;">Invite & Earn</h3>
-    
     <div class="ref-box">
       <p style="font-size:0.85rem; color:var(--text); margin-bottom:0.5rem;">Your Referral Link</p>
       <div class="ref-link" id="refLink">Loading...</div>
       <button class="btn btn-primary btn-block" id="copyRefBtn" style="margin-top:0.5rem; font-size:0.85rem;">Copy Link</button>
-      <p style="font-size:0.75rem; color:var(--muted); margin-top:1rem; line-height:1.4;">
-        Earn 10% commission when your direct referrals deposit. If they invite someone else, you earn nothing from the second level.
-      </p>
+      <p style="font-size:0.75rem; color:var(--muted); margin-top:1rem; line-height:1.4;">Earn 10% commission when direct referrals deposit.</p>
     </div>
-
     <div class="profile-stat">
       <span>Team Commission</span>
       <strong style="color:var(--green);" id="teamCommission">$0.00</strong>
     </div>
-    
     <h4 style="margin:1.5rem 0 0.5rem; font-size:0.9rem; color:var(--muted);">Your Direct Referrals</h4>
     <div id="refListContainer" style="font-size:0.85rem;">Loading...</div>
   </div>
@@ -110,7 +114,6 @@
   <!-- PROFILE TAB -->
   <div class="app-content" id="tab-profile">
     <h3 style="margin-bottom:1rem;">Profile & Wallet</h3>
-    
     <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.2rem; margin-bottom:1.5rem;">
       <div class="profile-stat">
         <span>Available Balance</span>
@@ -125,7 +128,6 @@
         <strong id="profWithdrawn">$0.00</strong>
       </div>
     </div>
-
     <div style="display:flex; flex-direction:column; gap:0.8rem;">
       <button class="btn btn-primary btn-block" id="depositBtn">Fund Account</button>
       <button class="btn btn-ghost btn-block" id="withdrawBtn">Withdraw</button>
@@ -136,46 +138,34 @@
 
 <!-- Bottom Nav -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="switchTab('home')">
+  <div class="nav-item active" onclick="switchTab('home', this)">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     Home
   </div>
-  <div class="nav-item" onclick="switchTab('trade')">
+  <div class="nav-item" onclick="switchTab('trade', this)">
     <svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-7 4 4"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
     Trade
   </div>
-  <div class="nav-item" onclick="switchTab('team')">
+  <div class="nav-item" onclick="switchTab('team', this)">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     Team
   </div>
-  <div class="nav-item" onclick="switchTab('profile')">
+  <div class="nav-item" onclick="switchTab('profile', this)">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     Profile
   </div>
 </div>
 
-<!-- MODALS (Deposit & Withdraw) -->
+<!-- MODALS (Same as before) -->
 <dialog id="cryptoDepositDialog" class="modal">
-  <div class="modal-head">
-    <div><h3 style="margin:0;">Deposit USDT</h3></div>
-    <button class="icon-btn" onclick="document.getElementById('cryptoDepositDialog').close()">✕</button>
-  </div>
+  <div class="modal-head"><div><h3 style="margin:0;">Deposit USDT</h3></div><button class="icon-btn" onclick="document.getElementById('cryptoDepositDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
     <div class="deposit-grid" id="depositGrid"></div>
     <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
-    <div class="field">
-      <label>Binance Wallet (BEP20)</label>
-      <div style="display:flex; gap:0.5rem;">
-        <input type="text" id="binanceAddress" value="0x65f81e2e94e3c41f42a6dce117a7cf7bf9d0bf3a" readonly style="background:var(--bg); font-family:monospace;">
-        <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('0x65f81e2e94e3c41f42a6dce117a7cf7bf9d0bf3a');this.textContent='Copied';">Copy</button>
-      </div>
-    </div>
+    <div class="field"><label>Binance Wallet (BEP20)</label><div style="display:flex; gap:0.5rem;"><input type="text" id="binanceAddress" value="YOUR_BINANCE_ADDRESS_HERE" readonly style="background:var(--bg); font-family:monospace;"><button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText('YOUR_BINANCE_ADDRESS_HERE');this.textContent='Copied';">Copy</button></div></div>
     <form id="depositForm" style="display:none; flex-direction:column; gap:1rem; margin-top:1rem;">
       <input type="hidden" id="selectedAmount">
-      <div class="field">
-        <label>TXID for <span id="displayAmount"></span></label>
-        <input type="text" id="depositTxidInput" placeholder="Paste TXID" required style="background:var(--bg);">
-      </div>
+      <div class="field"><label>TXID for <span id="displayAmount"></span></label><input type="text" id="depositTxidInput" placeholder="Paste TXID" required style="background:var(--bg);"></div>
       <button type="submit" class="btn btn-primary btn-block">Submit</button>
     </form>
     <p class="form-msg" id="depositMsg"></p>
@@ -183,30 +173,20 @@
 </dialog>
 
 <dialog id="withdrawDialog" class="modal">
-  <div class="modal-head">
-    <div><h3 style="margin:0;">Withdraw</h3></div>
-    <button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button>
-  </div>
+  <div class="modal-head"><div><h3 style="margin:0;">Withdraw</h3></div><button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
     <form id="withdrawForm" style="display:flex; flex-direction:column; gap:1rem;">
-      <div class="field">
-        <label>Amount (USD)</label>
-        <input type="number" id="withdrawAmount" min="50" placeholder="Min $50" required style="background:var(--bg);">
-      </div>
-      <div class="field">
-        <label>Provider</label>
-        <select id="mmProvider" style="background:var(--bg);"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select>
-      </div>
-      <div class="field">
-        <label>Phone Number</label>
-        <input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required style="background:var(--bg);">
-      </div>
+      <div class="field"><label>Amount (USD)</label><input type="number" id="withdrawAmount" min="50" placeholder="Min $50" required style="background:var(--bg);"></div>
+      <div class="field"><label>Provider</label><select id="mmProvider" style="background:var(--bg);"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
+      <div class="field"><label>Phone Number</label><input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required style="background:var(--bg);"></div>
       <button type="submit" class="btn btn-primary btn-block" style="background:var(--red);">Request</button>
     </form>
     <p class="form-msg" id="withdrawMsg"></p>
   </div>
 </dialog>
 
+<!-- Load Libraries -->
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script>
@@ -216,37 +196,114 @@
   let currentUser = null;
   let currentProfile = null;
   let userTradesToday = [];
+  let chart = null;
+  let candleSeries = null;
+  let lastPrice = 64200;
+  let tickerInterval = null;
 
-  // Define exact tiers
+  // Sorted from cheapest ($50) to most expensive ($5000)
   const TIERS = [
-    { amount: 5000, name: 'VIP', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '180' },
-    { amount: 2000, name: 'Diamond', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '60' },
-    { amount: 1000, name: 'Platinum', slots: ['3PM', '5PM', '8PM'], profit: '40' },
-    { amount: 500,  name: 'Gold', slots: ['3PM', '5PM'], profit: '20' },
-    { amount: 300,  name: 'Silver', slots: ['3PM', '5PM'], profit: '15' },
-    { amount: 200,  name: 'Bronze', slots: ['3PM'], profit: '9.5' },
-    { amount: 100,  name: 'Standard', slots: ['3PM'], profit: '7.5' },
-    { amount: 50,   name: 'Entry', slots: ['3PM'], profit: '5' },
-    { amount: 0,    name: 'Unfunded', slots: [], profit: '0' }
+    { amount: 50,   name: 'Entry Level', slots: ['3PM'], profit: '5' },
+    { amount: 100,  name: 'Standard Level', slots: ['3PM'], profit: '7.5' },
+    { amount: 200,  name: 'Bronze Level', slots: ['3PM'], profit: '9.5' },
+    { amount: 300,  name: 'Silver Level', slots: ['3PM', '5PM'], profit: '15' },
+    { amount: 500,  name: 'Gold Level', slots: ['3PM', '5PM'], profit: '20' },
+    { amount: 1000, name: 'Platinum Level', slots: ['3PM', '5PM', '8PM'], profit: '40' },
+    { amount: 2000, name: 'Diamond Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '60' },
+    { amount: 5000, name: 'VIP Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '180' }
   ];
 
-  // --- TAB SWITCHING ---
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.app-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  window.switchTab = function(tab, el) {
+    document.querySelectorAll('.app-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
-    event.currentTarget.classList.add('active');
+    if (el) el.classList.add('active');
+    
+    // Fix chart rendering when switching back to trade tab
+    if (tab === 'trade' && chart) {
+      setTimeout(() => chart.resize(document.getElementById('tvchart').clientWidth, 240), 50);
+    }
   };
 
   function getUserTier(deposit) {
-    return TIERS.find(t => deposit >= t.amount) || TIERS[TIERS.length - 1];
+    let tier = TIERS[0];
+    for (let t of TIERS) {
+      if (deposit >= t.amount) tier = t;
+    }
+    return tier;
   }
 
   function formatMoney(amount) {
     return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // --- INITIALIZATION ---
+  // --- LIVE CHART & TICKER ENGINE ---
+  function initLiveChart() {
+    const chartEl = document.getElementById('tvchart');
+    if (!chartEl) return;
+
+    chart = LightweightCharts.createChart(chartEl, {
+      width: chartEl.clientWidth,
+      height: 240,
+      layout: { background: { color: '#111820' }, textColor: '#8fa3b8' },
+      grid: { vertLines: { color: '#16202b' }, horzLines: { color: '#16202b' } },
+      rightPriceScale: { borderColor: '#22303f' },
+      timeScale: { borderColor: '#22303f', timeVisible: true, secondsVisible: true },
+    });
+
+    candleSeries = chart.addCandlestickSeries({
+      upColor: '#16c784', downColor: '#ea3943', wickUpColor: '#16c784', wickDownColor: '#ea3943', borderVisible: false
+    });
+
+    // Generate 50 historical candles
+    const data = [];
+    let time = Math.floor(Date.now() / 1000) - (50 * 60);
+    for (let i = 0; i < 50; i++) {
+      const open = lastPrice;
+      const close = open + (Math.random() - 0.5) * 100;
+      const high = Math.max(open, close) + Math.random() * 50;
+      const low = Math.min(open, close) - Math.random() * 50;
+      data.push({ time: time, open, high, low, close });
+      lastPrice = close;
+      time += 60;
+    }
+    candleSeries.setData(data);
+
+    // Animate live candle
+    setInterval(() => {
+      const open = lastPrice;
+      const close = open + (Math.random() - 0.5) * 80;
+      const high = Math.max(open, close) + Math.random() * 40;
+      const low = Math.min(open, close) - Math.random() * 40;
+      
+      candleSeries.update({
+        time: Math.floor(Date.now() / 1000),
+        open, high, low, close
+      });
+      lastPrice = close;
+      updateTickerPrices(close);
+    }, 2000);
+  }
+
+  function updateTickerPrices(price) {
+    const ticker = document.getElementById('tickerData');
+    const isUp = Math.random() > 0.5;
+    const color = isUp ? 'text-green' : 'text-red';
+    const sign = isUp ? '+' : '';
+    
+    ticker.innerHTML = `
+      <span>BTC/USDT <strong class="${color}">${price.toFixed(2)} ${sign}${(Math.random()*2).toFixed(2)}%</strong></span>
+      <span>ETH/USDT <strong class="text-green">2,259.72 +1.11%</strong></span>
+      <span>BNB/USDT <strong class="text-red">695.69 -1.70%</strong></span>
+      <span>SOL/USDT <strong class="text-red">92.17 -2.35%</strong></span>
+      <span>XRP/USDT <strong class="text-green">1.2546 +0.22%</strong></span>
+      <span>BTC/USDT <strong class="${color}">${price.toFixed(2)} ${sign}${(Math.random()*2).toFixed(2)}%</strong></span>
+      <span>ETH/USDT <strong class="text-green">2,259.72 +1.11%</strong></span>
+      <span>BNB/USDT <strong class="text-red">695.69 -1.70%</strong></span>
+    `;
+  }
+
+  // --- INIT APP ---
   function initApp() {
     TN.ready.then(() => TN.getSession())
     .then(session => {
@@ -263,7 +320,9 @@
     })
     .then(tradesRes => {
       if (tradesRes && tradesRes.data) userTradesToday = tradesRes.data;
-      renderAllTabs();
+      renderUI();
+      initLiveChart();
+      updateTickerPrices(lastPrice);
     })
     .catch(err => {
       console.error(err);
@@ -271,21 +330,19 @@
     });
   }
 
-  function renderAllTabs() {
+  function renderUI() {
     const p = currentProfile;
     const dep = Number(p.deposit_amount || 0);
-    const tier = getUserTier(dep);
 
-    // --- TAB 1: HOME ---
+    // HOME TAB
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Trader'}`;
-    
     let plansHtml = '';
-    TIERS.filter(t => t.amount > 0).forEach(t => {
+    TIERS.forEach(t => {
       const isActive = (dep >= t.amount && (TIERS.find(x => dep >= x.amount)?.amount === t.amount));
       plansHtml += `
         <div class="plan-card ${isActive ? 'active-plan' : ''}">
           <div class="plan-info">
-            <h4>${t.name} Level</h4>
+            <h4>${t.name}</h4>
             <p>$${t.amount} Deposit</p>
             <p style="margin-top:0.3rem; font-size:0.7rem;">Signals: ${t.slots.join(', ')}</p>
           </div>
@@ -298,88 +355,99 @@
     });
     document.getElementById('plansContainer').innerHTML = plansHtml;
 
-    // --- TAB 2: TRADE ---
-    const allSlots = ['8AM', '3PM', '5PM', '8PM'];
-    let signalsHtml = '';
+    // TRADE TAB
+    renderSignals(dep);
+
+    // TEAM TAB
+    const refLink = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
+    document.getElementById('refLink').textContent = refLink;
+    document.getElementById('teamCommission').textContent = formatMoney(p.team_commission || 0);
     
-    // Current hour to check if it's time (8, 15, 17, 20)
-    const currentHour = new Date().getHours();
+    TN.client.from('profiles').select('full_name, deposit_amount').eq('referred_by', currentUser.id).then(res => {
+      const list = document.getElementById('refListContainer');
+      if (!res.data || res.data.length === 0) {
+        list.innerHTML = '<div style="color:var(--muted); padding:1rem 0;">No referrals yet.</div>';
+        return;
+      }
+      list.innerHTML = res.data.map(r => `<div class="profile-stat"><span>${r.full_name || 'User'}</span><strong>$${r.deposit_amount} deposited</strong></div>`).join('');
+    });
+
+    // PROFILE TAB
+    document.getElementById('profBalance').textContent = formatMoney(p.balance_usd || 0);
+    document.getElementById('profDeposited').textContent = formatMoney(p.total_deposited || 0);
+    document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
+  }
+
+  function renderSignals(deposit) {
+    const tier = getUserTier(deposit);
+    const allSlots = ['8AM', '3PM', '5PM', '8PM'];
+    let html = '';
+    
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
 
     allSlots.forEach(slot => {
       const isUnlocked = tier.slots.includes(slot);
       const trade = userTradesToday.find(t => t.signal_time === slot);
       
       let actionHtml = '';
+      let statusPill = '';
+
       if (!isUnlocked) {
-        actionHtml = `<div style="color:var(--red); font-weight:bold; font-size:0.8rem; text-align:center; padding:0.8rem; background:var(--bg); border-radius:8px;">Deposit $${TIERS.find(t=>t.slots.includes(slot) && t.amount < (TIERS.find(x=>x.slots.includes(slot))?.amount || 99999))?.amount || 'more'} to unlock</div>`;
+        statusPill = `<span class="status-pill" style="background:var(--surface-2); color:var(--muted);">Locked</span>`;
+        actionHtml = `<div style="color:var(--muted); font-weight:bold; text-align:center; padding:0.8rem; font-size:0.8rem;">Upgrade your plan to access this signal.</div>`;
       } else if (trade) {
         if (trade.result === 'PENDING') {
+          statusPill = `<span class="status-pill" style="background:var(--blue-soft); color:var(--blue);">Pending</span>`;
           actionHtml = `<div style="color:var(--blue); font-weight:bold; text-align:center; padding:0.8rem;">Waiting for result...</div>`;
         } else if (trade.result === 'WIN') {
+          statusPill = `<span class="status-pill" style="background:var(--green-soft); color:var(--green);">Won</span>`;
           actionHtml = `<div style="color:var(--green); font-weight:bold; text-align:center; padding:0.8rem;">WON +$${trade.profit_usd}</div>`;
         } else {
-          actionHtml = `<div style="color:var(--red); font-weight:bold; text-align:center; padding:0.8rem;">LOST (0)</div>`;
+          statusPill = `<span class="status-pill" style="background:var(--red-soft); color:var(--red);">Lost</span>`;
+          actionHtml = `<div style="color:var(--red); font-weight:bold; text-align:center; padding:0.8rem;">LOST</div>`;
         }
       } else {
-        // Check time restriction
-        let isTime = false;
-        if (slot === '8AM' && currentHour >= 8 && currentHour < 15) isTime = true;
-        if (slot === '3PM' && currentHour >= 15 && currentHour < 17) isTime = true;
-        if (slot === '5PM' && currentHour >= 17 && currentHour < 20) isTime = true;
-        if (slot === '8PM' && currentHour >= 20) isTime = true;
+        // Determine if the 10-minute window is open
+        let signalHour = 0;
+        if (slot === '8AM') signalHour = 8;
+        if (slot === '3PM') signalHour = 15;
+        if (slot === '5PM') signalHour = 17;
+        if (slot === '8PM') signalHour = 20;
 
-        if (!isTime) {
-          actionHtml = `<div style="color:var(--muted); font-weight:bold; text-align:center; padding:0.8rem;">Market Closed</div>`;
-        } else {
+        const isTradeWindow = (currentHour === signalHour && currentMinute < 10);
+
+        if (isTradeWindow) {
+          statusPill = `<span class="status-pill" style="background:var(--green-soft); color:var(--green); animation: pulse 1s infinite;">OPEN</span>`;
           actionHtml = `
             <div class="trade-btns">
               <button class="btn-trade btn-up" onclick="placeTrade('${slot}', 'UP')">UP</button>
               <button class="btn-trade btn-down" onclick="placeTrade('${slot}', 'DOWN')">DOWN</button>
             </div>
           `;
+        } else {
+          statusPill = `<span class="status-pill" style="background:var(--surface-2); color:var(--muted);">Closed</span>`;
+          actionHtml = `<div style="color:var(--muted); font-weight:bold; text-align:center; padding:0.8rem; font-size:0.8rem;">Market closed. Wait for ${slot}.</div>`;
         }
       }
 
-      signalsHtml += `
-        <div class="signal-box ${isUnlocked ? '' : 'locked'}">
+      html += `
+        <div class="signal-box">
           <div class="signal-header">
             <strong>${slot} Signal</strong>
-            ${isUnlocked ? '<span class="badge badge-long">Unlocked</span>' : '<span class="badge badge-short" style="background:var(--red-soft); color:var(--red);">Locked</span>'}
+            ${statusPill}
           </div>
           ${actionHtml}
         </div>
       `;
     });
-    document.getElementById('signalsContainer').innerHTML = signalsHtml;
-
-    // --- TAB 3: TEAM ---
-    const refLink = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
-    document.getElementById('refLink').textContent = refLink;
-    document.getElementById('teamCommission').textContent = formatMoney(p.team_commission || 0);
-    
-    // Fetch direct referrals
-    TN.client.from('profiles').select('full_name, deposit_amount').eq('referred_by', currentUser.id).then(res => {
-      const list = document.getElementById('refListContainer');
-      if (!res.data || res.data.length === 0) {
-        list.innerHTML = '<div style="color:var(--muted); padding:1rem 0;">No referrals yet. Share your link to start earning!</div>';
-        return;
-      }
-      let html = '';
-      res.data.forEach(r => {
-        html += `<div class="profile-stat"><span>${r.full_name || 'User'}</span><strong>$${r.deposit_amount} deposited</strong></div>`;
-      });
-      list.innerHTML = html;
-    });
-
-    // --- TAB 4: PROFILE ---
-    document.getElementById('profBalance').textContent = formatMoney(p.balance_usd || 0);
-    document.getElementById('profDeposited').textContent = formatMoney(p.total_deposited || 0);
-    document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
+    document.getElementById('signalsContainer').innerHTML = html;
   }
 
-  // --- TRADE LOGIC ---
+  // --- TRADE ACTION ---
   window.placeTrade = function(slot, choice) {
-    if (!confirm(`Confirm ${choice} for ${slot}?`)) return;
+    if (!confirm(`Confirm ${choice} trade for ${slot} signal?`)) return;
     TN.client.from('trades').insert({
       user_id: currentUser.id, signal_time: slot, user_choice: choice, result: 'PENDING'
     }).then(res => {
@@ -388,7 +456,7 @@
     }).catch(err => alert(err.message));
   };
 
-  // --- DEPOSIT LOGIC ---
+  // --- DEPOSIT & WITHDRAW (Same as before) ---
   document.getElementById('depositBtn').addEventListener('click', () => {
     const grid = document.getElementById('depositGrid');
     grid.innerHTML = [50, 100, 200, 300, 500, 1000, 2000, 5000].map(amt => `
@@ -406,9 +474,7 @@
   document.getElementById('depositForm').addEventListener('submit', function(e) {
     e.preventDefault();
     TN.client.from('pending_deposits').insert({
-      user_id: currentUser.id,
-      txid: document.getElementById('depositTxidInput').value.trim(),
-      amount_usd: parseFloat(document.getElementById('selectedAmount').value)
+      user_id: currentUser.id, txid: document.getElementById('depositTxidInput').value.trim(), amount_usd: parseFloat(document.getElementById('selectedAmount').value)
     }).then(res => {
       if (res.error) throw res.error;
       document.getElementById('depositMsg').className = 'form-msg ok';
@@ -416,7 +482,6 @@
     }).catch(err => alert(err.message));
   });
 
-  // --- WITHDRAW LOGIC ---
   document.getElementById('withdrawBtn').addEventListener('click', () => {
     const day = new Date().getDay();
     if (day !== 0 && day !== 6) { alert('Withdrawals are only on Weekends (Sat/Sun).'); return; }
@@ -434,6 +499,12 @@
       document.getElementById('withdrawMsg').className = 'form-msg ok';
       document.getElementById('withdrawMsg').textContent = 'Submitted!';
     }).catch(err => alert(err.message));
+  });
+
+  document.getElementById('copyRefBtn').addEventListener('click', function() {
+    navigator.clipboard.writeText(document.getElementById('refLink').textContent);
+    this.textContent = 'Copied!';
+    setTimeout(() => this.textContent = 'Copy Link', 1500);
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
