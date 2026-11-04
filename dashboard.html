@@ -117,9 +117,8 @@
 <body>
 
 <script>
-  // Catch all errors and show them in a red box so we can debug on mobile
   window.onerror = function(msg, url, line) {
-    document.body.innerHTML = '<div style="color:white; background:red; padding:20px; font-family:monospace; z-index:9999; position:fixed; top:0; left:0; right:0; bottom:0; overflow-y:auto;"><h2>Javascript Error</h2><p>' + msg + '</p><p>Line: ' + line + '</p><p>URL: ' + url + '</p><button onclick="location.reload()" style="padding:10px; margin-top:20px;">Reload Page</button></div>' + document.body.innerHTML;
+    document.body.innerHTML = '<div style="color:white; background:red; padding:20px; font-family:monospace; z-index:9999; position:fixed; top:0; left:0; right:0; bottom:0; overflow-y:auto;"><h2>Javascript Error</h2><p>' + msg + '</p><p>Line: ' + line + '</p><button onclick="location.reload()" style="padding:10px; margin-top:20px;">Reload Page</button></div>' + document.body.innerHTML;
     return false;
   };
 </script>
@@ -140,7 +139,6 @@
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Trader</div>
     <p style="color:#a0aabf; font-size:0.85rem; margin-bottom:1.5rem;">Welcome to Nova Trade Markets.</p>
-    
     <h3 style="margin-bottom:1rem;">Trading Plans</h3>
     <div id="plansContainer"></div>
   </div>
@@ -173,7 +171,6 @@
 
   <!-- PROFILE TAB -->
   <div class="app-content" id="tab-profile">
-    
     <div class="profile-top">
       <div class="prof-avatar" id="profInitial">N</div>
       <div class="prof-info">
@@ -224,9 +221,7 @@
     <div class="menu-list">
       <div class="menu-item">
         <div class="menu-icon">🕒</div>
-        <div class="menu-text">
-          <strong>TRANSACTION HISTORY</strong>
-        </div>
+        <div class="menu-text"><strong>TRANSACTION HISTORY</strong></div>
         <div class="menu-arrow">›</div>
       </div>
       <div class="menu-item">
@@ -249,6 +244,10 @@
   <div class="nav-item" onclick="switchTab('profile', this)"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</div>
 </div>
 
+<!-- HIDDEN BUTTONS (Fixes the crash) -->
+<button id="depositBtn" style="display:none;"></button>
+<button id="withdrawBtn" style="display:none;"></button>
+
 <!-- DEPOSIT MODAL -->
 <dialog id="cryptoDepositDialog" class="modal">
   <div class="modal-head">
@@ -262,7 +261,6 @@
       <div class="dep-tab" id="tab-btn-momo" onclick="switchDepositTab('momo')">Mobile Money</div>
     </div>
 
-    <!-- CRYPTO SECTION -->
     <div id="deposit-crypto">
       <div class="deposit-grid" id="depositGrid"></div>
       <hr style="border:0; border-top:1px solid #1a2636; margin: 1.5rem 0;">
@@ -281,7 +279,6 @@
       <p class="form-msg" id="depositMsg"></p>
     </div>
 
-    <!-- MOBILE MONEY SECTION -->
     <div id="deposit-momo" style="display:none;">
       <div class="field">
         <label>Amount (USD) to Deposit</label>
@@ -405,7 +402,6 @@
     `;
   }
 
-  // --- INIT APP ---
   function initApp() {
     TN.ready.then(() => TN.getSession())
     .then(session => {
@@ -436,7 +432,6 @@
       if (err.message === 'No session') {
         window.location.replace('login.html');
       } else {
-        // If error, show it on the screen
         document.body.innerHTML = '<div style="color:white; background:red; padding:20px; font-family:monospace; z-index:9999; position:fixed; top:0; left:0; right:0; bottom:0;"><h2>Setup Error</h2><p>' + err.message + '</p></div>';
       }
     });
@@ -446,7 +441,6 @@
     const p = currentProfile;
     const dep = Number(p.deposit_amount || 0);
 
-    // HOME TAB
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Trader'}`;
     document.getElementById('plansContainer').innerHTML = TIERS.map(t => {
       const isActive = (dep >= t.amount && (TIERS.find(x => dep >= x.amount)?.amount === t.amount));
@@ -462,10 +456,8 @@
       `;
     }).join('');
 
-    // TRADE TAB
     renderSignals(dep);
 
-    // TEAM TAB
     document.getElementById('refLink').textContent = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
     document.getElementById('teamCommission').textContent = formatMoney(p.team_commission || 0);
     
@@ -477,7 +469,6 @@
       document.getElementById('refListContainer').innerHTML = '<div style="color:#a0aabf; padding:1rem 0;">Could not load referrals.</div>';
     });
 
-    // PROFILE TAB
     document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Trader';
     document.getElementById('profInitial').textContent = p.full_name ? p.full_name.charAt(0).toUpperCase() : 'N';
     document.getElementById('profBalance').textContent = Number(p.balance_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -485,7 +476,6 @@
     document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
     document.getElementById('profPhone').textContent = p.phone || 'Not bound';
 
-    // SHOW MOMO TAB
     const allowedMomoCountries = ['UG', 'KE', 'RW', 'ZM', 'CM'];
     if (allowedMomoCountries.includes(p.country) || !p.country) {
       document.getElementById('tab-btn-momo').style.display = 'block';
@@ -661,4 +651,4 @@
 })();
 </script>
 </body>
-</html>
+                                                                                           </html>
