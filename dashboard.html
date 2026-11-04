@@ -349,7 +349,7 @@
     <div id="deposit-momo" style="display:none;">
       <div class="field">
         <label>Amount (USD) to Deposit</label>
-        <input type="number" id="momoUsdAmount" min="50" step="1" placeholder="Min $50" oninput="calcLocalAmount()">
+        <input type="number" id="momoUsdAmount" min="10" step="1" placeholder="Min $10" oninput="calcLocalAmount()">
         <p style="font-size:0.75rem; color:#6b7280; margin-top:0.4rem;">You will pay: <strong id="localAmountDisplay" style="color:#ec4899;">0</strong> <span id="localCurrency"></span></p>
       </div>
       <div class="field">
@@ -367,7 +367,7 @@
   <div class="modal-head"><div><h3 style="margin:0;">Withdraw</h3></div><button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
     <form id="withdrawForm" style="display:flex; flex-direction:column; gap:1rem;">
-      <div class="field"><label>Amount (USD)</label><input type="number" id="withdrawAmount" min="50" placeholder="Min $50" required></div>
+      <div class="field"><label>Amount (USD)</label><input type="number" id="withdrawAmount" min="10" placeholder="Min $10" required></div>
       <div class="field"><label>Provider</label><select id="mmProvider"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
       <div class="field"><label>Phone Number</label><input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required></div>
       <button type="submit" class="btn-primary" style="background:#111827;">Request Withdrawal</button>
@@ -397,15 +397,17 @@
   const EXCHANGE_RATES = { UG: 3800, KE: 130, RW: 1300, ZM: 26, CM: 600 };
   const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF' };
 
+  // UPDATED TIERS
   const TIERS = [
-    { amount: 50,   name: 'Entry Level', slots: ['3PM'], profit: '5' },
-    { amount: 100,  name: 'Standard Level', slots: ['3PM'], profit: '7.5' },
-    { amount: 200,  name: 'Bronze Level', slots: ['3PM'], profit: '9.5' },
-    { amount: 300,  name: 'Silver Level', slots: ['3PM', '5PM'], profit: '15' },
-    { amount: 500,  name: 'Gold Level', slots: ['3PM', '5PM'], profit: '20' },
-    { amount: 1000, name: 'Platinum Level', slots: ['3PM', '5PM', '8PM'], profit: '40' },
-    { amount: 2000, name: 'Diamond Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '60' },
-    { amount: 5000, name: 'VIP Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '180' }
+    { amount: 10,   name: 'Starter Level', slots: ['3PM'], profit: '1.5' },
+    { amount: 30,   name: 'Basic Level', slots: ['3PM'], profit: '2.5' },
+    { amount: 50,   name: 'Standard Level', slots: ['3PM'], profit: '5' },
+    { amount: 100,  name: 'Bronze Level', slots: ['3PM', '5PM'], profit: '9.8' },
+    { amount: 300,  name: 'Silver Level', slots: ['3PM', '5PM'], profit: '13.5' },
+    { amount: 500,  name: 'Gold Level', slots: ['3PM', '5PM'], profit: '17' },
+    { amount: 1000, name: 'Platinum Level', slots: ['3PM', '5PM', '8PM'], profit: '25.8' },
+    { amount: 2000, name: 'Diamond Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '45.5' },
+    { amount: 5000, name: 'VIP Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '100' }
   ];
 
   window.switchTab = function(tab, el) {
@@ -516,7 +518,6 @@
 
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Trader'}`;
     
-    // Render Plans
     let hasActivePlan = dep > 0; 
     document.getElementById('noPlanNotice').style.display = hasActivePlan ? 'none' : 'block';
 
@@ -609,7 +610,7 @@
     let isTime = false;
     let activeSlot = '';
 
-    if (Number(currentProfile.deposit_amount) < 50) return; 
+    if (Number(currentProfile.deposit_amount) < 10) return; 
 
     slots.forEach(slot => {
       if (!tier.slots.includes(slot)) return;
@@ -760,7 +761,7 @@
     const btn = document.getElementById('momoSubmitBtn');
     const country = currentProfile.country || 'UG';
 
-    if (usdAmount < 50) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is $50.'; return; }
+    if (usdAmount < 10) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is $10.'; return; }
     if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
 
     const rate = EXCHANGE_RATES[country] || 3800;
@@ -791,7 +792,7 @@
 
   document.getElementById('depositBtn').addEventListener('click', () => {
     const grid = document.getElementById('depositGrid');
-    grid.innerHTML = [50, 100, 200, 300, 500, 1000, 2000, 5000].map(amt => `<div class="deposit-btn" onclick="selectDepositAmount(${amt})">$${amt}</div>`).join('');
+    grid.innerHTML = [10, 30, 50, 100, 300, 500, 1000, 2000, 5000].map(amt => `<div class="deposit-btn" onclick="selectDepositAmount(${amt})">$${amt}</div>`).join('');
     document.getElementById('cryptoDepositDialog').showModal();
     switchDepositTab('crypto');
   });
@@ -814,15 +815,15 @@
   });
 
   document.getElementById('withdrawBtn').addEventListener('click', () => {
-    const day = new Date().getDay();
-    if (day !== 0 && day !== 6) { alert('Withdrawals are only on Weekends (Sat/Sun).'); return; }
+    const day = new Date().getDay(); // 1 = Monday, 3 = Wednesday
+    if (day !== 1 && day !== 3) { alert('Withdrawals are only on Mondays and Wednesdays.'); return; }
     document.getElementById('withdrawDialog').showModal();
   });
 
   document.getElementById('withdrawForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const amt = parseFloat(document.getElementById('withdrawAmount').value);
-    if (amt < 50) return alert('Min $50');
+    if (amt < 10) return alert('Minimum withdrawal is $10');
     TN.client.from('withdrawal_requests').insert({
       user_id: currentUser.id, amount_usd: amt, mobile_money_provider: document.getElementById('mmProvider').value, mobile_money_number: document.getElementById('mmNumber').value
     }).then(res => {
