@@ -3,55 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard — Trade Nova</title>
-<link rel="stylesheet" href="css/styles.css">
+<title>Admin Dashboard — Nova Trade</title>
 <style>
-  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: #f9fafb; color: #111827; padding-bottom: 2rem; }
+  
+  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.5rem; }
+  .brand { font-weight: 800; font-size: 1.2rem; color: #111827; }
+  .brand span { color: #ec4899; }
+  .btn-logout { background: #fdf2f8; border: 1px solid #fbcfe8; color: #ec4899; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+
+  .wrap { padding: 0 1.15rem; max-width: 1000px; margin: 0 auto; }
   
   /* KPI Cards */
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
-  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: center; }
-  .kpi-val { font-size: 1.3rem; font-weight: 800; color: var(--blue); margin-bottom: 0.2rem; }
-  .kpi-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+  .kpi-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+  .kpi-val { font-size: 1.3rem; font-weight: 800; color: #ec4899; margin-bottom: 0.2rem; }
+  .kpi-lbl { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; font-weight: bold; }
 
   /* Tabs */
-  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-  .tab-btn { background: none; border: none; color: var(--muted); font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
-  .tab-btn.active { background: var(--surface-2); color: var(--text); }
+  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; }
+  .tab-btn { background: none; border: none; color: #6b7280; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
+  .tab-btn.active { background: #fdf2f8; color: #ec4899; }
 
   /* Tables */
-  .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; margin-bottom: 2rem; }
-  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-  .data-table th { background: var(--surface-2); color: var(--muted); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
+  .data-table { width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border: 1px solid #e5e7eb; }
+  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; font-size: 0.85rem; }
+  .data-table th { background: #f9fafb; color: #6b7280; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
   .data-table tr:last-child td { border-bottom: none; }
   
-  .action-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-  .btn-approve { background: var(--green); color: #fff; }
-  .btn-reject { background: var(--red-soft); color: var(--red); margin-left: 0.5rem; }
+  .action-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: #fff; }
+  .btn-approve { background: #10b981; }
+  .btn-reject { background: #ef4444; margin-left: 0.5rem; }
   
   .tier-group { margin-bottom: 2rem; }
-  .tier-title { font-size: 1.1rem; font-weight: 700; color: var(--blue); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-  .tier-badge { background: var(--blue-soft); color: var(--blue); font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
-  .empty-state { padding: 2rem; text-align: center; color: var(--muted); background: var(--surface); border-radius: var(--radius); }
+  .tier-title { font-size: 1.1rem; font-weight: 700; color: #ec4899; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .tier-badge { background: #fdf2f8; color: #ec4899; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+  .empty-state { padding: 2rem; text-align: center; color: #6b7280; background: #ffffff; border-radius: 12px; border: 1px dashed #e5e7eb; }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="admin.html">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 17l5-6 4 3 5-7 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>Trade Nova Admin</span>
-    </a>
-    <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-left:auto">Log out</button>
-  </div>
+<header class="admin-header">
+  <div class="brand">Nova<span>Trade</span> Admin</div>
+  <button class="btn-logout" id="logoutBtn">Log out</button>
 </header>
 
-<main class="wrap" style="padding-bottom: 4rem;">
-  <div class="admin-header">
-    <h2>Admin Control Panel</h2>
-  </div>
-
+<main class="wrap">
   <!-- KPIs -->
   <div class="kpi-grid">
     <div class="kpi-card">
@@ -59,11 +57,11 @@
       <div class="kpi-lbl">Total Users</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-val" id="kpiDeposits" style="color:var(--green);">-</div>
+      <div class="kpi-val" id="kpiDeposits" style="color:#10b981;">-</div>
       <div class="kpi-lbl">Total Deposited</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-val" id="kpiWithdrawals" style="color:var(--red);">-</div>
+      <div class="kpi-val" id="kpiWithdrawals" style="color:#ef4444;">-</div>
       <div class="kpi-lbl">Total Withdrawn</div>
     </div>
   </div>
@@ -76,10 +74,10 @@
 
   <!-- TAB 1: Pending Actions -->
   <div id="tab-pending">
-    <h3 style="margin-bottom:0.5rem;">Pending Crypto Deposits</h3>
+    <h3 style="margin-bottom:0.5rem; color:#111827;">Pending Crypto Deposits (Manual)</h3>
     <div id="depositsContainer" class="empty-state">Loading...</div>
 
-    <h3 style="margin-top:2rem; margin-bottom:0.5rem;">Pending Withdrawals</h3>
+    <h3 style="margin-top:2rem; margin-bottom:0.5rem; color:#111827;">Pending Withdrawals</h3>
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
 
@@ -110,12 +108,10 @@
         window.location.replace('dashboard.html');
         return;
       }
-      
       fetchKPIs();
       loadDeposits();
       loadWithdrawals();
       loadUsers();
-
     })
     .catch(err => {
       console.error(err);
@@ -126,7 +122,6 @@
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
-    else document.querySelector(`.tab-btn[onclick*="${tab}"]`).classList.add('active');
     
     document.getElementById('tab-pending').style.display = tab === 'pending' ? 'block' : 'none';
     document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
@@ -149,7 +144,7 @@
     });
   }
 
-  // --- PENDING DEPOSITS ---
+  // --- PENDING DEPOSITS (MANUAL CRYPTO) ---
   function loadDeposits() {
     TN.client.from('pending_deposits')
       .select('*, profiles(full_name, email)')
@@ -158,14 +153,14 @@
       .then(res => {
         const container = document.getElementById('depositsContainer');
         if (!res.data || res.data.length === 0) {
-          container.innerHTML = 'No pending deposits.'; return;
+          container.innerHTML = 'No pending crypto deposits.'; return;
         }
 
         let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
         res.data.forEach(d => {
           html += `<tr>
             <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
-            <td style="font-weight:bold; color:var(--green);">$${d.amount_usd}</td>
+            <td style="font-weight:bold; color:#10b981;">$${d.amount_usd}</td>
             <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
             <td>
               <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
@@ -178,22 +173,22 @@
   }
 
   window.approveDeposit = async function(depositId, userId, amount) {
-    if (!confirm(`Confirm $${amount} received? This unlocks their tier.`)) return;
+    if (!confirm(`Confirm $${amount} received in Binance? This will add to their Available Balance.`)) return;
     try {
-      const { data: profile } = await TN.client.from('profiles').select('deposit_amount, total_deposited').eq('id', userId).single();
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
       
-      const newDepositAmount = Number(profile.deposit_amount || 0) + Number(amount);
+      // ADD TO BALANCE (Wallet), NOT DEPOSIT_AMOUNT (Plan)
+      const newBalance = Number(profile.balance_usd || 0) + Number(amount);
       const newTotalDeposited = Number(profile.total_deposited || 0) + Number(amount);
 
       await TN.client.from('profiles').update({ 
-        deposit_amount: newDepositAmount,
-        total_deposited: newTotalDeposited,
-        active_day: 1
+        balance_usd: newBalance,
+        total_deposited: newTotalDeposited
       }).eq('id', userId);
 
       await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
       
-      alert('Approved! Commission paid & Tier unlocked.'); 
+      alert('Approved! User balance updated.'); 
       fetchKPIs(); loadDeposits(); loadUsers();
     } catch (err) { alert(err.message); }
   };
@@ -220,7 +215,7 @@
         res.data.forEach(w => {
           html += `<tr>
             <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
-            <td style="font-weight:bold; color:var(--red);">-$${w.amount_usd}</td>
+            <td style="font-weight:bold; color:#ef4444;">-$${w.amount_usd}</td>
             <td>${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
             <td>
               <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
@@ -280,7 +275,7 @@
       'Tier 3 ($200 - $299)': [],
       'Tier 2 ($100 - $199)': [],
       'Tier 1 ($50 - $99)': [],
-      'No Deposit (<$50)': []
+      'No Active Plan': []
     };
 
     allUsers.forEach(u => {
@@ -293,7 +288,7 @@
       else if (dep >= 200) groups['Tier 3 ($200 - $299)'].push(u);
       else if (dep >= 100) groups['Tier 2 ($100 - $199)'].push(u);
       else if (dep >= 50) groups['Tier 1 ($50 - $99)'].push(u);
-      else groups['No Deposit (<$50)'].push(u);
+      else groups['No Active Plan'].push(u);
     });
 
     let html = '';
@@ -303,15 +298,15 @@
       html += `<div class="tier-group">
         <div class="tier-title">${tierName} <span class="tier-badge">${users.length} users</span></div>
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Deposit</th><th>Balance</th></tr></thead><tbody>`;
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Active Plan</th><th>Wallet Bal</th></tr></thead><tbody>`;
       
       users.forEach(u => {
         html += `<tr>
           <td>${u.full_name || 'N/A'}</td>
           <td>${u.email}</td>
           <td>${u.phone || 'N/A'}</td>
-          <td style="color:var(--green); font-weight:bold;">$${u.deposit_amount}</td>
-          <td>$${u.balance_usd}</td>
+          <td style="color:#ec4899; font-weight:bold;">$${u.deposit_amount}</td>
+          <td style="color:#10b981; font-weight:bold;">$${u.balance_usd}</td>
         </tr>`;
       });
       
