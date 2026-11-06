@@ -2,56 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#05080f">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0b1120">
 <title>Sign in — Nova Trade</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   
   body {
-    background: #05080f;
-    color: #ffffff;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
+    background: linear-gradient(rgba(11, 17, 32, 0.85), rgba(11, 17, 32, 0.95)), 
+                url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat fixed;
+    color: #111827;
   }
 
-  /* Centered Auth Card */
   .auth-card {
     width: 100%;
     max-width: 400px;
-    background: #0a111a;
-    border: 1px solid #1a2636;
-    border-radius: 16px;
+    background: #ffffff;
+    border-radius: 20px;
     padding: 2.5rem 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   }
 
-  /* Logo */
   .logo-container { text-align: center; margin-bottom: 2rem; }
   .logo-text {
     font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: -1px;
     text-transform: uppercase;
+    color: #111827;
   }
   .logo-text span {
-    color: #00d2ff;
-    text-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    color: #ec4899;
+    text-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
   }
 
-  h1 { font-size: 1.4rem; margin-bottom: 0.4rem; text-align: center; }
-  .subtitle { color: #a0aabf; font-size: 0.85rem; text-align: center; margin-bottom: 2rem; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.4rem; text-align: center; color: #111827; }
+  .subtitle { color: #6b7280; font-size: 0.85rem; text-align: center; margin-bottom: 2rem; }
 
-  /* Form Fields */
   .field { margin-bottom: 1.2rem; }
   .field label {
     display: block;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #a0aabf;
+    color: #4b5563;
     margin-bottom: 0.4rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -59,25 +57,24 @@
   .field input {
     width: 100%;
     padding: 0.85rem 1rem;
-    background: #05080f;
-    border: 1px solid #1a2636;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 10px;
-    color: #ffffff;
+    color: #111827;
     font-size: 0.95rem;
     transition: 0.2s;
   }
   .field input:focus {
     outline: none;
-    border-color: #00d2ff;
-    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.1);
+    border-color: #ec4899;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
   }
 
-  /* Button */
   .btn-submit {
     width: 100%;
     padding: 1rem;
-    background: #00d2ff;
-    color: #05080f;
+    background: #ec4899;
+    color: #ffffff;
     border: none;
     border-radius: 10px;
     font-size: 1rem;
@@ -86,23 +83,21 @@
     margin-top: 1rem;
     transition: 0.2s;
   }
-  .btn-submit:hover { background: #00b8e6; transform: translateY(-2px); }
-  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-submit:hover { background: #db2777; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
-  /* Messages & Links */
   .form-msg { text-align: center; font-size: 0.85rem; margin-top: 1rem; min-height: 1.2rem; }
-  .form-msg.err { color: #ea3943; }
-  .form-msg.ok { color: #16c784; }
+  .form-msg.err { color: #ef4444; }
+  .form-msg.ok { color: #10b981; }
 
-  .auth-foot { text-align: center; font-size: 0.85rem; color: #a0aabf; margin-top: 2rem; }
-  .auth-foot a { color: #00d2ff; text-decoration: none; font-weight: 600; }
+  .auth-foot { text-align: center; font-size: 0.85rem; color: #6b7280; margin-top: 2rem; }
+  .auth-foot a { color: #ec4899; text-decoration: none; font-weight: 700; }
   .auth-foot a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
 <div class="auth-card">
-  
   <div class="logo-container">
     <div class="logo-text">Nova<span>Trade</span></div>
   </div>
@@ -112,7 +107,7 @@
 
   <form id="loginForm" novalidate>
     <div class="field">
-      <label for="email">Email</label>
+      <label for="email">Email Address</label>
       <input id="email" name="email" type="email" autocomplete="email" required>
     </div>
 
@@ -145,16 +140,13 @@
     msg.textContent = text;
   }
 
-  // Redirect if already logged in
   TN.ready.then(function () {
     return TN.getSession().then(function (session) {
       if (session) { 
         return checkRoleAndRedirect(session.user.id);
       }
     });
-  }).catch(function (err) {
-    console.error(err);
-  });
+  }).catch(function (err) { console.error(err); });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
