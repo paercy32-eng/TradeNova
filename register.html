@@ -3,109 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#0b1120">
+<meta name="theme-color" content="#fdf2f8">
 <title>Create Account — Nova Trade</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   
   body {
+    background: #fdf2f8;
+    color: #111827;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top Trading Banner */
+  .banner {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.2)), 
+                url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+    border-bottom: 4px solid #ec4899;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
-    background: linear-gradient(rgba(11, 17, 32, 0.85), rgba(11, 17, 32, 0.95)), 
-                url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat fixed;
-    color: #111827;
   }
 
-  .auth-card {
-    width: 100%;
-    max-width: 400px;
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  }
-
-  .logo-container { text-align: center; margin-bottom: 1.5rem; }
-  .logo-text {
+  .banner-text {
+    color: #fff;
     font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: -1px;
     text-transform: uppercase;
-    color: #111827;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.7);
   }
-  .logo-text span {
-    color: #ec4899;
-    text-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
-  }
+  .banner-text span { color: #ec4899; }
 
-  h1 { font-size: 1.5rem; margin-bottom: 0.4rem; text-align: center; color: #111827; }
-  .subtitle { color: #6b7280; font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem; }
-
-  .field { margin-bottom: 1rem; }
-  .field label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #4b5563;
-    margin-bottom: 0.4rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .field input, .field select {
+  /* Form Container */
+  .auth-container {
+    flex: 1;
+    padding: 2rem 1.5rem;
+    max-width: 450px;
+    margin: 0 auto;
     width: 100%;
-    padding: 0.85rem 1rem;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    color: #111827;
-    font-size: 0.95rem;
-    transition: 0.2s;
-  }
-  .field select { appearance: none; }
-  .field input:focus, .field select:focus {
-    outline: none;
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
   }
 
-  .phone-group {
-    display: flex;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #f9fafb;
+  .auth-title {
+    font-size: 1.4rem;
+    color: #ec4899;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
   }
-  .phone-group:focus-within {
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
-  }
-  .dial-code {
+
+  /* Input Fields */
+  .field { margin-bottom: 1rem; }
+  .input-group {
     display: flex;
     align-items: center;
-    padding: 0 1rem;
     background: #ffffff;
-    color: #4b5563;
-    font-weight: 700;
-    border-right: 1px solid #e5e7eb;
+    border: 1px solid #fbcfe8;
+    border-radius: 12px;
+    padding: 0 1rem;
+    transition: 0.2s;
   }
-  .phone-group input {
+  .input-group:focus-within {
+    border-color: #ec4899;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+  }
+  .input-group i {
+    color: #ec4899;
+    font-size: 1.1rem;
+    width: 24px;
+  }
+  .input-group input, .input-group select {
+    flex: 1;
     border: none;
     background: transparent;
-    border-radius: 0;
-    box-shadow: none !important;
+    padding: 1rem 0.5rem;
+    font-size: 0.95rem;
+    color: #111827;
+    outline: none;
+    width: 100%;
+  }
+  .input-group input::placeholder { color: #9ca3af; }
+  .input-group select { appearance: none; color: #111827; }
+  
+  /* Phone specific */
+  .dial-code {
+    color: #ec4899;
+    font-weight: 800;
+    border-right: 1px solid #fbcfe8;
+    padding-right: 0.5rem;
+    margin-right: 0.5rem;
   }
 
+  /* Terms Checkbox */
   .check-terms {
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: #6b7280;
+    color: #4b5563;
     margin: 1.2rem 0;
-    cursor: pointer;
+    font-weight: 600;
   }
   .check-terms input {
     margin-top: 0.2rem;
@@ -113,99 +113,113 @@
     width: 16px;
     height: 16px;
   }
-  .check-terms a { color: #ec4899; text-decoration: none; font-weight: 700; }
+  .check-terms a { color: #ec4899; text-decoration: none; font-weight: 800; }
 
+  /* Submit Button */
   .btn-submit {
     width: 100%;
     padding: 1rem;
-    background: #ec4899;
+    background: linear-gradient(90deg, #ec4899, #db2777);
     color: #ffffff;
     border: none;
-    border-radius: 10px;
-    font-size: 1rem;
+    border-radius: 30px; /* Pill shape */
+    font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
     transition: 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
-  .btn-submit:hover { background: #db2777; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4); }
-  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+  .btn-submit:disabled { opacity: 0.7; transform: none; box-shadow: none; }
 
-  .form-msg { text-align: center; font-size: 0.85rem; margin-top: 1rem; min-height: 1.2rem; }
+  /* Messages & Footer */
+  .form-msg { text-align: center; font-size: 0.85rem; margin-top: 1rem; min-height: 1.2rem; font-weight: bold; }
   .form-msg.err { color: #ef4444; }
   .form-msg.ok { color: #10b981; }
 
-  .auth-foot { text-align: center; font-size: 0.85rem; color: #6b7280; margin-top: 1.5rem; }
-  .auth-foot a { color: #ec4899; text-decoration: none; font-weight: 700; }
-  .auth-foot a:hover { text-decoration: underline; }
+  .auth-foot { text-align: center; font-size: 0.95rem; color: #4b5563; margin-top: 1.5rem; font-weight: 600; }
+  .auth-foot a { color: #ec4899; text-decoration: none; font-weight: 800; }
 </style>
 </head>
 <body>
 
-<div class="auth-card">
-  <div class="logo-container">
-    <div class="logo-text">Nova<span>Trade</span></div>
-  </div>
+<div class="banner">
+  <div class="banner-text">Nova<span>Trade</span></div>
+</div>
 
-  <h1>Create Account</h1>
-  <p class="subtitle">Join Nova Trade and start earning.</p>
+<div class="auth-container">
+  <h1 class="auth-title">Create Account</h1>
 
   <form id="registerForm" novalidate>
     <div class="field">
-      <label for="fullName">Full Name</label>
-      <input id="fullName" name="fullName" type="text" autocomplete="name" required>
-    </div>
-
-    <div class="field">
-      <label for="email">Email Address</label>
-      <input id="email" name="email" type="email" autocomplete="email" required>
-    </div>
-
-    <div class="field">
-      <label for="country">Country</label>
-      <select id="country" name="country" required>
-        <option value="" data-code="">Select Country</option>
-        <optgroup label="East Africa">
-          <option value="KE" data-code="+254">Kenya</option>
-          <option value="UG" data-code="+256">Uganda</option>
-          <option value="TZ" data-code="+255">Tanzania</option>
-          <option value="RW" data-code="+250">Rwanda</option>
-        </optgroup>
-        <optgroup label="Central Africa">
-          <option value="CM" data-code="+237">Cameroon</option>
-        </optgroup>
-        <optgroup label="Southern Africa">
-          <option value="ZA" data-code="+27">South Africa</option>
-          <option value="ZM" data-code="+260">Zambia</option>
-          <option value="ZW" data-code="+263">Zimbabwe</option>
-        </optgroup>
-        <optgroup label="West Africa">
-          <option value="NG" data-code="+234">Nigeria</option>
-          <option value="GH" data-code="+233">Ghana</option>
-        </optgroup>
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="phone">Phone Number</label>
-      <div class="phone-group">
-        <span class="dial-code" id="dialCode">+</span>
-        <input id="phone" name="phone" type="tel" inputmode="numeric" required>
+      <div class="input-group">
+        <i class="fa-solid fa-user"></i>
+        <input id="fullName" name="fullName" type="text" placeholder="Full Name" autocomplete="name" required>
       </div>
     </div>
 
     <div class="field">
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" required minlength="8">
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input id="email" name="email" type="email" placeholder="Email Address" autocomplete="email" required>
+      </div>
     </div>
 
     <div class="field">
-      <label for="confirm">Confirm Password</label>
-      <input id="confirm" name="confirm" type="password" required>
+      <div class="input-group">
+        <i class="fa-solid fa-globe"></i>
+        <select id="country" name="country" required>
+          <option value="" data-code="">Select Country</option>
+          <optgroup label="East Africa">
+            <option value="KE" data-code="+254">Kenya</option>
+            <option value="UG" data-code="+256">Uganda</option>
+            <option value="TZ" data-code="+255">Tanzania</option>
+            <option value="RW" data-code="+250">Rwanda</option>
+          </optgroup>
+          <optgroup label="Central Africa">
+            <option value="CM" data-code="+237">Cameroon</option>
+          </optgroup>
+          <optgroup label="Southern Africa">
+            <option value="ZA" data-code="+27">South Africa</option>
+            <option value="ZM" data-code="+260">Zambia</option>
+            <option value="ZW" data-code="+263">Zimbabwe</option>
+          </optgroup>
+          <optgroup label="West Africa">
+            <option value="NG" data-code="+234">Nigeria</option>
+            <option value="GH" data-code="+233">Ghana</option>
+          </optgroup>
+        </select>
+      </div>
     </div>
 
     <div class="field">
-      <label for="inviteCode">Invitation Code (Optional)</label>
-      <input id="inviteCode" name="inviteCode" type="text" style="text-transform:uppercase">
+      <div class="input-group">
+        <span class="dial-code" id="dialCode">+</span>
+        <input id="phone" name="phone" type="tel" placeholder="Phone Number" inputmode="numeric" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input id="password" name="password" type="password" placeholder="Password" required minlength="8">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input id="confirm" name="confirm" type="password" placeholder="Re-enter password" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="input-group">
+        <i class="fa-solid fa-ticket"></i>
+        <input id="inviteCode" name="inviteCode" type="text" placeholder="Invitation Code (Optional)" style="text-transform:uppercase">
+      </div>
     </div>
 
     <label class="check-terms">
@@ -213,11 +227,11 @@
       <span>I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</span>
     </label>
 
-    <button class="btn-submit" type="submit" id="submitBtn">Create Account</button>
+    <button class="btn-submit" type="submit" id="submitBtn">Register</button>
     <p class="form-msg" id="formMsg"></p>
   </form>
 
-  <p class="auth-foot">Already have an account? <a href="login.html">Sign In</a></p>
+  <p class="auth-foot">Already have an account? <a href="login.html">Login</a></p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
