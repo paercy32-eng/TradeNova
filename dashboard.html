@@ -161,34 +161,34 @@
   .status-pending { color: #f59e0b; }
   .status-failed { color: #ef4444; }
 
-  /* ================= MODALS (Redesigned) ================= */
-  .modal { width: 92vw; max-width: 400px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 20px; color: #111827; padding: 0; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; }
+  /* ================= MINIMIZED MODALS ================= */
+  .modal { width: 92vw; max-width: 360px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; color: #111827; padding: 0; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; }
   .modal::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-  .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.2rem 0.5rem; }
-  .modal-header h3 { font-size: 1.4rem; font-weight: 900; margin: 0; color: #111827; }
-  .icon-btn { background: #f3f4f6; border: none; color: #6b7280; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
   
-  .modal-body { padding: 0.5rem 1.2rem 1.5rem; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1rem 0.5rem; }
+  .modal-header h3 { font-size: 1.2rem; font-weight: 900; margin: 0; color: #111827; }
+  .icon-btn { background: #f3f4f6; border: none; color: #6b7280; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
   
-  .info-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 0.8rem; font-size: 0.8rem; color: #065f46; text-align: center; font-weight: 600; margin-bottom: 1rem; line-height: 1.4; }
-  .available-text { font-size: 0.8rem; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 1rem; display: block; }
+  .modal-body { padding: 0.5rem 1rem 1rem; }
   
-  .input-label { display: block; font-size: 0.75rem; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .main-input { width: 100%; padding: 1rem; font-size: 1.2rem; font-weight: 800; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; color: #111827; outline: none; margin-bottom: 0.4rem; }
+  .available-text { font-size: 0.75rem; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 0.8rem; display: block; }
+  
+  .input-label { display: block; font-size: 0.7rem; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .main-input { width: 100%; padding: 0.8rem; font-size: 1rem; font-weight: 800; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; color: #111827; outline: none; margin-bottom: 0.3rem; }
   .main-input:focus { border-color: #10b981; }
-  .min-hint { font-size: 0.75rem; color: #6b7280; font-weight: 600; margin-bottom: 1rem; display: block; }
+  .min-hint { font-size: 0.7rem; color: #6b7280; font-weight: 600; margin-bottom: 0.8rem; display: block; }
   
-  .breakdown-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin-bottom: 1.2rem; }
-  .breakdown-row { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: #4b5563; margin-bottom: 0.6rem; }
-  .breakdown-row:last-child { margin-bottom: 0; padding-top: 0.6rem; border-top: 1px dashed #d1d5db; font-weight: 800; color: #111827; }
+  .breakdown-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 0.8rem; margin-bottom: 1rem; }
+  .breakdown-row { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #4b5563; margin-bottom: 0.4rem; }
+  .breakdown-row:last-child { margin-bottom: 0; padding-top: 0.4rem; border-top: 1px dashed #d1d5db; font-weight: 800; color: #111827; }
   .val-red { color: #ef4444; }
-  .val-green { color: #10b981; font-size: 1rem; }
+  .val-green { color: #10b981; font-size: 0.95rem; }
   
-  .method-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1rem; }
-  .method-btn { padding: 0.8rem; border-radius: 10px; text-align: center; font-weight: 800; font-size: 0.9rem; border: 2px solid #e5e7eb; background: #ffffff; color: #6b7280; cursor: pointer; }
+  .method-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 0.8rem; }
+  .method-btn { padding: 0.6rem; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; border: 2px solid #e5e7eb; background: #ffffff; color: #6b7280; cursor: pointer; }
   .method-btn.active { border-color: #10b981; background: #ecfdf5; color: #10b981; }
   
-  .modal-submit { width: 100%; padding: 1rem; background: linear-gradient(90deg, #10b981, #059669); color: #fff; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+  .modal-submit { width: 100%; padding: 0.8rem; background: linear-gradient(90deg, #10b981, #059669); color: #fff; border: none; border-radius: 30px; font-size: 1rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
   .modal-submit:disabled { opacity: 0.6; }
 </style>
 </head>
@@ -317,7 +317,7 @@
       <div class="action-item" onclick="document.getElementById('depositBtn').click()">
         <div class="action-icon">↓</div><span>DEPOSIT</span>
       </div>
-      <div class="action-item" onclick="document.getElementById('withdrawBtn').click()">
+      <div class="action-item" onclick="openWithdraw()">
         <div class="action-icon" style="background:#f0fdf4; border-color:#bbf7d0; color:#22c55e;">↑</div><span>WITHDRAW</span>
       </div>
       <a href="https://t.me/root67u" target="_blank" class="action-item">
@@ -339,18 +339,20 @@
       </div>
       <button class="btn-checkin" id="btnDailyCheckin">CLAIM</button>
     </div>
-    <div class="list-card" onclick="openFullHistory()">
-      <div class="list-icon icon-history">🕒</div>
-      <div class="list-text">
-        <strong>Transaction History</strong>
-      </div>
-      <div style="color:#9ca3af; font-size:1.2rem;">›</div>
-    </div>
-    <div class="list-card">
+    
+    <div class="list-card" onclick="openBindAccount()">
       <div class="list-icon icon-bind">🔒</div>
       <div class="list-text">
         <strong>Bind Account</strong>
         <span id="profPhone">Not bound</span>
+      </div>
+      <div style="color:#9ca3af; font-size:1.2rem;">›</div>
+    </div>
+    
+    <div class="list-card" onclick="openFullHistory()">
+      <div class="list-icon icon-history">🕒</div>
+      <div class="list-text">
+        <strong>Transaction History</strong>
       </div>
       <div style="color:#9ca3af; font-size:1.2rem;">›</div>
     </div>
@@ -370,6 +372,7 @@
   </div>
 </main>
 
+<!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('home', this)">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
@@ -391,7 +394,7 @@
 <button id="depositBtn" style="display:none;"></button>
 <button id="withdrawBtn" style="display:none;"></button>
 
-<!-- REDESIGNED DEPOSIT MODAL -->
+<!-- DEPOSIT MODAL -->
 <dialog id="depositDialog" class="modal">
   <div class="modal-header">
     <h3>Deposit Funds</h3>
@@ -402,20 +405,20 @@
     <input type="number" id="depositAmountUGX" class="main-input" min="15000" placeholder="Enter amount">
     <span class="min-hint">Minimum deposit: UGX 15,000</span>
     
-    <label class="input-label">Select Deposit Method</label>
+    <label class="input-label">Select Method</label>
     <div class="method-grid">
       <div class="method-btn active">MarzPay (Mobile Money)</div>
     </div>
 
-    <label class="input-label" style="margin-top: 1rem;">Phone Number</label>
-    <input type="tel" id="momoPhone" class="main-input" placeholder="e.g. 07XXXXXXXX" style="font-size: 1rem;">
+    <label class="input-label">Phone Number</label>
+    <input type="tel" id="momoPhone" class="main-input" placeholder="e.g. 07XXXXXXXX">
     
-    <button class="modal-submit" id="momoSubmitBtn" onclick="submitMobileMoney()" style="margin-top: 1rem;">Pay Now</button>
+    <button class="modal-submit" id="momoSubmitBtn" onclick="submitMobileMoney()" style="margin-top: 0.5rem;">Pay Now</button>
     <p class="form-msg" id="momoMsg" style="text-align:center; font-size:0.8rem; margin-top:0.5rem;"></p>
   </div>
 </dialog>
 
-<!-- REDESIGNED WITHDRAW MODAL -->
+<!-- WITHDRAW MODAL (SIMPLIFIED) -->
 <dialog id="withdrawDialog" class="modal">
   <div class="modal-header">
     <h3>Withdraw</h3>
@@ -424,23 +427,10 @@
   <div class="modal-body">
     <span class="available-text">Available: UGX <span id="modalAvailableBal">0</span></span>
     
-    <div class="info-box">
-      Manual Withdrawal. Admin will send funds to your bound account number.
-    </div>
-
     <form id="withdrawForm">
       <label class="input-label">Amount (UGX)</label>
       <input type="number" id="withdrawAmount" class="main-input" min="3000" placeholder="e.g. 5000" oninput="calcWithdrawFee()" required>
       <span class="min-hint">Minimum withdraw: UGX 3,000</span>
-
-      <label class="input-label" style="margin-top: 0.5rem;">Provider</label>
-      <select id="mmProvider" class="main-input" style="padding: 0.8rem; font-size: 1rem;">
-        <option value="MTN">MTN Mobile Money</option>
-        <option value="Airtel">Airtel Money</option>
-      </select>
-
-      <label class="input-label" style="margin-top: 1rem;">Phone Number</label>
-      <input type="tel" id="mmNumber" class="main-input" placeholder="e.g. 07XXXXXXXX" style="font-size: 1rem;" required>
 
       <div class="breakdown-box">
         <div class="breakdown-row">
@@ -457,9 +447,26 @@
         </div>
       </div>
 
-      <button type="submit" class="modal-submit" style="background: linear-gradient(90deg, #10b981, #059669);">Confirm Withdrawal</button>
+      <button type="submit" class="modal-submit">Confirm Withdrawal</button>
     </form>
     <p class="form-msg" id="withdrawMsg" style="text-align:center; font-size:0.8rem; margin-top:0.5rem;"></p>
+  </div>
+</dialog>
+
+<!-- BIND ACCOUNT MODAL -->
+<dialog id="bindDialog" class="modal">
+  <div class="modal-header">
+    <h3>Bind Account</h3>
+    <button class="icon-btn" onclick="document.getElementById('bindDialog').close()">✕</button>
+  </div>
+  <div class="modal-body">
+    <label class="input-label">Full Name (Registered)</label>
+    <input type="text" id="bindName" class="main-input" placeholder="Enter your name">
+    
+    <label class="input-label">Phone Number (Registered)</label>
+    <input type="tel" id="bindPhone" class="main-input" placeholder="e.g. 07XXXXXXXX">
+    
+    <button class="modal-submit" onclick="saveBindAccount()" style="margin-top: 0.5rem;">Save Account</button>
   </div>
 </dialog>
 
@@ -678,7 +685,13 @@
     document.getElementById('profBalance').textContent = Number(bal).toLocaleString();
     document.getElementById('profDeposited').textContent = formatUGX(p.total_deposited || 0);
     document.getElementById('profWithdrawn').textContent = formatUGX(p.total_withdrawn || 0);
-    document.getElementById('profPhone').textContent = p.phone || 'Not bound';
+    
+    // UI update for bind account
+    if (p.phone && p.full_name) {
+      document.getElementById('profPhone').textContent = `${p.full_name} (${p.phone})`;
+    } else {
+      document.getElementById('profPhone').textContent = 'Not bound';
+    }
     
     document.getElementById('modalAvailableBal').textContent = Number(bal).toLocaleString();
 
@@ -692,6 +705,28 @@
       btnCheckin.classList.remove('claimed');
     }
   }
+
+  // --- BIND ACCOUNT LOGIC ---
+  window.openBindAccount = function() {
+    document.getElementById('bindName').value = currentProfile.full_name || '';
+    document.getElementById('bindPhone').value = currentProfile.phone || '';
+    document.getElementById('bindDialog').showModal();
+  };
+
+  window.saveBindAccount = async function() {
+    const name = document.getElementById('bindName').value.trim();
+    const phone = document.getElementById('bindPhone').value.trim();
+    
+    if (!name || name.length < 2) return alert("Enter a valid full name.");
+    if (!phone || phone.length < 9) return alert("Enter a valid phone number.");
+
+    try {
+      await TN.client.from('profiles').update({ full_name: name, phone: phone }).eq('id', currentUser.id);
+      alert('Account bound successfully!');
+      document.getElementById('bindDialog').close();
+      window.location.reload();
+    } catch (err) { alert(err.message); }
+  };
 
   window.claimDailyCheckin = async function() {
     const todayStr = new Date().toISOString().split('T')[0];
@@ -753,10 +788,18 @@
     setTimeout(() => btn.textContent = oldText, 1500);
   };
 
-  document.getElementById('withdrawBtn').addEventListener('click', () => {
+  // --- WITHDRAWAL LOGIC ---
+  window.openWithdraw = function() {
     const todayStr = new Date().toISOString().split('T')[0];
     if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
     
+    // Check if account is bound
+    if (!currentProfile.phone || !currentProfile.full_name) {
+      alert("Please bind your account details first.");
+      openBindAccount();
+      return;
+    }
+
     let withdrawCount = Number(currentProfile.withdraw_count_today || 0);
     if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
     if (withdrawCount >= 2) { alert("You have reached the maximum limit of 2 withdrawals per day."); return; }
@@ -769,7 +812,7 @@
     document.getElementById('withdrawMsg').textContent = '';
     
     document.getElementById('withdrawDialog').showModal();
-  });
+  };
 
   window.calcWithdrawFee = function() {
     const amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
@@ -797,8 +840,14 @@
       if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
       const newBal = Number(currentProfile.balance_usd) - amt;
       
+      // Provider and number are no longer passed manually, they are fetched from profile
       await TN.client.from('profiles').update({ balance_usd: newBal, withdraw_count_today: withdrawCount + 1, last_withdraw_date: todayStr }).eq('id', currentUser.id);
-      await TN.client.from('withdrawal_requests').insert({ user_id: currentUser.id, amount_usd: amt, mobile_money_provider: document.getElementById('mmProvider').value, mobile_money_number: document.getElementById('mmNumber').value });
+      await TN.client.from('withdrawal_requests').insert({ 
+        user_id: currentUser.id, 
+        amount_usd: amt, 
+        mobile_money_provider: 'Bound Account', // Dummy value to satisfy constraint if any
+        mobile_money_number: currentProfile.phone 
+      });
 
       msg.style.color = '#10b981'; msg.textContent = 'Submitted! Check transaction history.';
       setTimeout(() => window.location.reload(), 2000);
