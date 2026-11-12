@@ -367,7 +367,7 @@
 <dialog id="depositDialog" class="modal">
   <div class="modal-head"><div><h3 style="margin:0;">Fund Account</h3></div><button class="icon-btn" onclick="document.getElementById('depositDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
-    <div class="field"><label>Amount (UGX)</label><input type="number" id="depositAmountUGX" min="30000" placeholder="Min UGX 30,000"></div>
+    <div class="field"><label>Amount (UGX)</label><input type="number" id="depositAmountUGX" min="15000" placeholder="Min UGX 15,000"></div>
     <div class="field"><label>Phone (MTN or Airtel)</label><input type="tel" id="momoPhone" placeholder="07XXXXXXXX"></div>
     <button class="btn-primary" id="momoSubmitBtn" onclick="submitMobileMoney()">Pay via Mobile Money</button>
     <p class="form-msg" id="momoMsg"></p>
@@ -378,7 +378,7 @@
   <div class="modal-head"><div><h3 style="margin:0;">Withdraw</h3></div><button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
     <form id="withdrawForm" style="display:flex; flex-direction:column; gap:1rem;">
-      <div class="field"><label>Amount (UGX)</label><input type="number" id="withdrawAmount" min="5000" placeholder="Min UGX 5,000" required></div>
+      <div class="field"><label>Amount (UGX)</label><input type="number" id="withdrawAmount" min="3000" placeholder="Min UGX 3,000" required></div>
       <div class="field"><label>Provider</label><select id="mmProvider"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
       <div class="field"><label>Phone</label><input type="tel" id="mmNumber" placeholder="07XXXXXXXX" required></div>
       <p style="font-size:0.75rem; color:#ef4444; font-weight:bold;">Note: 16% withdrawal fee applies. Max 2 per day.</p>
@@ -404,7 +404,6 @@
   let l2Users = [];
   let l3Users = [];
 
-  // Default fallback (includes Baby Spinach)
   let TIERS = [
     { amount: 15000,    name: 'Baby Spinach',         profit: 3200,   img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?q=80&w=400&auto=format&fit=crop' },
     { amount: 30000,    name: 'Cherry Tomatoes',      profit: 6500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?q=80&w=400&auto=format&fit=crop' },
@@ -427,7 +426,6 @@
     { level: 6, req: 120, reward: 100000, plan: 'Starter' }
   ];
 
-  // Fallback Image if a link breaks
   const FALLBACK_IMG = 'https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=400&auto=format&fit=crop';
 
   function formatUGX(amount) {
@@ -569,7 +567,6 @@
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    // VIP LOGIC
     const activeL1Users = l1Users.filter(u => Number(u.deposit_amount) > 0);
     let currentVip = 0; let currentReward = 0;
     for (let i = VIP_TIERS.length - 1; i >= 0; i--) {
@@ -717,7 +714,7 @@
     const msg = document.getElementById('withdrawMsg');
     const btn = e.target.querySelector('button[type="submit"]');
     
-    if (amt < 5000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum withdrawal is UGX 5,000.'; return; }
+    if (amt < 3000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum withdrawal is UGX 3,000.'; return; }
     if (amt > Number(currentProfile.balance_usd)) { msg.style.color = '#ef4444'; msg.textContent = 'Insufficient balance.'; return; }
 
     btn.disabled = true; btn.textContent = 'Processing...';
@@ -756,7 +753,7 @@
     const phone = document.getElementById('momoPhone').value.trim();
     const msg = document.getElementById('momoMsg'); const btn = document.getElementById('momoSubmitBtn');
     
-    if (!ugxAmount || ugxAmount < 30000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 30,000.'; return; }
+    if (!ugxAmount || ugxAmount < 15000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 15,000.'; return; }
     if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
 
     btn.disabled = true; btn.textContent = 'Sending Prompt...'; msg.textContent = '';
@@ -814,4 +811,4 @@
 })();
 </script>
 </body>
-                           </html>
+</html>
