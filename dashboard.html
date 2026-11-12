@@ -301,13 +301,13 @@
       </div>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
         <div class="action-icon" style="background:#fdf4ff; border-color:#f5d0fe; color:#c026d3;">
-          <!-- Solid Telegram Icon -->
+          <!-- Telegram Icon -->
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>SERVICE</span>
       </a>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
         <div class="action-icon" style="background:#ecfdf5; border-color:#a7f3d0; color:#10b981;">
-          <!-- Solid Telegram Icon -->
+          <!-- Telegram Icon -->
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>CHANNEL</span>
       </a>
@@ -425,12 +425,12 @@
   ];
 
   let VIP_TIERS = [
-    { level: 1, req: 5,  reward: 20000,  plan: 'Starter' },
-    { level: 2, req: 10, reward: 40000,  plan: 'Starter' },
-    { level: 3, req: 15, reward: 52000,  plan: 'Starter' },
-    { level: 4, req: 25, reward: 60000,  plan: 'Basic' },
-    { level: 5, req: 35, reward: 72000,  plan: 'Basic' },
-    { level: 6, req: 60, reward: 100000, plan: 'Basic' }
+    { level: 1, req: 5,  reward: 5000,  plan: 'Starter' },
+    { level: 2, req: 15, reward: 20000, plan: 'Starter' },
+    { level: 3, req: 30, reward: 35000, plan: 'Starter' },
+    { level: 4, req: 50, reward: 60000, plan: 'Basic' },
+    { level: 5, req: 100, reward: 120000, plan: 'Basic' },
+    { level: 6, req: 200, reward: 250000, plan: 'Basic' }
   ];
 
   function formatUGX(amount) {
@@ -572,12 +572,17 @@
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    // VIP LOGIC
+    // --- FIXED VIP LOGIC (ONLY LEVEL 1 WITH ACTIVE PRODUCT) ---
+    const activeL1Users = l1Users.filter(u => Number(u.deposit_amount) > 0);
+    
     let currentVip = 0; let currentReward = 0;
     for (let i = VIP_TIERS.length - 1; i >= 0; i--) {
       const t = VIP_TIERS[i];
-      const count = t.plan === 'Starter' ? l1Users.length : l2Users.length + l3Users.length; // Simplification for Root&Ripe
-      if (count >= t.req) { currentVip = t.level; currentReward = t.reward; break; }
+      if (activeL1Users.length >= t.req) { 
+        currentVip = t.level; 
+        currentReward = t.reward; 
+        break; 
+      }
     }
 
     document.getElementById('vipTitle').textContent = currentVip === 0 ? 'No VIP Yet' : `VIP ${currentVip}`;
@@ -586,16 +591,16 @@
 
     let nextTier = VIP_TIERS.find(t => t.level === currentVip + 1);
     if (nextTier) {
-      const count = nextTier.plan === 'Starter' ? l1Users.length : l2Users.length + l3Users.length;
-      document.getElementById('progressLabel').textContent = `Progress to VIP ${nextTier.level} (${nextTier.plan})`;
-      document.getElementById('progressCount').textContent = `${count} / ${nextTier.req}`;
-      let percent = (count / nextTier.req) * 100;
+      document.getElementById('progressLabel').textContent = `Progress to VIP ${nextTier.level}`;
+      document.getElementById('progressCount').textContent = `${activeL1Users.length} / ${nextTier.req}`;
+      let percent = (activeL1Users.length / nextTier.req) * 100;
       document.getElementById('progressFill').style.width = `${Math.min(percent, 100)}%`;
     } else {
       document.getElementById('progressLabel').textContent = `Max VIP Level Reached!`;
       document.getElementById('progressCount').textContent = `Maxed Out`;
       document.getElementById('progressFill').style.width = '100%';
     }
+    
     document.getElementById('vipTierList').innerHTML = VIP_TIERS.map(t => {
       const isCurrent = currentVip === t.level;
       return `<div class="vip-tier-item ${isCurrent ? 'active' : ''}"><div><div class="vip-tier-name">VIP ${t.level}</div><div class="vip-tier-req">Requires ${t.req} active referrals</div></div><div class="vip-tier-reward">${formatUGX(t.reward)}<span>per week</span></div></div>`;
@@ -816,4 +821,4 @@
 })();
 </script>
 </body>
-   </html>
+ </html>
