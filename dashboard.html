@@ -10,10 +10,13 @@
   body { padding-bottom: 75px; background: #f9fafb; color: #111827; overflow-x: hidden; }
   
   /* Header & Ticker */
-  .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
+  .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; height: 65px; }
   .brand { font-weight: 900; font-size: 1.3rem; color: #065f46; letter-spacing: -0.5px; }
   .brand span { color: #f59e0b; }
   .btn-logout { background: #ecfdf5; border: 1px solid #a7f3d0; color: #10b981; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+  
+  .back-btn { background: none; border: none; font-size: 1.5rem; color: #111827; cursor: pointer; display: none; align-items: center; gap: 0.5rem; font-weight: bold; }
+  .header-title { display: none; font-weight: 900; font-size: 1.2rem; color: #111827; margin-left: auto; margin-right: auto; }
   
   .ticker-wrap { background: #ffffff; border-bottom: 1px solid #e5e7eb; overflow: hidden; white-space: nowrap; padding: 0.4rem 0; font-size: 0.75rem; }
   .ticker { display: inline-block; animation: ticker 20s linear infinite; }
@@ -56,24 +59,20 @@
   .cycle-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); border-radius: 10px; transition: width 0.5s ease; }
   .daily-earn { font-size: 1.2rem; font-weight: 800; color: #f59e0b; margin-top: 1rem; }
 
-  /* TEAM TAB (NETWORK HUB) */
+  /* TEAM TAB */
   .hub-title { font-size: 2rem; font-weight: 900; color: #065f46; letter-spacing: -1px; margin-bottom: 0.2rem; }
   .hub-subtitle { font-size: 0.75rem; color: #10b981; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; margin-bottom: 1.5rem; }
-  
   .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
   .summary-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.2rem; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
   .summary-label { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; font-weight: 800; margin-bottom: 0.5rem; }
   .summary-val { font-size: 1.4rem; font-weight: 900; color: #f59e0b; }
   .summary-val.purple { color: #10b981; }
-
   .ref-hub-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.2rem; margin-bottom: 1.5rem; }
   .ref-hub-box label { display: block; font-size: 0.7rem; color: #6b7280; text-transform: uppercase; font-weight: 800; margin-bottom: 0.5rem; }
   .ref-hub-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
   .ref-hub-row:last-child { margin-bottom: 0; }
   .ref-hub-input { flex: 1; background: #f9fafb; border: 1px solid #e5e7eb; padding: 0.8rem; border-radius: 10px; font-size: 0.9rem; font-weight: 700; color: #111827; outline: none; }
   .ref-hub-btn { background: #10b981; color: #fff; border: none; padding: 0 1.2rem; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; }
-
-  /* Minimized Tabs */
   .levels-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; display: flex; overflow: hidden; margin-bottom: 1rem; text-align: center; }
   .level-item { flex: 1; padding: 0.6rem 0.2rem; border-right: 1px solid #e5e7eb; cursor: pointer; transition: 0.2s; }
   .level-item:last-child { border-right: none; }
@@ -82,7 +81,6 @@
   .level-name { font-size: 0.65rem; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 0.2rem; }
   .level-pct { font-size: 0.85rem; font-weight: 900; color: #10b981; }
   .level-count { font-size: 0.65rem; font-weight: 700; color: #9ca3af; margin-top: 0.1rem; }
-
   .team-list-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 0.5rem 1rem; margin-bottom: 2rem; min-height: 80px; }
   .team-list-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #e5e7eb; }
   .team-list-item:last-child { border-bottom: none; }
@@ -117,7 +115,6 @@
   .signed-in { text-align: right; font-size: 0.65rem; color: #6b7280; letter-spacing: 0.5px; font-weight: 700; }
   .signed-in strong { display: block; font-size: 1rem; color: #111827; margin-top: 0.2rem; font-weight: 900; }
   .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 900; letter-spacing: 0.5px;}
-
   .wallet-card-new { background: linear-gradient(145deg, #065f46, #047857); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(6, 95, 70, 0.3); color: #fff; }
   .wallet-label { font-size: 0.75rem; opacity: 0.8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700; }
   .wallet-bal { font-size: 2.8rem; font-weight: 900; margin-bottom: 1.5rem; display: flex; align-items: baseline; gap: 0.4rem; }
@@ -126,12 +123,10 @@
   .stat-box { flex: 1; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; }
   .stat-box .lbl { font-size: 0.65rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.3rem; font-weight: 700; }
   .stat-box .val { font-size: 1rem; font-weight: 800; }
-  
   .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 1.5rem; }
   .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #6b7280; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; }
   .action-icon { width: 55px; height: 55px; border-radius: 16px; background: #ecfdf5; border: 1px solid #a7f3d0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #10b981; position: relative; }
   .action-item:active .action-icon { background: #d1fae5; }
-  
   .list-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); cursor: pointer; }
   .list-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
   .icon-checkin { background: #ecfdf5; color: #10b981; }
@@ -140,16 +135,39 @@
   .list-text { flex: 1; }
   .list-text strong { display: block; font-size: 0.95rem; color: #111827; font-weight: 800; }
   .list-text span { display: block; font-size: 0.75rem; color: #6b7280; margin-top: 0.1rem; font-weight: 600; }
-  
   .btn-checkin { background: #10b981; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
   .btn-checkin.claimed { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
 
+  /* ================= HISTORY FULL PAGE ================= */
+  .history-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 0.5rem; }
+  .history-tabs::-webkit-scrollbar { display: none; }
+  .hist-tab { background: #ffffff; border: 1px solid #e5e7eb; padding: 0.6rem 1.2rem; border-radius: 20px; font-size: 0.8rem; font-weight: 800; color: #6b7280; cursor: pointer; white-space: nowrap; text-transform: uppercase; }
+  .hist-tab.active { background: #ecfdf5; color: #10b981; border-color: #10b981; }
+  
+  .history-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+  .hist-left { display: flex; align-items: center; gap: 1rem; }
+  .hist-icon-box { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; }
+  .hist-icon-dep { background: #ecfdf5; color: #10b981; }
+  .hist-icon-with { background: #fef2f2; color: #ef4444; }
+  .hist-icon-inc { background: #eff6ff; color: #3b82f6; }
+  .hist-details { display: flex; flex-direction: column; }
+  .hist-details h5 { font-size: 1rem; color: #111827; margin-bottom: 0.2rem; font-weight: 800; }
+  .hist-details p { font-size: 0.75rem; color: #6b7280; font-weight: 600; }
+  
+  .hist-right { text-align: right; display: flex; flex-direction: column; }
+  .hist-amount { font-size: 1.1rem; font-weight: 900; margin-bottom: 0.2rem; }
+  .hist-amount.positive { color: #10b981; }
+  .hist-amount.negative { color: #ef4444; }
+  .hist-status { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+  .status-completed { color: #10b981; }
+  .status-pending { color: #f59e0b; }
+  .status-failed { color: #ef4444; }
+  
   /* Modals */
   .modal { width: 90vw; max-width: 400px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; color: #111827; padding: 1.2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
   .modal::backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
   .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .icon-btn { background: #f3f4f6; border: none; color: #6b7280; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
-  
   .field { margin-bottom: 1rem; }
   .field label { display: block; font-size: 0.75rem; color: #6b7280; margin-bottom: 0.4rem; }
   .field input, .field select { width: 100%; padding: 0.8rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; color: #111827; font-size: 0.9rem; }
@@ -157,22 +175,16 @@
   .btn-primary { width: 100%; padding: 0.9rem; background: #10b981; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
   .btn-primary:disabled { opacity: 0.5; }
   .form-msg { text-align: center; font-size: 0.8rem; margin-top: 0.8rem; }
-  
-  .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #e5e7eb; }
-  .history-item:last-child { border-bottom: none; }
-  .hist-info { display: flex; flex-direction: column; gap: 0.2rem; }
-  .hist-title { font-weight: bold; font-size: 0.9rem; }
-  .hist-date { font-size: 0.7rem; color: #6b7280; }
-  .hist-amount { font-weight: bold; font-size: 0.95rem; text-align: right; }
-  .status-success { color: #10b981; }
-  .status-pending { color: #f59e0b; }
-  .status-failed { color: #ef4444; }
 </style>
 </head>
 <body>
 
 <div class="app-header">
-  <div class="brand">Root <span>&</span> Ripe</div>
+  <button class="back-btn" id="backBtn" onclick="switchTab('profile', document.querySelector('.nav-item[onclick*=\'profile\']'))">
+    &#8592; Back
+  </button>
+  <div class="brand" id="headerBrand">Root <span>&</span> Ripe</div>
+  <div class="header-title" id="headerTitle">History</div>
   <button class="btn-logout" id="logoutBtn">Log out</button>
 </div>
 
@@ -198,11 +210,10 @@
     <div id="activeOrderContainer"></div>
   </div>
 
-  <!-- TEAM TAB (NETWORK HUB) -->
+  <!-- TEAM TAB -->
   <div class="app-content" id="tab-team">
     <div class="hub-title">Network Hub</div>
     <div class="hub-subtitle">Build your downline & earn</div>
-    
     <div class="summary-grid">
       <div class="summary-card">
         <div class="summary-label">Commission</div>
@@ -213,7 +224,6 @@
         <div class="summary-val purple" id="teamSize">0 Users</div>
       </div>
     </div>
-
     <div class="ref-hub-box">
       <label>Code</label>
       <div class="ref-hub-row">
@@ -226,7 +236,6 @@
         <button class="ref-hub-btn" style="background:#4b5563;" onclick="copyToClipboard('refLink')">Copy</button>
       </div>
     </div>
-
     <div class="levels-box">
       <div class="level-item active" id="tab-l1" onclick="switchTeamLevel(1)">
         <div class="level-name">Level 1</div>
@@ -244,7 +253,6 @@
         <div class="level-count" id="l3Count">(0)</div>
       </div>
     </div>
-
     <div class="team-list-container" id="teamListContainer">
       <div style="text-align:center; color:#9ca3af; padding: 1rem; font-size: 0.85rem;">No users in this level yet.</div>
     </div>
@@ -276,7 +284,6 @@
       </div>
       <div class="signed-in">SIGNED IN<strong id="profName">User</strong></div>
     </div>
-    
     <div class="wallet-card-new">
       <div class="wallet-label">Available Balance</div>
       <div class="wallet-bal"><span class="currency">UGX</span> <span id="profBalance">0</span></div>
@@ -291,7 +298,6 @@
         </div>
       </div>
     </div>
-    
     <div class="action-grid">
       <div class="action-item" onclick="document.getElementById('depositBtn').click()">
         <div class="action-icon">↓</div><span>DEPOSIT</span>
@@ -299,22 +305,17 @@
       <div class="action-item" onclick="document.getElementById('withdrawBtn').click()">
         <div class="action-icon" style="background:#f0fdf4; border-color:#bbf7d0; color:#22c55e;">↑</div><span>WITHDRAW</span>
       </div>
-      
-      <!-- SERVICE (Customer Care) -->
       <a href="https://t.me/root67u" target="_blank" class="action-item">
         <div class="action-icon" style="background:#fdf4ff; border-color:#f5d0fe; color:#c026d3;">
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>SERVICE</span>
       </a>
-      
-      <!-- CHANNEL (Telegram Group) -->
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
         <div class="action-icon" style="background:#ecfdf5; border-color:#a7f3d0; color:#10b981;">
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>CHANNEL</span>
       </a>
     </div>
-
     <div class="list-card" onclick="claimDailyCheckin()">
       <div class="list-icon icon-checkin">💲</div>
       <div class="list-text">
@@ -323,15 +324,13 @@
       </div>
       <button class="btn-checkin" id="btnDailyCheckin">CLAIM</button>
     </div>
-
-    <div class="list-card" onclick="openHistory()">
+    <div class="list-card" onclick="openFullHistory()">
       <div class="list-icon icon-history">🕒</div>
       <div class="list-text">
         <strong>Transaction History</strong>
       </div>
       <div style="color:#9ca3af; font-size:1.2rem;">›</div>
     </div>
-
     <div class="list-card">
       <div class="list-icon icon-bind">🔒</div>
       <div class="list-text">
@@ -341,9 +340,23 @@
       <div style="color:#9ca3af; font-size:1.2rem;">›</div>
     </div>
   </div>
+
+  <!-- ================= HISTORY FULL PAGE ================= -->
+  <div class="app-content" id="tab-history">
+    <div class="history-tabs">
+      <div class="hist-tab active" onclick="filterHistory('all', this)">All</div>
+      <div class="hist-tab" onclick="filterHistory('deposit', this)">Deposits</div>
+      <div class="hist-tab" onclick="filterHistory('withdrawal', this)">Withdrawals</div>
+      <div class="hist-tab" onclick="filterHistory('income', this)">Income</div>
+    </div>
+    
+    <div id="historyListContainer">
+      <div style="text-align:center; padding: 2rem; color: #6b7280;">Loading history...</div>
+    </div>
+  </div>
 </main>
 
-<!-- Bottom Nav (Restored VIP) -->
+<!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('home', this)">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
@@ -364,15 +377,6 @@
 
 <button id="depositBtn" style="display:none;"></button>
 <button id="withdrawBtn" style="display:none;"></button>
-
-<dialog id="historyDialog" class="modal">
-  <div class="modal-head"><div><h3 style="margin:0;">History</h3></div><button class="icon-btn" onclick="document.getElementById('historyDialog').close()">✕</button></div>
-  <div class="deposit-tabs" style="margin-bottom:1rem;">
-    <div class="dep-tab active" id="tab-btn-deposits" onclick="switchHistoryTab('deposits')">Deposits</div>
-    <div class="dep-tab" id="tab-btn-withdrawals" onclick="switchHistoryTab('withdrawals')">Withdrawals</div>
-  </div>
-  <div id="historyList" style="max-height: 60vh; overflow-y: auto;"></div>
-</dialog>
 
 <dialog id="depositDialog" class="modal">
   <div class="modal-head"><div><h3 style="margin:0;">Fund Account</h3></div><button class="icon-btn" onclick="document.getElementById('depositDialog').close()">✕</button></div>
@@ -406,9 +410,8 @@
 
   let currentUser = null;
   let currentProfile = null;
-  let currentHistoryTab = 'deposits';
-  let userDeposits = [];
-  let userWithdrawals = [];
+  let currentHistoryTab = 'all';
+  let allHistory = [];
   
   let l1Users = [];
   let l2Users = [];
@@ -447,23 +450,29 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     if (el) el.classList.add('active');
+
+    // Header UI changes for History Page
+    if (tab === 'history') {
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('headerBrand').style.display = 'none';
+      document.getElementById('headerTitle').style.display = 'block';
+    } else {
+      document.getElementById('backBtn').style.display = 'none';
+      document.getElementById('headerBrand').style.display = 'block';
+      document.getElementById('headerTitle').style.display = 'none';
+    }
   };
 
   window.switchTeamLevel = function(level) {
     document.querySelectorAll('.level-item').forEach(el => el.classList.remove('active'));
     document.getElementById(`tab-l${level}`).classList.add('active');
-
     const container = document.getElementById('teamListContainer');
-    let targetList = [];
-    if (level === 1) targetList = l1Users;
-    else if (level === 2) targetList = l2Users;
-    else if (level === 3) targetList = l3Users;
+    let targetList = level === 1 ? l1Users : level === 2 ? l2Users : l3Users;
 
     if (targetList.length === 0) {
       container.innerHTML = `<div style="text-align:center; color:#9ca3af; padding: 2rem 1rem; font-size: 0.85rem;">No users in Level ${level} yet.</div>`;
       return;
     }
-
     container.innerHTML = targetList.map(u => {
       const isActive = Number(u.deposit_amount) > 0;
       const date = new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -473,11 +482,8 @@
             <h5>${u.full_name || 'Anonymous User'}</h5>
             <p>Joined ${date}</p>
           </div>
-          <div class="team-user-status ${isActive ? '' : 'inactive'}">
-            ${isActive ? 'Active' : 'Inactive'}
-          </div>
-        </div>
-      `;
+          <div class="team-user-status ${isActive ? '' : 'inactive'}">${isActive ? 'Active' : 'Inactive'}</div>
+        </div>`;
     }).join('');
   };
 
@@ -527,11 +533,9 @@
 
     document.getElementById('plansContainer').innerHTML = TIERS.map(t => {
       const isActive = (dep === t.amount && dep > 0); 
-      let actionHtml = '';
-      if (isActive) actionHtml = `<button class="btn-activated" disabled>Active Crop</button>`;
-      else if (dep > 0) actionHtml = `<div style="text-align:center; font-size:0.75rem; color:#9ca3af; margin-top:0.5rem; font-weight:bold;">Finish current cycle first</div>`;
-      else actionHtml = `<button class="btn-activate" onclick="activatePlan(${t.amount})">Plant Now</button>`;
-
+      let actionHtml = isActive ? `<button class="btn-activated" disabled>Active Crop</button>` :
+                       dep > 0 ? `<div style="text-align:center; font-size:0.75rem; color:#9ca3af; margin-top:0.5rem; font-weight:bold;">Finish current cycle first</div>` :
+                       `<button class="btn-activate" onclick="activatePlan(${t.amount})">Plant Now</button>`;
       return `
         <div class="plan-card ${isActive ? 'active-plan' : ''}">
           <img src="${t.img}" class="veg-img" alt="${t.name}" onerror="this.src='${FALLBACK_IMG}'">
@@ -581,11 +585,7 @@
     let currentVip = 0; let currentReward = 0;
     for (let i = VIP_TIERS.length - 1; i >= 0; i--) {
       const t = VIP_TIERS[i];
-      if (activeL1Users.length >= t.req) { 
-        currentVip = t.level; 
-        currentReward = t.reward; 
-        break; 
-      }
+      if (activeL1Users.length >= t.req) { currentVip = t.level; currentReward = t.reward; break; }
     }
 
     document.getElementById('vipTitle').textContent = currentVip === 0 ? 'No VIP Yet' : `VIP ${currentVip}`;
@@ -633,16 +633,12 @@
 
   window.claimDailyCheckin = async function() {
     const todayStr = new Date().toISOString().split('T')[0];
-    if (currentProfile.last_checkin_date === todayStr) {
-      alert("You have already checked in today. Come back tomorrow!");
-      return;
-    }
-    
+    if (currentProfile.last_checkin_date === todayStr) { alert("Already checked in today!"); return; }
     try {
       const newBal = Number(currentProfile.balance_usd || 0) + 300;
       await TN.client.from('profiles').update({ balance_usd: newBal, last_checkin_date: todayStr }).eq('id', currentUser.id);
       await TN.client.from('transactions').insert({ user_id: currentUser.id, type: 'checkin', amount_ugx: 300, description: 'Daily Check-in Bonus' });
-      alert("Success! 300 UGX added to your wallet.");
+      alert("Success! 300 UGX added.");
       window.location.reload();
     } catch (err) { alert(err.message); }
   };
@@ -651,34 +647,24 @@
     const balance = Number(currentProfile.balance_usd || 0);
     const totalDeposited = Number(currentProfile.total_deposited || 0);
 
-    if (totalDeposited < planAmount) {
-      alert(`First Purchase Rule: You must make an approved deposit of at least ${formatUGX(planAmount)} before planting this crop.`);
-      return;
-    }
-    if (balance < planAmount) { 
-      alert(`Insufficient wallet balance! You need ${formatUGX(planAmount)}.`); 
-      return; 
-    }
+    if (totalDeposited < planAmount) { alert(`First Purchase Rule: You must make an approved deposit of at least ${formatUGX(planAmount)}.`); return; }
+    if (balance < planAmount) { alert(`Insufficient wallet balance!`); return; }
     if (!confirm(`Plant this crop for ${formatUGX(planAmount)}?`)) return;
     
     const newBalance = balance - planAmount;
-    
     try {
       await TN.client.from('profiles').update({ balance_usd: newBalance, deposit_amount: planAmount, active_day: 1 }).eq('id', currentUser.id);
-      
       let currentReferrerId = currentProfile.referred_by;
       if (currentReferrerId) {
         const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
         if (l1) {
           const l1Com = planAmount * 0.25;
           await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission||0) + l1Com }).eq('id', l1.id);
-          
           if (l1.referred_by) {
             const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
             if (l2) {
               const l2Com = planAmount * 0.02;
               await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission||0) + l2Com }).eq('id', l2.id);
-
               if (l2.referred_by) {
                 const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
                 if (l3) {
@@ -690,7 +676,6 @@
           }
         }
       }
-
       alert('Crop planted successfully!');
       window.location.reload();
     } catch (err) { alert(err.message); }
@@ -708,13 +693,10 @@
 
   document.getElementById('withdrawBtn').addEventListener('click', () => {
     const todayStr = new Date().toISOString().split('T')[0];
-
     if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
-    
     let withdrawCount = Number(currentProfile.withdraw_count_today || 0);
     if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
     if (withdrawCount >= 2) { alert("You have reached the maximum limit of 2 withdrawals per day."); return; }
-
     document.getElementById('withdrawDialog').showModal();
   });
 
@@ -728,34 +710,18 @@
     if (amt > Number(currentProfile.balance_usd)) { msg.style.color = '#ef4444'; msg.textContent = 'Insufficient balance.'; return; }
 
     btn.disabled = true; btn.textContent = 'Processing...';
-
     try {
       const todayStr = new Date().toISOString().split('T')[0];
       let withdrawCount = Number(currentProfile.withdraw_count_today || 0);
       if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
-
       const newBal = Number(currentProfile.balance_usd) - amt;
       
-      await TN.client.from('profiles').update({ 
-        balance_usd: newBal,
-        withdraw_count_today: withdrawCount + 1,
-        last_withdraw_date: todayStr
-      }).eq('id', currentUser.id);
+      await TN.client.from('profiles').update({ balance_usd: newBal, withdraw_count_today: withdrawCount + 1, last_withdraw_date: todayStr }).eq('id', currentUser.id);
+      await TN.client.from('withdrawal_requests').insert({ user_id: currentUser.id, amount_usd: amt, mobile_money_provider: document.getElementById('mmProvider').value, mobile_money_number: document.getElementById('mmNumber').value });
 
-      await TN.client.from('withdrawal_requests').insert({ 
-        user_id: currentUser.id, 
-        amount_usd: amt, 
-        mobile_money_provider: document.getElementById('mmProvider').value, 
-        mobile_money_number: document.getElementById('mmNumber').value 
-      });
-
-      msg.style.color = '#10b981'; 
-      msg.textContent = 'Submitted! A 16% fee will be deducted.';
+      msg.style.color = '#10b981'; msg.textContent = 'Submitted! A 16% fee will be deducted.';
       setTimeout(() => window.location.reload(), 2000);
-    } catch (err) {
-      msg.style.color = '#ef4444'; msg.textContent = err.message; 
-      btn.disabled = false; btn.textContent = 'Request Withdrawal';
-    }
+    } catch (err) { msg.style.color = '#ef4444'; msg.textContent = err.message; btn.disabled = false; btn.textContent = 'Request Withdrawal'; }
   });
 
   window.submitMobileMoney = async function() {
@@ -767,55 +733,111 @@
     if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
 
     btn.disabled = true; btn.textContent = 'Sending Prompt...'; msg.textContent = '';
-
     try {
-      const res = await fetch('/api/marzpay-deposit', { 
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ phone_number: phone, amount: ugxAmount, country: 'UG' }) 
-      });
+      const res = await fetch('/api/marzpay-deposit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone_number: phone, amount: ugxAmount, country: 'UG' }) });
       const data = await res.json(); 
       if (!res.ok) throw new Error(data.error || 'Failed');
-      
       msg.style.color = '#10b981'; msg.textContent = 'USSD prompt sent! Check your phone.';
       await TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: data.reference, amount_usd: ugxAmount });
-      
       setTimeout(() => { btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }, 3000);
     } catch (err) { msg.style.color = '#ef4444'; msg.textContent = err.message; btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }
   };
 
   document.getElementById('depositBtn').addEventListener('click', () => { document.getElementById('depositDialog').showModal(); });
   
-  window.openHistory = function() { document.getElementById('historyDialog').showModal(); fetchHistory(); };
-  function fetchHistory() {
-    document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#6b7280;">Loading...</div>';
-    TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).then(res => {
-      userDeposits = res.data || [];
-      return TN.client.from('withdrawal_requests').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-    }).then(res => { userWithdrawals = res.data || []; renderHistory(); });
-  }
-  window.switchHistoryTab = function(tab) {
-    currentHistoryTab = tab;
-    document.getElementById('tab-btn-deposits').classList.toggle('active', tab === 'deposits');
-    document.getElementById('tab-btn-withdrawals').classList.toggle('active', tab === 'withdrawals');
-    renderHistory();
+  // ================= HISTORY LOGIC =================
+  window.openFullHistory = function() {
+    switchTab('history', document.querySelector('.nav-item[onclick*=\'profile\']'));
+    document.getElementById('historyListContainer').innerHTML = '<div style="text-align:center; padding: 2rem; color: #6b7280;">Loading...</div>';
+    fetchAllHistory();
   };
-  function renderHistory() {
-    const list = document.getElementById('historyList');
-    let data = currentHistoryTab === 'deposits' ? userDeposits : userWithdrawals;
-    let type = currentHistoryTab === 'deposits' ? 'Deposit' : 'Withdrawal';
-    if (data.length === 0) { list.innerHTML = '<div style="text-align:center; color:#6b7280; padding:2rem 0;">No transactions yet.</div>'; return; }
-    list.innerHTML = data.map(item => {
-      let statusClass = ''; let statusText = '';
-      
-      // THIS IS THE LOGIC THAT HANDLES SUCCESS VS FAILURE FROM WEBHOOK
-      if (item.status === 'verified' || item.status === 'approved') { statusClass = 'status-success'; statusText = 'Successful'; } 
-      else if (item.status === 'pending') { statusClass = 'status-pending'; statusText = 'Pending'; } 
-      else { statusClass = 'status-failed'; statusText = 'Failed'; }
-      
-      let amountDisplay = type === 'Deposit' ? `+${formatUGX(item.amount_usd)}` : `-${formatUGX(item.amount_usd)}`;
-      let amountClass = type === 'Deposit' ? 'color:#10b981;' : 'color:#ef4444;';
-      let date = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-      return `<div class="history-item"><div class="hist-info"><div class="hist-title">${type}</div><div class="hist-date">${date}</div></div><div><div class="hist-amount" style="${amountClass}">${amountDisplay}</div><div class="hist-date ${statusClass}" style="text-align:right; font-weight:bold;">${statusText}</div></div></div>`;
+
+  async function fetchAllHistory() {
+    allHistory = [];
+    try {
+      // 1. Deposits
+      const { data: deps } = await TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id);
+      if (deps) deps.forEach(d => allHistory.push({ type: 'deposit', title: 'Deposit', amount: d.amount_usd, status: d.status, date: d.created_at }));
+
+      // 2. Withdrawals
+      const { data: withs } = await TN.client.from('withdrawal_requests').select('*').eq('user_id', currentUser.id);
+      if (withs) withs.forEach(w => allHistory.push({ type: 'withdrawal', title: 'Withdrawal', amount: w.amount_usd, status: w.status, date: w.created_at }));
+
+      // 3. Income (Check-ins, commissions, etc)
+      const { data: txs } = await TN.client.from('transactions').select('*').eq('user_id', currentUser.id);
+      if (txs) txs.forEach(t => allHistory.push({ type: 'income', title: t.description || 'Bonus', amount: t.amount_ugx, status: 'completed', date: t.created_at }));
+
+      // Sort newest first
+      allHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+      renderHistoryList();
+    } catch (err) {
+      document.getElementById('historyListContainer').innerHTML = `<div style="color:#ef4444; text-align:center;">Failed to load history: ${err.message}</div>`;
+    }
+  }
+
+  window.filterHistory = function(type, el) {
+    document.querySelectorAll('.hist-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    currentHistoryTab = type;
+    renderHistoryList();
+  };
+
+  function renderHistoryList() {
+    const container = document.getElementById('historyListContainer');
+    let filtered = allHistory;
+
+    if (currentHistoryTab !== 'all') {
+      filtered = allHistory.filter(h => h.type === currentHistoryTab);
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding: 2rem; color:#6b7280; font-size:0.9rem;">No ${currentHistoryTab === 'all' ? '' : currentHistoryTab} history found.</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      let iconClass = 'hist-icon-dep';
+      let amountClass = 'positive';
+      let sign = '+';
+      let displayAmount = item.amount;
+
+      if (item.type === 'withdrawal') {
+        iconClass = 'hist-icon-with';
+        amountClass = 'negative';
+        sign = '-';
+        // Deduct 16% fee for display
+        displayAmount = item.amount * 0.84;
+      } else if (item.type === 'income') {
+        iconClass = 'hist-icon-inc';
+      }
+
+      let statusClass = 'status-pending';
+      let statusText = 'Pending';
+      if (item.status === 'verified' || item.status === 'approved' || item.status === 'completed') {
+        statusClass = 'status-completed'; statusText = 'Completed';
+      } else if (item.status === 'rejected' || item.status === 'failed') {
+        statusClass = 'status-failed'; statusText = 'Failed';
+      }
+
+      let dateStr = new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <div class="history-card">
+          <div class="hist-left">
+            <div class="hist-icon-box ${iconClass}">
+              ${item.type === 'withdrawal' ? '↑' : '↓'}
+            </div>
+            <div class="hist-details">
+              <h5>${item.title}</h5>
+              <p>${dateStr}</p>
+            </div>
+          </div>
+          <div class="hist-right">
+            <div class="hist-amount ${amountClass}">${sign}${formatUGX(displayAmount)}</div>
+            <div class="hist-status ${statusClass}">${statusText}</div>
+          </div>
+        </div>
+      `;
     }).join('');
   }
 
@@ -825,4 +847,4 @@
 })();
 </script>
 </body>
-</html>
+ </html>
