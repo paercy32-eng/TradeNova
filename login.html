@@ -10,18 +10,17 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   
   body {
-    background: #f0fdf4; /* Very light green background */
+    background: #f0fdf4;
     color: #111827;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* Top Farm Banner */
   .banner {
     width: 100%;
-    height: 220px;
-    background: linear-gradient(rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.3)), 
+    height: 180px;
+    background: linear-gradient(rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.2)), 
                 url('https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
     border-bottom: 4px solid #10b981;
     display: flex;
@@ -31,7 +30,7 @@
 
   .banner-text {
     color: #ffffff;
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: -1px;
     text-transform: uppercase;
@@ -39,7 +38,6 @@
   }
   .banner-text span { color: #f59e0b; }
 
-  /* Form Container */
   .auth-container {
     flex: 1;
     padding: 2rem 1.5rem;
@@ -51,11 +49,10 @@
   .auth-title {
     font-size: 1.4rem;
     color: #10b981;
-    font-weight: 800;
+    font-weight: 900;
     margin-bottom: 1.5rem;
   }
 
-  /* Input Fields */
   .field { margin-bottom: 1rem; }
   .input-group {
     display: flex;
@@ -86,7 +83,6 @@
   }
   .input-group input::placeholder { color: #9ca3af; }
 
-  /* Remember Me */
   .remember-row {
     display: flex;
     align-items: center;
@@ -98,7 +94,6 @@
   }
   .remember-row input { accent-color: #10b981; width: 18px; height: 18px; }
 
-  /* Submit Button */
   .btn-submit {
     width: 100%;
     padding: 1rem;
@@ -117,7 +112,6 @@
   .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
   .btn-submit:disabled { opacity: 0.7; transform: none; box-shadow: none; }
 
-  /* Messages & Footer */
   .form-msg { text-align: center; font-size: 0.85rem; margin-top: 1rem; min-height: 1.2rem; font-weight: bold; }
   .form-msg.err { color: #ef4444; }
   .form-msg.ok { color: #10b981; }
@@ -138,8 +132,8 @@
   <form id="loginForm" novalidate>
     <div class="field">
       <div class="input-group">
-        <i class="fa-solid fa-envelope"></i>
-        <input id="email" name="email" type="email" placeholder="Enter Email Address" autocomplete="email" required>
+        <i class="fa-solid fa-phone"></i>
+        <input id="identifier" name="identifier" type="text" placeholder="Phone Number (or Email)" autocomplete="username" required>
       </div>
     </div>
 
@@ -168,7 +162,7 @@
   'use strict';
 
   var form     = document.getElementById('loginForm');
-  var email    = document.getElementById('email');
+  var identifier = document.getElementById('identifier');
   var passwd   = document.getElementById('password');
   var msg      = document.getElementById('formMsg');
   var submit   = document.getElementById('submitBtn');
@@ -189,19 +183,34 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    var userEmail = email.value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
-      setMsg('err', 'Enter a valid email address.'); return;
+    var inputVal = identifier.value.trim();
+    if (!inputVal) {
+      setMsg('err', 'Enter your phone number or email.'); return;
     }
     if (!passwd.value) {
       setMsg('err', 'Enter your password.'); return;
+    }
+
+    // Determine if logging in with Phone or Old Email
+    var loginEmail = '';
+    
+    if (inputVal.includes('@')) {
+      // Old user logging in with email
+      loginEmail = inputVal;
+    } else {
+      // New user logging in with phone number
+      var local = inputVal.replace(/\D/g, '').replace(/^0+/, '');
+      if (local.length < 9) {
+        setMsg('err', 'Enter a valid phone number.'); return;
+      }
+      loginEmail = '256' + local + '@rootandripe.app';
     }
 
     submit.disabled = true;
     setMsg('', 'Signing you in…');
 
     TN.ready.then(function () {
-      return TN.signIn(userEmail, passwd.value);
+      return TN.signIn(loginEmail, passwd.value);
     }).then(function (result) {
       if (result.error) throw result.error;
       setMsg('ok', 'Signed in. Loading…');
@@ -209,7 +218,7 @@
     }).catch(function (err) {
       var m = (err && err.message) || '';
       if (/Invalid login credentials/i.test(m)) {
-        setMsg('err', 'Wrong email or password.');
+        setMsg('err', 'Wrong phone number/email or password.');
       } else {
         setMsg('err', m || 'Something went wrong.');
       }
