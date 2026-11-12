@@ -3,77 +3,91 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b1120">
+<meta name="theme-color" content="#090e17">
 <title>Admin Dashboard — Root & Ripe</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: #0b1120; color: #ffffff; padding-bottom: 2rem; }
+  body { background: #090e17; color: #ffffff; padding-bottom: 2rem; }
   
-  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #0f172a; border-bottom: 1px solid #1e293b; margin-bottom: 1.5rem; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #121c2d; border-bottom: 1px solid #1e2d42; margin-bottom: 1.5rem; }
   .brand { font-weight: 800; font-size: 1.2rem; color: #ffffff; }
-  .brand span { color: #10b981; }
-  .btn-logout { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+  .brand span { color: #3b82f6; }
+  .btn-logout { background: #1e2d42; border: 1px solid #2e405a; color: #94a3b8; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
 
   .wrap { padding: 0 1.15rem; max-width: 800px; margin: 0 auto; }
   
-  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; overflow-x: auto; scrollbar-width: none; }
-  .tab-btn { background: none; border: none; color: #94a3b8; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; white-space: nowrap; }
-  .tab-btn.active { background: #1e293b; color: #10b981; }
+  /* Navigation / Header for sub-pages */
+  .sub-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .back-btn { background: none; border: none; font-size: 1.5rem; color: #fff; cursor: pointer; display: none; }
+  .page-title { font-size: 1.5rem; font-weight: 800; color: #fff; }
+  
+  /* KPIs */
+  .section-title { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 1rem; }
+  .kpi-grid { display: grid; grid-template-columns: 1fr; gap: 0.8rem; margin-bottom: 2rem; }
+  .kpi-card { background: #121c2d; border: 1px solid #1e2d42; border-radius: 12px; padding: 1.2rem; }
+  .kpi-lbl { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; margin-bottom: 0.5rem; }
+  .kpi-val-row { display: flex; justify-content: space-between; align-items: flex-end; }
+  .kpi-val { font-size: 1.6rem; font-weight: 800; color: #3b82f6; }
+  .kpi-val.green { color: #10b981; }
+  .kpi-val.purple { color: #a855f7; }
+  .kpi-val.orange { color: #f59e0b; }
+  .kpi-currency { font-size: 0.9rem; color: #94a3b8; font-weight: bold; margin-right: auto; padding-right: 1rem; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
-  .kpi-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 1rem; text-align: center; }
-  .kpi-val { font-size: 1.3rem; font-weight: 800; color: #10b981; margin-bottom: 0.2rem; }
-  .kpi-lbl { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
+  /* Management Menu Grid */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 2rem; }
+  .menu-card { background: #121c2d; border: 1px solid #1e2d42; border-radius: 16px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
+  .menu-card:active { background: #1a263b; }
+  .menu-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+  .icon-users { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+  .icon-deposits { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+  .icon-withdrawals { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+  .icon-assets { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+  .menu-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 0.2rem; }
+  .menu-sub { font-size: 0.75rem; color: #94a3b8; }
 
-  .admin-action-box { background: #0f172a; border: 1px solid #1e293b; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; }
-  .admin-action-box h3 { color: #ffffff; margin-bottom: 0.5rem; }
-  .admin-action-box p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem; }
-  .btn-action { padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 1rem; font-weight: 800; border: none; cursor: pointer; color: #fff; background: #10b981; }
-  .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-action-orange { background: #f59e0b; }
+  /* Banners */
+  .status-banner { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 1.2rem; text-align: center; }
+  .status-banner h4 { color: #10b981; margin-bottom: 0.2rem; font-size: 1rem; }
+  .status-banner p { color: #94a3b8; font-size: 0.8rem; }
 
-  .data-table { width: 100%; border-collapse: collapse; background: #0f172a; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; border: 1px solid #1e293b; }
-  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #1e293b; font-size: 0.85rem; }
-  .data-table th { background: #0b1120; color: #94a3b8; text-transform: uppercase; font-size: 0.7rem; }
+  /* Data Tables & Lists */
+  .data-table { width: 100%; border-collapse: collapse; background: #121c2d; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; border: 1px solid #1e2d42; }
+  .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #1e2d42; font-size: 0.85rem; }
+  .data-table th { background: #090e17; color: #94a3b8; text-transform: uppercase; font-size: 0.7rem; }
   .action-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; color: #fff; }
   .btn-approve { background: #10b981; }
   .btn-reject { background: #ef4444; margin-left: 0.5rem; }
-  .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #0f172a; border-radius: 12px; border: 1px dashed #1e293b; }
-
-  .search-bar { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; align-items: center; padding: 0 1rem; margin-bottom: 1rem; }
-  .search-bar input { background: transparent; border: none; padding: 1rem 0.5rem; color: #fff; width: 100%; outline: none; font-size: 0.95rem; }
-  .search-bar svg { stroke: #64748b; }
   
-  .user-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
-  .user-card:active { background: #1e293b; }
+  .user-card { background: #121c2d; border: 1px solid #1e2d42; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .user-details { display: flex; flex-direction: column; gap: 0.3rem; }
   .user-name { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
   .user-phone { font-size: 0.85rem; color: #64748b; font-family: monospace; }
   .user-financials { text-align: right; display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
-  .user-balance { font-size: 1.1rem; font-weight: 800; color: #10b981; }
+  .user-balance { font-size: 1.1rem; font-weight: 800; color: #3b82f6; }
   .user-meta { display: flex; gap: 0.4rem; align-items: center; }
   .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
   .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
   .status-inactive { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
-  .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 900; }
+  .ref-badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 800; }
+  .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #121c2d; border-radius: 12px; border: 1px dashed #1e2d42; }
 
-  .settings-section { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-  .settings-section h3 { margin-bottom: 1rem; color: #10b981; }
-  .settings-row { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
-  .settings-row input { flex: 1; background: #0b1120; border: 1px solid #334155; padding: 0.6rem; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none; }
-  .settings-row input:focus { border-color: #10b981; }
-  .btn-save { background: #10b981; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 1rem; }
-
-  .modal { width: 90vw; max-width: 400px; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; color: #fff; padding: 1.5rem; }
-  .modal::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
-  .modal h3 { margin-bottom: 1rem; font-size: 1.2rem; }
+  /* Settings for Actions */
+  .admin-action-box { background: #121c2d; border: 1px solid #1e2d42; padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; text-align: center; }
+  .admin-action-box h3 { color: #ffffff; margin-bottom: 0.5rem; font-size: 1rem; }
+  .admin-action-box p { color: #94a3b8; font-size: 0.8rem; margin-bottom: 1rem; }
+  .btn-action { padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 800; border: none; cursor: pointer; color: #fff; background: #3b82f6; width: 100%; }
+  .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+  
+  .modal { width: 90vw; max-width: 400px; background: #121c2d; border: 1px solid #1e2d42; border-radius: 16px; color: #fff; padding: 1.5rem; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; }
+  .modal::backdrop { background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+  .modal h3 { margin-bottom: 1rem; font-size: 1.1rem; }
   .modal label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.4rem; margin-top: 1rem; }
-  .modal input, .modal select { width: 100%; padding: 0.8rem; background: #0b1120; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none; }
-  .modal input:focus, .modal select:focus { border-color: #10b981; }
+  .modal input, .modal select { width: 100%; padding: 0.8rem; background: #090e17; border: 1px solid #2e405a; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none; }
+  .modal input:focus, .modal select:focus { border-color: #3b82f6; }
   .modal-btns { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
   .modal-btns button { flex: 1; padding: 0.8rem; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
-  .btn-close { background: #334155; color: #fff; }
-  .btn-save-modal { background: #10b981; color: #fff; }
+  .btn-close { background: #1e2d42; color: #fff; }
+  .btn-save-modal { background: #3b82f6; color: #fff; }
 </style>
 </head>
 <body>
@@ -84,28 +98,94 @@
 </header>
 
 <main class="wrap">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('pending')">Pending Actions</button>
-    <button class="tab-btn" onclick="switchTab('users')">Manage Users</button>
-    <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
-  </div>
-
-  <div id="tab-pending">
+  <!-- HOME VIEW -->
+  <div id="view-home">
+    <h3 class="section-title">Platform Overview</h3>
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-val" id="kpiUsers">-</div>
-        <div class="kpi-lbl">Users</div>
+        <div class="kpi-lbl">Total Users</div>
+        <div class="kpi-val-row"><div class="kpi-val" id="kpiUsers">-</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-val" id="kpiDeposits">-</div>
-        <div class="kpi-lbl">Deposits (UGX)</div>
+        <div class="kpi-lbl">Total Deposited</div>
+        <div class="kpi-val-row"><div class="kpi-currency">UGX</div><div class="kpi-val green" id="kpiDeposits">-</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-val" id="kpiWithdrawals" style="color:#ef4444;">-</div>
-        <div class="kpi-lbl">Withdrawals (UGX)</div>
+        <div class="kpi-lbl">Total Invested</div>
+        <div class="kpi-val-row"><div class="kpi-currency">UGX</div><div class="kpi-val purple" id="kpiInvested">-</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-lbl">Total Withdrawn</div>
+        <div class="kpi-val-row"><div class="kpi-currency">UGX</div><div class="kpi-val orange" id="kpiWithdrawals">-</div></div>
       </div>
     </div>
 
+    <h3 class="section-title">Management Menu</h3>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="switchView('users')">
+        <div class="menu-icon icon-users">👥</div>
+        <div class="menu-title">Users</div>
+        <div class="menu-sub">Manage all accounts</div>
+      </div>
+      <div class="menu-card" onclick="switchView('deposits')">
+        <div class="menu-icon icon-deposits">💲</div>
+        <div class="menu-title">Deposits</div>
+        <div class="menu-sub">View incoming funds</div>
+      </div>
+      <div class="menu-card" onclick="switchView('withdrawals')">
+        <div class="menu-icon icon-withdrawals">💳</div>
+        <div class="menu-title">Withdrawals</div>
+        <div class="menu-sub">Approve payouts</div>
+      </div>
+      <div class="menu-card" onclick="switchView('assets')">
+        <div class="menu-icon icon-assets">📦</div>
+        <div class="menu-title">Assets</div>
+        <div class="menu-sub">Manage investments</div>
+      </div>
+    </div>
+
+    <div class="status-banner">
+      <h4>Root & Ripe Platform is Live</h4>
+      <p>Remember to check the Withdrawals tab daily to approve user payouts.</p>
+    </div>
+  </div>
+
+  <!-- USERS VIEW -->
+  <div id="view-users" style="display:none;">
+    <div class="sub-header">
+      <button class="back-btn" onclick="switchView('home')">&#8592;</button>
+      <div class="page-title">Users</div>
+    </div>
+    <div id="userCardsContainer">
+      <div class="empty-state">Loading users...</div>
+    </div>
+  </div>
+
+  <!-- DEPOSITS VIEW -->
+  <div id="view-deposits" style="display:none;">
+    <div class="sub-header">
+      <button class="back-btn" onclick="switchView('home')">&#8592;</button>
+      <div class="page-title">Pending Deposits</div>
+    </div>
+    <div id="depositsContainer" class="empty-state">Loading...</div>
+  </div>
+
+  <!-- WITHDRAWALS VIEW -->
+  <div id="view-withdrawals" style="display:none;">
+    <div class="sub-header">
+      <button class="back-btn" onclick="switchView('home')">&#8592;</button>
+      <div class="page-title">Pending Withdrawals (16% Fee)</div>
+    </div>
+    <div id="withdrawalsContainer" class="empty-state">Loading...</div>
+  </div>
+
+  <!-- ASSETS / ACTIONS VIEW -->
+  <div id="view-assets" style="display:none;">
+    <div class="sub-header">
+      <button class="back-btn" onclick="switchView('home')">&#8592;</button>
+      <div class="page-title">Assets & Actions</div>
+    </div>
+    
     <div class="admin-action-box">
       <h3>Process Daily Harvests</h3>
       <p>Pay all active users their daily crop profit based on their 45-day cycle.</p>
@@ -114,45 +194,15 @@
 
     <div class="admin-action-box">
       <h3>Weekly VIP Payouts</h3>
-      <p>Pay all eligible VIP members their weekly reward. <strong style="color:#f59e0b;">(Only works on Mondays)</strong></p>
-      <button class="btn-action btn-action-orange" id="processVipBtn" onclick="processVipPayouts()">Process VIP Payouts</button>
-    </div>
-
-    <h3 style="margin-bottom:1rem; color:#fff;">Pending Deposits</h3>
-    <div id="depositsContainer" class="empty-state">Loading...</div>
-
-    <h3 style="margin-top:2rem; margin-bottom:1rem; color:#fff;">Pending Withdrawals (16% Fee)</h3>
-    <div id="withdrawalsContainer" class="empty-state">Loading...</div>
-  </div>
-
-  <div id="tab-users" style="display:none;">
-    <div class="search-bar">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="searchInput" placeholder="Search by phone or name..." oninput="renderUserCards()">
-    </div>
-    <div id="userCardsContainer">
-      <div class="empty-state">Loading users...</div>
-    </div>
-  </div>
-
-  <div id="tab-settings" style="display:none;">
-    <div class="settings-section">
-      <h3>Edit Crop Prices (UGX)</h3>
-      <div id="cropSettingsContainer"></div>
-      <button class="btn-save" onclick="saveSettings()">Save All Settings</button>
-    </div>
-    
-    <div class="settings-section">
-      <h3>Edit VIP Rewards (UGX)</h3>
-      <div id="vipSettingsContainer"></div>
-      <button class="btn-save" onclick="saveSettings()">Save All Settings</button>
+      <p>Pay all eligible VIP members their weekly reward. (Only works on Mondays)</p>
+      <button class="btn-action" style="background:#f59e0b;" id="processVipBtn" onclick="processVipPayouts()">Process VIP Payouts</button>
     </div>
   </div>
 </main>
 
 <dialog id="userModal" class="modal">
   <h3>Manage User</h3>
-  <p id="modalUserName" style="color:#10b981; font-weight:bold; margin-bottom:1rem;">User Name</p>
+  <p id="modalUserName" style="color:#3b82f6; font-weight:bold; margin-bottom:1rem;">User Name</p>
   
   <label>Grant Product (Free Activation)</label>
   <select id="modalGrantProduct">
@@ -175,13 +225,20 @@
   'use strict';
 
   let allUsers = [];
-  let searchQuery = '';
   let selectedUserId = null;
   let platformSettings = { crop_tiers: [], vip_tiers: [] };
 
   function formatUGX(amount) {
-    return 'UGX ' + Number(amount).toLocaleString();
+    return Number(amount).toLocaleString();
   }
+
+  window.switchView = function(view) {
+    document.getElementById('view-home').style.display = view === 'home' ? 'block' : 'none';
+    document.getElementById('view-users').style.display = view === 'users' ? 'block' : 'none';
+    document.getElementById('view-deposits').style.display = view === 'deposits' ? 'block' : 'none';
+    document.getElementById('view-withdrawals').style.display = view === 'withdrawals' ? 'block' : 'none';
+    document.getElementById('view-assets').style.display = view === 'assets' ? 'block' : 'none';
+  };
 
   function initAdmin() {
     TN.ready.then(() => TN.getSession())
@@ -208,67 +265,235 @@
     });
   }
 
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    if (event && event.target) event.target.classList.add('active');
-    document.getElementById('tab-pending').style.display = tab === 'pending' ? 'block' : 'none';
-    document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
-    document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none';
-  };
-
   async function loadSettings() {
     const { data } = await TN.client.from('platform_settings').select('*').eq('id', 1).single();
     if (data) {
       platformSettings.crop_tiers = data.crop_tiers || [];
       platformSettings.vip_tiers = data.vip_tiers || [];
-      renderSettings();
       populateGrantDropdown();
     }
   }
 
-  function renderSettings() {
-    document.getElementById('cropSettingsContainer').innerHTML = platformSettings.crop_tiers.map((t, i) => `
-      <div class="settings-row">
-        <input type="text" value="${t.name}" onchange="updateCrop(${i}, 'name', this.value)">
-        <input type="number" value="${t.amount}" onchange="updateCrop(${i}, 'amount', this.value)" placeholder="Price">
-        <input type="number" value="${t.profit}" onchange="updateCrop(${i}, 'profit', this.value)" placeholder="Daily Profit">
-      </div>
-    `).join('');
-
-    document.getElementById('vipSettingsContainer').innerHTML = platformSettings.vip_tiers.map((t, i) => `
-      <div class="settings-row">
-        <span style="min-width:50px; font-size:0.8rem; font-weight:bold;">VIP ${t.level}</span>
-        <input type="number" value="${t.req}" onchange="updateVip(${i}, 'req', this.value)" placeholder="Refs">
-        <input type="number" value="${t.reward}" onchange="updateVip(${i}, 'reward', this.value)" placeholder="Reward">
-      </div>
-    `).join('');
-  }
-
-  window.updateCrop = function(index, field, value) {
-    platformSettings.crop_tiers[index][field] = field === 'name' ? value : Number(value);
-  };
-  window.updateVip = function(index, field, value) {
-    platformSettings.vip_tiers[index][field] = Number(value);
-  };
-
-  window.saveSettings = async function() {
-    const btn = event.target;
-    btn.textContent = 'Saving...'; btn.disabled = true;
-    try {
-      await TN.client.from('platform_settings').update({
-        crop_tiers: platformSettings.crop_tiers,
-        vip_tiers: platformSettings.vip_tiers
-      }).eq('id', 1);
-      alert('Settings saved successfully!');
-    } catch (err) { alert(err.message); }
-    btn.textContent = 'Save All Settings'; btn.disabled = false;
-  };
-
   function populateGrantDropdown() {
     document.getElementById('modalGrantProduct').innerHTML = '<option value="">-- Select Crop --</option>' + 
-      platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (${formatUGX(t.amount)})</option>`).join('');
+      platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (UGX ${formatUGX(t.amount)})</option>`).join('');
   }
 
+  function fetchKPIs() {
+    // 1. Total Users & Total Invested
+    TN.client.from('profiles').select('*').then(res => {
+      const users = res.data || [];
+      document.getElementById('kpiUsers').textContent = users.length;
+      
+      const totalInvested = users.reduce((sum, u) => sum + Number(u.deposit_amount || 0), 0);
+      document.getElementById('kpiInvested').textContent = formatUGX(totalInvested);
+    });
+
+    // 2. Total Deposited
+    TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
+      const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
+      document.getElementById('kpiDeposits').textContent = formatUGX(total);
+    });
+
+    // 3. Total Withdrawn
+    TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
+      const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
+      document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
+    });
+  }
+
+  // --- 1 MINUTE TIMEOUT LOGIC ---
+  async function autoFailPendingDeposits() {
+    const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
+    await TN.client.from('pending_deposits')
+      .update({ status: 'failed' })
+      .eq('status', 'pending')
+      .lt('created_at', oneMinuteAgo);
+  }
+
+  async function loadDeposits() {
+    await autoFailPendingDeposits(); // Run check before loading
+    
+    TN.client.from('pending_deposits').select('*, profiles(full_name)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
+      const container = document.getElementById('depositsContainer');
+      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending deposits.'; return; }
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
+      res.data.forEach(d => {
+        html += `<tr>
+          <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
+          <td style="font-weight:bold; color:#10b981;">${formatUGX(d.amount_usd)}</td>
+          <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
+          <td>
+            <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
+            <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
+          </td>
+        </tr>`;
+      });
+      container.innerHTML = html + '</tbody></table>';
+    });
+  }
+
+  window.approveDeposit = async function(depositId, userId, amount) {
+    if (!confirm(`Confirm UGX ${formatUGX(amount)} received?`)) return;
+    try {
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
+      await TN.client.from('profiles').update({ 
+        balance_usd: Number(profile.balance_usd || 0) + Number(amount),
+        total_deposited: Number(profile.total_deposited || 0) + Number(amount)
+      }).eq('id', userId);
+      await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
+      alert('Approved!'); fetchKPIs(); loadDeposits(); loadUsers();
+    } catch (err) { alert(err.message); }
+  };
+
+  window.rejectDeposit = async function(depositId) {
+    if (!confirm('Reject?')) return;
+    await TN.client.from('pending_deposits').update({ status: 'rejected' }).eq('id', depositId);
+    loadDeposits();
+  };
+
+  // --- WITHDRAWALS ---
+  function loadWithdrawals() {
+    TN.client.from('withdrawal_requests').select('*, profiles(full_name, phone)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
+      const container = document.getElementById('withdrawalsContainer');
+      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
+      
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
+      res.data.forEach(w => {
+        const gross = Number(w.amount_usd);
+        const fee = gross * 0.16;
+        const netPayout = gross - fee;
+        
+        const boundName = w.profiles ? w.profiles.full_name : 'Unknown';
+        const boundPhone = w.profiles ? w.profiles.phone : 'Not bound';
+
+        html += `<tr>
+          <td>${boundName}</td>
+          <td style="color:#94a3b8; font-size:0.8rem; text-decoration:line-through;">${formatUGX(gross)}</td>
+          <td style="font-weight:bold; color:#10b981; font-size:1rem;">${formatUGX(netPayout)}</td>
+          <td style="font-size:0.75rem; color:#fff; font-weight:bold;">${boundPhone}</td>
+          <td>
+            <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
+            <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Reject</button>
+          </td>
+        </tr>`;
+      });
+      container.innerHTML = html + '</tbody></table>';
+    });
+  }
+
+  window.approveWithdrawal = async function(withdrawalId, userId, amount) {
+    if (!confirm(`Confirm you sent the Net Payout amount to this user?`)) return;
+    try {
+      const { data: profile } = await TN.client.from('profiles').select('total_withdrawn').eq('id', userId).single();
+      await TN.client.from('profiles').update({ 
+        total_withdrawn: Number(profile.total_withdrawn || 0) + Number(amount)
+      }).eq('id', userId);
+      await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
+      alert('Withdrawal Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
+    } catch (err) { alert(err.message); }
+  };
+
+  window.rejectWithdrawal = async function(withdrawalId, userId, amount) {
+    if (!confirm('Reject this withdrawal? The full amount will be refunded to the user\'s wallet.')) return;
+    try {
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
+      const newBal = Number(profile.balance_usd || 0) + Number(amount);
+      await TN.client.from('profiles').update({ balance_usd: newBal }).eq('id', userId);
+      await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
+      alert('Withdrawal rejected and funds refunded to user!');
+      loadWithdrawals(); loadUsers();
+    } catch (err) { alert(err.message); }
+  };
+
+  // --- USERS ---
+  function loadUsers() {
+    TN.client.from('profiles').select('*').order('created_at', { ascending: false }).then(res => {
+      if (!res.data) return;
+      allUsers = res.data;
+      renderUserCards();
+    });
+  }
+
+  function renderUserCards() {
+    const container = document.getElementById('userCardsContainer');
+    container.innerHTML = '';
+
+    // 1. Calculate active referrals for each user
+    const activeReferralsMap = {};
+    allUsers.forEach(u => {
+      if (u.referred_by && Number(u.deposit_amount) > 0) {
+        activeReferralsMap[u.referred_by] = (activeReferralsMap[u.referred_by] || 0) + 1;
+      }
+    });
+
+    let html = '';
+    allUsers.forEach(u => {
+      const dep = Number(u.deposit_amount || 0);
+      const isActive = dep > 0;
+      const statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
+      const activeRefs = activeReferralsMap[u.id] || 0;
+
+      html += `
+        <div class="user-card" onclick="openUserModal('${u.id}', '${u.full_name}')">
+          <div class="user-details">
+            <div class="user-name">${u.full_name || 'User'}</div>
+            <div class="user-phone">${u.phone || 'No phone'}</div>
+            <div style="margin-top:0.3rem;">
+              <span class="ref-badge">${activeRefs} Active Referrals</span>
+            </div>
+          </div>
+          <div class="user-financials">
+            <div class="user-balance">UGX ${formatUGX(u.balance_usd || 0)}</div>
+            <div class="user-meta">${statusHtml}</div>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  window.openUserModal = function(id, name) {
+    selectedUserId = id;
+    document.getElementById('modalUserName').textContent = name || 'User';
+    document.getElementById('modalGrantProduct').value = '';
+    document.getElementById('modalAdjustBalance').value = '';
+    document.getElementById('userModal').showModal();
+  };
+
+  window.saveUserChanges = async function() {
+    const grantProduct = document.getElementById('modalGrantProduct').value;
+    const adjustBal = parseFloat(document.getElementById('modalAdjustBalance').value);
+
+    if (!grantProduct && (!adjustBal || isNaN(adjustBal))) {
+      alert('Please select a product or enter a balance adjustment.');
+      return;
+    }
+
+    try {
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', selectedUserId).single();
+      let newBal = Number(profile.balance_usd || 0);
+      let updates = {};
+
+      if (!isNaN(adjustBal) && adjustBal !== 0) {
+        newBal += adjustBal;
+        updates.balance_usd = newBal;
+      }
+      if (grantProduct) {
+        updates.deposit_amount = Number(grantProduct);
+        updates.active_day = 1;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await TN.client.from('profiles').update(updates).eq('id', selectedUserId);
+        alert('User updated successfully!');
+        document.getElementById('userModal').close();
+        loadUsers(); fetchKPIs();
+      }
+    } catch (err) { alert(err.message); }
+  };
+
+  // --- ACTIONS (Harvests & VIP) ---
   window.processDailyHarvest = async function() {
     if (!confirm("Pay daily harvest profits to all active users?")) return;
     const btn = document.getElementById('processHarvestBtn');
@@ -334,207 +559,6 @@
       loadUsers();
     } catch (err) { alert(err.message); }
     btn.disabled = false; btn.textContent = 'Process VIP Payouts';
-  };
-
-  function fetchKPIs() {
-    TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
-      document.getElementById('kpiUsers').textContent = res.count || 0;
-    });
-    TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
-      const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
-      document.getElementById('kpiDeposits').textContent = formatUGX(total);
-    });
-    TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
-      const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
-      document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
-    });
-  }
-
-  function loadDeposits() {
-    TN.client.from('pending_deposits').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
-      const container = document.getElementById('depositsContainer');
-      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending deposits.'; return; }
-      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
-      res.data.forEach(d => {
-        html += `<tr>
-          <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
-          <td style="font-weight:bold; color:#10b981;">${formatUGX(d.amount_usd)}</td>
-          <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
-          <td>
-            <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
-            <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
-          </td>
-        </tr>`;
-      });
-      container.innerHTML = html + '</tbody></table>';
-    });
-  }
-
-  window.approveDeposit = async function(depositId, userId, amount) {
-    if (!confirm(`Confirm ${formatUGX(amount)} received?`)) return;
-    try {
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
-      await TN.client.from('profiles').update({ 
-        balance_usd: Number(profile.balance_usd || 0) + Number(amount),
-        total_deposited: Number(profile.total_deposited || 0) + Number(amount)
-      }).eq('id', userId);
-      await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
-      alert('Approved!'); fetchKPIs(); loadDeposits(); loadUsers();
-    } catch (err) { alert(err.message); }
-  };
-
-  window.rejectDeposit = async function(depositId) {
-    if (!confirm('Reject?')) return;
-    await TN.client.from('pending_deposits').update({ status: 'rejected' }).eq('id', depositId);
-    loadDeposits();
-  };
-
-  function loadWithdrawals() {
-    TN.client.from('withdrawal_requests').select('*, profiles(full_name, phone)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
-      const container = document.getElementById('withdrawalsContainer');
-      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
-      
-      let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Bound Phone</th><th>Actions</th></tr></thead><tbody>`;
-      res.data.forEach(w => {
-        const gross = Number(w.amount_usd);
-        const fee = gross * 0.16;
-        const netPayout = gross - fee;
-        
-        const boundName = w.profiles ? w.profiles.full_name : 'Unknown';
-        const boundPhone = w.profiles ? w.profiles.phone : 'Not bound';
-
-        html += `<tr>
-          <td>${boundName}</td>
-          <td style="color:#94a3b8; font-size:0.8rem; text-decoration:line-through;">${formatUGX(gross)}</td>
-          <td style="font-weight:bold; color:#10b981; font-size:1rem;">${formatUGX(netPayout)}</td>
-          <td style="font-size:0.75rem; color:#fff; font-weight:bold;">${boundPhone}</td>
-          <td>
-            <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
-            <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Reject</button>
-          </td>
-        </tr>`;
-      });
-      container.innerHTML = html + '</tbody></table>';
-    });
-  }
-
-  window.approveWithdrawal = async function(withdrawalId, userId, amount) {
-    if (!confirm(`Confirm you sent the Net Payout amount to this user?`)) return;
-    try {
-      const { data: profile } = await TN.client.from('profiles').select('total_withdrawn').eq('id', userId).single();
-      
-      await TN.client.from('profiles').update({ 
-        total_withdrawn: Number(profile.total_withdrawn || 0) + Number(amount)
-      }).eq('id', userId);
-      
-      await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
-      
-      alert('Withdrawal Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
-    } catch (err) { alert(err.message); }
-  };
-
-  window.rejectWithdrawal = async function(withdrawalId, userId, amount) {
-    if (!confirm('Reject this withdrawal? The full amount will be refunded to the user\'s wallet.')) return;
-    try {
-      // 1. Get current balance
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
-      
-      // 2. Refund the full amount
-      const newBal = Number(profile.balance_usd || 0) + Number(amount);
-      await TN.client.from('profiles').update({ balance_usd: newBal }).eq('id', userId);
-
-      // 3. Mark as rejected
-      await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
-      
-      alert('Withdrawal rejected and funds refunded to user!');
-      loadWithdrawals();
-      loadUsers();
-    } catch (err) {
-      alert('Error processing refund: ' + err.message);
-    }
-  };
-
-  function loadUsers() {
-    TN.client.from('profiles').select('*').order('created_at', { ascending: false }).then(res => {
-      if (!res.data) return;
-      allUsers = res.data;
-      renderUserCards();
-    });
-  }
-
-  window.renderUserCards = function() {
-    searchQuery = document.getElementById('searchInput').value.toLowerCase();
-    const container = document.getElementById('userCardsContainer');
-    container.innerHTML = '';
-
-    const filteredUsers = allUsers.filter(u => {
-      return (u.phone || '').toLowerCase().includes(searchQuery) || (u.full_name || '').toLowerCase().includes(searchQuery);
-    });
-
-    if (filteredUsers.length === 0) { container.innerHTML = '<div class="empty-state">No users found.</div>'; return; }
-
-    let html = '';
-    filteredUsers.forEach(u => {
-      const dep = Number(u.deposit_amount || 0);
-      const isActive = dep > 0;
-      const statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
-      const vipBadge = Number(u.vip_level) > 0 ? `<span class="vip-badge">VIP ${u.vip_level}</span>` : '';
-
-      html += `
-        <div class="user-card" onclick="openUserModal('${u.id}', '${u.full_name}')">
-          <div class="user-details">
-            <div class="user-name">${u.full_name || 'User'} ${vipBadge}</div>
-            <div class="user-phone">${u.phone || 'No phone'}</div>
-          </div>
-          <div class="user-financials">
-            <div class="user-balance">${formatUGX(u.balance_usd || 0)}</div>
-            <div class="user-meta">${statusHtml}</div>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-  };
-
-  window.openUserModal = function(id, name) {
-    selectedUserId = id;
-    document.getElementById('modalUserName').textContent = name || 'User';
-    document.getElementById('modalGrantProduct').value = '';
-    document.getElementById('modalAdjustBalance').value = '';
-    document.getElementById('userModal').showModal();
-  };
-
-  window.saveUserChanges = async function() {
-    const grantProduct = document.getElementById('modalGrantProduct').value;
-    const adjustBal = parseFloat(document.getElementById('modalAdjustBalance').value);
-
-    if (!grantProduct && (!adjustBal || isNaN(adjustBal))) {
-      alert('Please select a product or enter a balance adjustment.');
-      return;
-    }
-
-    try {
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', selectedUserId).single();
-      let newBal = Number(profile.balance_usd || 0);
-      let updates = {};
-
-      if (!isNaN(adjustBal) && adjustBal !== 0) {
-        newBal += adjustBal;
-        updates.balance_usd = newBal;
-      }
-
-      if (grantProduct) {
-        updates.deposit_amount = Number(grantProduct);
-        updates.active_day = 1;
-      }
-
-      if (Object.keys(updates).length > 0) {
-        await TN.client.from('profiles').update(updates).eq('id', selectedUserId);
-        alert('User updated successfully!');
-        document.getElementById('userModal').close();
-        loadUsers();
-      }
-    } catch (err) { alert(err.message); }
   };
 
   document.getElementById('logoutBtn').addEventListener('click', function() {
