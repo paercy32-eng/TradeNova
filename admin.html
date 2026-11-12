@@ -40,7 +40,6 @@
   .btn-reject { background: #ef4444; margin-left: 0.5rem; }
   .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #0f172a; border-radius: 12px; border: 1px dashed #1e293b; }
 
-  /* Manage Users Tab */
   .search-bar { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; align-items: center; padding: 0 1rem; margin-bottom: 1rem; }
   .search-bar input { background: transparent; border: none; padding: 1rem 0.5rem; color: #fff; width: 100%; outline: none; font-size: 0.95rem; }
   .search-bar svg { stroke: #64748b; }
@@ -50,7 +49,6 @@
   .user-details { display: flex; flex-direction: column; gap: 0.3rem; }
   .user-name { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
   .user-phone { font-size: 0.85rem; color: #64748b; font-family: monospace; }
-  .user-email { font-size: 0.75rem; color: #64748b; }
   .user-financials { text-align: right; display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
   .user-balance { font-size: 1.1rem; font-weight: 800; color: #10b981; }
   .user-meta { display: flex; gap: 0.4rem; align-items: center; }
@@ -59,7 +57,6 @@
   .status-inactive { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
   .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 900; }
 
-  /* Settings Tab */
   .settings-section { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
   .settings-section h3 { margin-bottom: 1rem; color: #10b981; }
   .settings-row { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
@@ -67,7 +64,6 @@
   .settings-row input:focus { border-color: #10b981; }
   .btn-save { background: #10b981; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 1rem; }
 
-  /* Modals */
   .modal { width: 90vw; max-width: 400px; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; color: #fff; padding: 1.5rem; }
   .modal::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
   .modal h3 { margin-bottom: 1rem; font-size: 1.2rem; }
@@ -111,14 +107,12 @@
       </div>
     </div>
 
-    <!-- DAILY CROP HARVEST PAYOUT -->
     <div class="admin-action-box">
       <h3>Process Daily Harvests</h3>
       <p>Pay all active users their daily crop profit based on their 45-day cycle.</p>
       <button class="btn-action" id="processHarvestBtn" onclick="processDailyHarvest()">Pay Daily Harvests</button>
     </div>
 
-    <!-- WEEKLY VIP PAYOUT -->
     <div class="admin-action-box">
       <h3>Weekly VIP Payouts</h3>
       <p>Pay all eligible VIP members their weekly reward. <strong style="color:#f59e0b;">(Only works on Mondays)</strong></p>
@@ -128,7 +122,7 @@
     <h3 style="margin-bottom:1rem; color:#fff;">Pending Deposits</h3>
     <div id="depositsContainer" class="empty-state">Loading...</div>
 
-    <h3 style="margin-top:2rem; margin-bottom:1rem; color:#fff;">Pending Withdrawals</h3>
+    <h3 style="margin-top:2rem; margin-bottom:1rem; color:#fff;">Pending Withdrawals (16% Fee)</h3>
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
 
@@ -239,7 +233,6 @@
   }
 
   function renderSettings() {
-    // Crops
     document.getElementById('cropSettingsContainer').innerHTML = platformSettings.crop_tiers.map((t, i) => `
       <div class="settings-row">
         <input type="text" value="${t.name}" onchange="updateCrop(${i}, 'name', this.value)">
@@ -248,7 +241,6 @@
       </div>
     `).join('');
 
-    // VIPs
     document.getElementById('vipSettingsContainer').innerHTML = platformSettings.vip_tiers.map((t, i) => `
       <div class="settings-row">
         <span style="min-width:50px; font-size:0.8rem; font-weight:bold;">VIP ${t.level}</span>
@@ -317,7 +309,6 @@
     try {
       const { data: users } = await TN.client.from('profiles').select('id, referred_by, deposit_amount, balance_usd, vip_earnings');
       
-      // Count referrals
       const referrals = {};
       users.forEach(u => {
         if (u.referred_by && Number(u.deposit_amount) > 0) {
@@ -407,16 +398,24 @@
     loadDeposits();
   };
 
+  // --- WITHDRAWALS (WITH 16% FEE) ---
   function loadWithdrawals() {
     TN.client.from('withdrawal_requests').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('withdrawalsContainer');
       if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
-      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
+      
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
       res.data.forEach(w => {
+        // Calculate 16% fee
+        const gross = Number(w.amount_usd);
+        const fee = gross * 0.16;
+        const netPayout = gross - fee;
+
         html += `<tr>
           <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
-          <td style="font-weight:bold; color:#ef4444;">-${formatUGX(w.amount_usd)}</td>
-          <td>${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
+          <td style="color:#94a3b8; font-size:0.8rem; text-decoration:line-through;">${formatUGX(gross)}</td>
+          <td style="font-weight:bold; color:#10b981; font-size:1rem;">${formatUGX(netPayout)}</td>
+          <td style="font-size:0.75rem;">${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
           <td>
             <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
             <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
@@ -428,20 +427,25 @@
   }
 
   window.approveWithdrawal = async function(withdrawalId, userId, amount) {
-    if (!confirm(`Confirm you sent ${formatUGX(amount)}?`)) return;
+    if (!confirm(`Confirm you sent the Net Payout amount to this user?`)) return;
     try {
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_withdrawn').eq('id', userId).single();
+      const { data: profile } = await TN.client.from('profiles').select('total_withdrawn').eq('id', userId).single();
+      
+      // NOTE: The user's wallet balance was already deducted by the Gross amount in dashboard.html
+      // So here we only need to update their total_withdrawn stat and mark request approved
+      
       await TN.client.from('profiles').update({ 
-        balance_usd: Number(profile.balance_usd || 0) - Number(amount),
         total_withdrawn: Number(profile.total_withdrawn || 0) + Number(amount)
       }).eq('id', userId);
+      
       await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
-      alert('Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
+      
+      alert('Withdrawal Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
     } catch (err) { alert(err.message); }
   };
 
   window.rejectWithdrawal = async function(withdrawalId) {
-    if (!confirm('Reject?')) return;
+    if (!confirm('Reject? (Note: Rejecting will not automatically refund the user in this version)')) return;
     await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
     loadWithdrawals();
   };
@@ -474,7 +478,7 @@
       const vipBadge = Number(u.vip_level) > 0 ? `<span class="vip-badge">VIP ${u.vip_level}</span>` : '';
 
       html += `
-        <div class="user-card" onclick="openUserModal('${u.id}', '${u.full_name}', ${u.balance_usd})">
+        <div class="user-card" onclick="openUserModal('${u.id}', '${u.full_name}')">
           <div class="user-details">
             <div class="user-name">${u.full_name || 'User'} ${vipBadge}</div>
             <div class="user-phone">${u.phone || 'No phone'}</div>
@@ -490,7 +494,7 @@
   };
 
   // --- USER MANAGE MODAL ---
-  window.openUserModal = function(id, name, balance) {
+  window.openUserModal = function(id, name) {
     selectedUserId = id;
     document.getElementById('modalUserName').textContent = name || 'User';
     document.getElementById('modalGrantProduct').value = '';
