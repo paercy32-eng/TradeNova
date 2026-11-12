@@ -161,9 +161,29 @@
   .status-pending { color: #f59e0b; }
   .status-failed { color: #ef4444; }
 
-  /* ================= MINIMIZED MODALS ================= */
-  .modal { width: 92vw; max-width: 360px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; color: #111827; padding: 0; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; }
-  .modal::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+  /* ================= CENTERED MINIMIZED MODALS ================= */
+  dialog.modal { 
+    width: 92vw; 
+    max-width: 360px; 
+    background: #ffffff; 
+    border: 1px solid #e5e7eb; 
+    border-radius: 16px; 
+    color: #111827; 
+    padding: 0; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+    overflow: hidden;
+    
+    /* Force center positioning */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+  dialog.modal::backdrop { 
+    background: rgba(0,0,0,0.6); 
+    backdrop-filter: blur(5px); 
+  }
   
   .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1rem 0.5rem; }
   .modal-header h3 { font-size: 1.2rem; font-weight: 900; margin: 0; color: #111827; }
@@ -429,7 +449,7 @@
     
     <form id="withdrawForm">
       <label class="input-label">Amount (UGX)</label>
-      <input type="number" id="withdrawAmount" class="main-input" min="3000" placeholder="e.g. 5000" oninput="calcWithdrawFee()" required>
+      <input type="number" id="withdrawAmount" class="main-input" min="3000" placeholder="e.g. 3000" oninput="calcWithdrawFee()" required>
       <span class="min-hint">Minimum withdraw: UGX 3,000</span>
 
       <div class="breakdown-box">
@@ -706,7 +726,6 @@
     }
   }
 
-  // --- BIND ACCOUNT LOGIC ---
   window.openBindAccount = function() {
     document.getElementById('bindName').value = currentProfile.full_name || '';
     document.getElementById('bindPhone').value = currentProfile.phone || '';
@@ -788,12 +807,10 @@
     setTimeout(() => btn.textContent = oldText, 1500);
   };
 
-  // --- WITHDRAWAL LOGIC ---
   window.openWithdraw = function() {
     const todayStr = new Date().toISOString().split('T')[0];
     if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
     
-    // Check if account is bound
     if (!currentProfile.phone || !currentProfile.full_name) {
       alert("Please bind your account details first.");
       openBindAccount();
@@ -840,12 +857,11 @@
       if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
       const newBal = Number(currentProfile.balance_usd) - amt;
       
-      // Provider and number are no longer passed manually, they are fetched from profile
       await TN.client.from('profiles').update({ balance_usd: newBal, withdraw_count_today: withdrawCount + 1, last_withdraw_date: todayStr }).eq('id', currentUser.id);
       await TN.client.from('withdrawal_requests').insert({ 
         user_id: currentUser.id, 
         amount_usd: amt, 
-        mobile_money_provider: 'Bound Account', // Dummy value to satisfy constraint if any
+        mobile_money_provider: 'Bound Account',
         mobile_money_number: currentProfile.phone 
       });
 
