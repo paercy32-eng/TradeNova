@@ -10,7 +10,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   
   body {
-    background: #f0fdf4; /* Very light green background */
+    background: #f0fdf4;
     color: #111827;
     min-height: 100vh;
     display: flex;
@@ -20,8 +20,8 @@
   /* Top Banner */
   .banner {
     width: 100%;
-    height: 180px;
-    background: linear-gradient(rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.3)), 
+    height: 140px;
+    background: linear-gradient(rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.2)), 
                 url('https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
     border-bottom: 4px solid #10b981;
     display: flex;
@@ -30,8 +30,8 @@
   }
 
   .banner-text {
-    color: #fff;
-    font-size: 2.2rem;
+    color: #ffffff;
+    font-size: 2rem;
     font-weight: 900;
     letter-spacing: -1px;
     text-transform: uppercase;
@@ -49,9 +49,9 @@
   }
 
   .auth-title {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     color: #10b981;
-    font-weight: 800;
+    font-weight: 900;
     margin-bottom: 1.5rem;
   }
 
@@ -75,7 +75,7 @@
     font-size: 1.1rem;
     width: 24px;
   }
-  .input-group input, .input-group select {
+  .input-group input {
     flex: 1;
     border: none;
     background: transparent;
@@ -83,10 +83,8 @@
     font-size: 0.95rem;
     color: #111827;
     outline: none;
-    width: 100%;
   }
   .input-group input::placeholder { color: #9ca3af; }
-  .input-group select { appearance: none; color: #111827; }
   
   /* Locked Country */
   .locked-country {
@@ -97,14 +95,14 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: 700;
+    font-weight: 800;
     color: #047857;
   }
 
   /* Phone specific */
   .dial-code {
     color: #10b981;
-    font-weight: 800;
+    font-weight: 900;
     border-right: 1px solid #bbf7d0;
     padding-right: 0.5rem;
     margin-right: 0.5rem;
@@ -115,7 +113,7 @@
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: #4b5563;
     margin: 1.2rem 0;
     font-weight: 600;
@@ -123,8 +121,8 @@
   .check-terms input {
     margin-top: 0.2rem;
     accent-color: #10b981;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
   .check-terms a { color: #10b981; text-decoration: none; font-weight: 800; }
 
@@ -137,7 +135,7 @@
     border: none;
     border-radius: 30px;
     font-size: 1.1rem;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
     transition: 0.2s;
@@ -166,25 +164,12 @@
   <h1 class="auth-title">Create Account</h1>
 
   <form id="registerForm" novalidate>
-    <div class="field">
-      <div class="input-group">
-        <i class="fa-solid fa-user"></i>
-        <input id="fullName" name="fullName" type="text" placeholder="Full Name" autocomplete="name" required>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="input-group">
-        <i class="fa-solid fa-envelope"></i>
-        <input id="email" name="email" type="email" placeholder="Email Address" autocomplete="email" required>
-      </div>
-    </div>
-
+    
     <div class="field">
       <div class="locked-country">
         <i class="fa-solid fa-location-dot"></i> Uganda (UG)
       </div>
-      <input type="hidden" id="country" value="UG" data-code="+256">
+      <input type="hidden" id="country" value="UG">
     </div>
 
     <div class="field">
@@ -211,7 +196,7 @@
     <div class="field">
       <div class="input-group">
         <i class="fa-solid fa-ticket"></i>
-        <input id="inviteCode" name="inviteCode" type="text" placeholder="Invitation Code (Optional)" style="text-transform:uppercase">
+        <input id="inviteCode" name="inviteCode" type="text" placeholder="INVITATION CODE (OPTIONAL)" style="text-transform:uppercase">
       </div>
     </div>
 
@@ -220,7 +205,7 @@
       <span>I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</span>
     </label>
 
-    <button class="btn-submit" type="submit" id="submitBtn">Register</button>
+    <button class="btn-submit" type="submit" id="submitBtn">REGISTER</button>
     <p class="form-msg" id="formMsg"></p>
   </form>
 
@@ -234,8 +219,6 @@
   'use strict';
 
   var form      = document.getElementById('registerForm');
-  var fullName  = document.getElementById('fullName');
-  var email     = document.getElementById('email');
   var phone     = document.getElementById('phone');
   var passwd    = document.getElementById('password');
   var confirm   = document.getElementById('confirm');
@@ -258,9 +241,6 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    if (!fullName.value.trim()) { setMsg('err', 'Enter your full name.'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { setMsg('err', 'Enter a valid email.'); return; }
-    
     var local = phone.value.replace(/\D/g, '').replace(/^0+/, '');
     if (local.length < 9) { setMsg('err', 'Enter a valid phone number.'); return; }
     if (passwd.value.length < 8) { setMsg('err', 'Password must be at least 8 characters.'); return; }
@@ -269,17 +249,21 @@
 
     var fullPhone = '256' + local;
     var finalRef = inviteCode.value.trim().toUpperCase();
+    
+    // Generate Synthetic Email and User Name
+    var syntheticEmail = fullPhone + '@rootandripe.app';
+    var autoName = 'User ' + local.slice(-4);
 
     submit.disabled = true;
     setMsg('', 'Creating your account…');
 
     TN.ready.then(function () {
       return TN.client.auth.signUp({
-        email: email.value.trim(),
+        email: syntheticEmail,
         password: passwd.value,
         options: {
           data: {
-            full_name: fullName.value.trim(),
+            full_name: autoName,
             phone: fullPhone,
             country: 'UG',
             country_code: '+256',
@@ -300,7 +284,7 @@
       console.error('[register]', err);
       var m = (err && err.message) || '';
       if (/already registered|User already/i.test(m)) {
-        setMsg('err', 'An account with this email already exists.');
+        setMsg('err', 'An account with this phone number already exists.');
       } else {
         setMsg('err', m || 'Something went wrong.');
       }
