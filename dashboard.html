@@ -412,16 +412,17 @@
   let l2Users = [];
   let l3Users = [];
 
+  // --- UPDATED TIERS FROM YOUR SCREENSHOT ---
   let TIERS = [
-    { amount: 50000,      name: 'Cherry Tomatoes',      profit: 7500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80' },
-    { amount: 120000,     name: 'Golden Beetroot',      profit: 10000,  img: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=400&q=80' },
-    { amount: 200000,     name: 'Purple Cauliflower',   profit: 20000,  img: 'https://images.unsplash.com/photo-1568584711271-6c929fb49b96?auto=format&fit=crop&w=400&q=80' },
-    { amount: 400000,     name: 'Zucchini',             profit: 39200,  img: 'https://images.unsplash.com/photo-1599321955726-e048fbd47da6?auto=format&fit=crop&w=400&q=80' },
-    { amount: 1200000,    name: 'Pink Oyster Mushrooms',profit: 54000,  img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=400&q=80' },
-    { amount: 2000000,    name: 'Rainbow Swiss Chard',  profit: 68000,  img: 'https://images.unsplash.com/photo-1598444743474-7c03a3727cd5?auto=format&fit=crop&w=400&q=80' },
-    { amount: 4000000,    name: 'Romanesco Broccoli',   profit: 103200, img: 'https://images.unsplash.com/photo-1510629954389-c1e0da47d414?auto=format&fit=crop&w=400&q=80' },
-    { amount: 8000000,    name: 'Purple Asparagus',     profit: 182000, img: 'https://images.unsplash.com/photo-1515471209610-dae1c92d8777?auto=format&fit=crop&w=400&q=80' },
-    { amount: 20000000,   name: 'Globe Artichokes',     profit: 400000, img: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=400&q=80' }
+    { amount: 30000,    name: 'Cherry Tomatoes',      profit: 6500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80' },
+    { amount: 50000,    name: 'Golden Beetroot',      profit: 12000,  img: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=400&q=80' },
+    { amount: 150000,   name: 'Purple Cauliflower',   profit: 25000,  img: 'https://images.unsplash.com/photo-1568584711271-6c929fb49b96?auto=format&fit=crop&w=400&q=80' },
+    { amount: 350000,   name: 'Zucchini',             profit: 40000,  img: 'https://images.unsplash.com/photo-1599321955726-e048fbd47da6?auto=format&fit=crop&w=400&q=80' },
+    { amount: 500000,   name: 'Pink Oyster Mushrooms',profit: 70000,  img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=400&q=80' },
+    { amount: 800000,   name: 'Rainbow Swiss Chard',  profit: 100000, img: 'https://images.unsplash.com/photo-1598444743474-7c03a3727cd5?auto=format&fit=crop&w=400&q=80' },
+    { amount: 1000000,  name: 'Romanesco Broccoli',   profit: 150000, img: 'https://images.unsplash.com/photo-1510629954389-c1e0da47d414?auto=format&fit=crop&w=400&q=80' },
+    { amount: 2000000,  name: 'Purple Asparagus',     profit: 300000, img: 'https://images.unsplash.com/photo-1515471209610-dae1c92d8777?auto=format&fit=crop&w=400&q=80' },
+    { amount: 5000000,  name: 'Globe Artichokes',     profit: 500000, img: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=400&q=80' }
   ];
 
   let VIP_TIERS = [
@@ -572,7 +573,7 @@
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    // --- FIXED VIP LOGIC (ONLY LEVEL 1 WITH ACTIVE PRODUCT) ---
+    // VIP LOGIC (ONLY LEVEL 1 WITH ACTIVE PRODUCT)
     const activeL1Users = l1Users.filter(u => Number(u.deposit_amount) > 0);
     
     let currentVip = 0; let currentReward = 0;
@@ -821,4 +822,4 @@
 })();
 </script>
 </body>
- </html>
+</html>
