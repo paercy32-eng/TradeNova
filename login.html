@@ -3,42 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#fdf2f8">
-<title>Sign in — Nova Trade</title>
-<!-- Icons -->
+<meta name="theme-color" content="#f0fdf4">
+<title>Sign in — Root & Ripe</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   
   body {
-    background: #fdf2f8; /* Very light pink background */
+    background: #f0fdf4; /* Very light green background */
     color: #111827;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* Top Trading Banner */
+  /* Top Farm Banner */
   .banner {
     width: 100%;
     height: 220px;
-    background: linear-gradient(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.2)), 
-                url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
-    border-bottom: 4px solid #ec4899;
+    background: linear-gradient(rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.3)), 
+                url('https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+    border-bottom: 4px solid #10b981;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   .banner-text {
-    color: #fff;
+    color: #ffffff;
     font-size: 2.5rem;
     font-weight: 900;
     letter-spacing: -1px;
     text-transform: uppercase;
     text-shadow: 0 4px 15px rgba(0,0,0,0.7);
   }
-  .banner-text span { color: #ec4899; }
+  .banner-text span { color: #f59e0b; }
 
   /* Form Container */
   .auth-container {
@@ -51,7 +50,7 @@
 
   .auth-title {
     font-size: 1.4rem;
-    color: #ec4899;
+    color: #10b981;
     font-weight: 800;
     margin-bottom: 1.5rem;
   }
@@ -62,17 +61,17 @@
     display: flex;
     align-items: center;
     background: #ffffff;
-    border: 1px solid #fbcfe8;
+    border: 1px solid #bbf7d0;
     border-radius: 12px;
     padding: 0 1rem;
     transition: 0.2s;
   }
   .input-group:focus-within {
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
   }
   .input-group i {
-    color: #ec4899;
+    color: #10b981;
     font-size: 1.1rem;
     width: 24px;
   }
@@ -97,25 +96,25 @@
     color: #4b5563;
     font-weight: 600;
   }
-  .remember-row input { accent-color: #ec4899; width: 18px; height: 18px; }
+  .remember-row input { accent-color: #10b981; width: 18px; height: 18px; }
 
   /* Submit Button */
   .btn-submit {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(90deg, #ec4899, #db2777);
+    background: linear-gradient(90deg, #10b981, #059669);
     color: #ffffff;
     border: none;
-    border-radius: 30px; /* Pill shape */
+    border-radius: 30px;
     font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
     transition: 0.2s;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
   .btn-submit:disabled { opacity: 0.7; transform: none; box-shadow: none; }
 
   /* Messages & Footer */
@@ -124,13 +123,13 @@
   .form-msg.ok { color: #10b981; }
 
   .auth-foot { text-align: center; font-size: 0.95rem; color: #4b5563; margin-top: 2rem; font-weight: 600; }
-  .auth-foot a { color: #ec4899; text-decoration: none; font-weight: 800; }
+  .auth-foot a { color: #10b981; text-decoration: none; font-weight: 800; }
 </style>
 </head>
 <body>
 
 <div class="banner">
-  <div class="banner-text">Nova<span>Trade</span></div>
+  <div class="banner-text">Root <span>&</span> Ripe</div>
 </div>
 
 <div class="auth-container">
