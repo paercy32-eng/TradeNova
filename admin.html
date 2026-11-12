@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b1120">
-<title>Admin Dashboard — Nova Trade</title>
+<title>Admin Dashboard — Root & Ripe</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: #0b1120; color: #ffffff; padding-bottom: 2rem; }
@@ -16,27 +16,22 @@
 
   .wrap { padding: 0 1.15rem; max-width: 800px; margin: 0 auto; }
   
-  /* Tabs */
-  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; }
-  .tab-btn { background: none; border: none; color: #94a3b8; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; }
+  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+  .tab-btn { background: none; border: none; color: #94a3b8; font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 6px; white-space: nowrap; }
   .tab-btn.active { background: #1e293b; color: #10b981; }
 
-  /* KPI Cards */
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
   .kpi-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 1rem; text-align: center; }
   .kpi-val { font-size: 1.3rem; font-weight: 800; color: #10b981; margin-bottom: 0.2rem; }
   .kpi-lbl { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
 
-  /* Signal Generator Box */
-  .signal-box { background: #0f172a; border: 1px solid #1e293b; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; }
-  .signal-box h3 { color: #ffffff; margin-bottom: 0.5rem; }
-  .signal-box p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem; }
-  .signal-btns { display: flex; gap: 1rem; justify-content: center; }
-  .btn-signal { padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; font-weight: 800; border: none; cursor: pointer; color: #fff; }
-  .btn-sig-up { background: #10b981; }
-  .btn-sig-down { background: #ef4444; }
+  .admin-action-box { background: #0f172a; border: 1px solid #1e293b; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center; }
+  .admin-action-box h3 { color: #ffffff; margin-bottom: 0.5rem; }
+  .admin-action-box p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem; }
+  .btn-action { padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 1rem; font-weight: 800; border: none; cursor: pointer; color: #fff; background: #10b981; }
+  .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-action-orange { background: #f59e0b; }
 
-  /* Tables for Pending */
   .data-table { width: 100%; border-collapse: collapse; background: #0f172a; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; border: 1px solid #1e293b; }
   .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #1e293b; font-size: 0.85rem; }
   .data-table th { background: #0b1120; color: #94a3b8; text-transform: uppercase; font-size: 0.7rem; }
@@ -45,36 +40,50 @@
   .btn-reject { background: #ef4444; margin-left: 0.5rem; }
   .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #0f172a; border-radius: 12px; border: 1px dashed #1e293b; }
 
-  /* --- MANAGE USERS LAYOUT --- */
+  /* Manage Users Tab */
   .search-bar { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; align-items: center; padding: 0 1rem; margin-bottom: 1rem; }
   .search-bar input { background: transparent; border: none; padding: 1rem 0.5rem; color: #fff; width: 100%; outline: none; font-size: 0.95rem; }
   .search-bar svg { stroke: #64748b; }
   
-  .country-filters { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 0.5rem; scrollbar-width: none; }
-  .country-filters::-webkit-scrollbar { display: none; }
-  .filter-pill { background: #0f172a; border: 1px solid #1e293b; padding: 0.6rem 1rem; border-radius: 20px; color: #94a3b8; font-size: 0.85rem; font-weight: bold; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 0.4rem; }
-  .filter-pill.active { background: #10b981; color: #fff; border-color: #10b981; }
-  
-  /* User Cards */
-  .user-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+  .user-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+  .user-card:active { background: #1e293b; }
   .user-details { display: flex; flex-direction: column; gap: 0.3rem; }
   .user-name { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
   .user-phone { font-size: 0.85rem; color: #64748b; font-family: monospace; }
   .user-email { font-size: 0.75rem; color: #64748b; }
-  
   .user-financials { text-align: right; display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
   .user-balance { font-size: 1.1rem; font-weight: 800; color: #10b981; }
   .user-meta { display: flex; gap: 0.4rem; align-items: center; }
   .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
   .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
   .status-inactive { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
-  .country-code-badge { border: 1px solid #334155; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; color: #94a3b8; }
+  .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 900; }
+
+  /* Settings Tab */
+  .settings-section { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .settings-section h3 { margin-bottom: 1rem; color: #10b981; }
+  .settings-row { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
+  .settings-row input { flex: 1; background: #0b1120; border: 1px solid #334155; padding: 0.6rem; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none; }
+  .settings-row input:focus { border-color: #10b981; }
+  .btn-save { background: #10b981; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 1rem; }
+
+  /* Modals */
+  .modal { width: 90vw; max-width: 400px; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; color: #fff; padding: 1.5rem; }
+  .modal::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+  .modal h3 { margin-bottom: 1rem; font-size: 1.2rem; }
+  .modal label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.4rem; margin-top: 1rem; }
+  .modal input, .modal select { width: 100%; padding: 0.8rem; background: #0b1120; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none; }
+  .modal input:focus, .modal select:focus { border-color: #10b981; }
+  .modal-btns { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
+  .modal-btns button { flex: 1; padding: 0.8rem; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+  .btn-close { background: #334155; color: #fff; }
+  .btn-save-modal { background: #10b981; color: #fff; }
 </style>
 </head>
 <body>
 
 <header class="admin-header">
-  <div class="brand">Nova<span>Trade</span> Admin</div>
+  <div class="brand">Root<span>&</span>Ripe Admin</div>
   <button class="btn-logout" id="logoutBtn">Log out</button>
 </header>
 
@@ -82,6 +91,7 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('pending')">Pending Actions</button>
     <button class="tab-btn" onclick="switchTab('users')">Manage Users</button>
+    <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
   </div>
 
   <!-- ================= TAB 1: PENDING ACTIONS ================= -->
@@ -93,24 +103,29 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-val" id="kpiDeposits">-</div>
-        <div class="kpi-lbl">Deposited</div>
+        <div class="kpi-lbl">Deposits (UGX)</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-val" id="kpiWithdrawals" style="color:#ef4444;">-</div>
-        <div class="kpi-lbl">Withdrawn</div>
+        <div class="kpi-lbl">Withdrawals (UGX)</div>
       </div>
     </div>
 
-    <div class="signal-box">
-      <h3>Generate Live Signal</h3>
-      <p>Select the winning direction. All PENDING trades will be resolved instantly.</p>
-      <div class="signal-btns">
-        <button class="btn-signal btn-sig-up" onclick="resolveTrades('UP')">UP Signal</button>
-        <button class="btn-signal btn-sig-down" onclick="resolveTrades('DOWN')">DOWN Signal</button>
-      </div>
+    <!-- DAILY CROP HARVEST PAYOUT -->
+    <div class="admin-action-box">
+      <h3>Process Daily Harvests</h3>
+      <p>Pay all active users their daily crop profit based on their 45-day cycle.</p>
+      <button class="btn-action" id="processHarvestBtn" onclick="processDailyHarvest()">Pay Daily Harvests</button>
     </div>
 
-    <h3 style="margin-bottom:1rem; color:#fff;">Pending Crypto Deposits</h3>
+    <!-- WEEKLY VIP PAYOUT -->
+    <div class="admin-action-box">
+      <h3>Weekly VIP Payouts</h3>
+      <p>Pay all eligible VIP members their weekly reward. <strong style="color:#f59e0b;">(Only works on Mondays)</strong></p>
+      <button class="btn-action btn-action-orange" id="processVipBtn" onclick="processVipPayouts()">Process VIP Payouts</button>
+    </div>
+
+    <h3 style="margin-bottom:1rem; color:#fff;">Pending Deposits</h3>
     <div id="depositsContainer" class="empty-state">Loading...</div>
 
     <h3 style="margin-top:2rem; margin-bottom:1rem; color:#fff;">Pending Withdrawals</h3>
@@ -119,30 +134,50 @@
 
   <!-- ================= TAB 2: MANAGE USERS ================= -->
   <div id="tab-users" style="display:none;">
-    
     <div class="search-bar">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="searchInput" placeholder="Search by phone number or name..." oninput="renderUserCards()">
+      <input type="text" id="searchInput" placeholder="Search by phone or name..." oninput="renderUserCards()">
     </div>
-
-    <div class="country-filters" id="countryFilters">
-      <div class="filter-pill active" onclick="filterCountry('ALL', this)">🌍 All</div>
-      <div class="filter-pill" onclick="filterCountry('UG', this)">🇺🇬 Uganda</div>
-      <div class="filter-pill" onclick="filterCountry('KE', this)">🇰🇪 Kenya</div>
-      <div class="filter-pill" onclick="filterCountry('RW', this)">🇷🇼 Rwanda</div>
-      <div class="filter-pill" onclick="filterCountry('ZM', this)">🇿🇲 Zambia</div>
-      <div class="filter-pill" onclick="filterCountry('CM', this)">🇨🇲 Cameroon</div>
-      <div class="filter-pill" onclick="filterCountry('TZ', this)">🇹🇿 Tanzania</div>
-      <div class="filter-pill" onclick="filterCountry('NG', this)">🇳🇬 Nigeria</div>
-      <div class="filter-pill" onclick="filterCountry('GH', this)">🇬🇭 Ghana</div>
-    </div>
-
     <div id="userCardsContainer">
       <div class="empty-state">Loading users...</div>
     </div>
   </div>
 
+  <!-- ================= TAB 3: SETTINGS ================= -->
+  <div id="tab-settings" style="display:none;">
+    <div class="settings-section">
+      <h3>Edit Crop Prices (UGX)</h3>
+      <div id="cropSettingsContainer"></div>
+      <button class="btn-save" onclick="saveSettings()">Save All Settings</button>
+    </div>
+    
+    <div class="settings-section">
+      <h3>Edit VIP Rewards (UGX)</h3>
+      <div id="vipSettingsContainer"></div>
+      <button class="btn-save" onclick="saveSettings()">Save All Settings</button>
+    </div>
+  </div>
 </main>
+
+<!-- USER MANAGE MODAL -->
+<dialog id="userModal" class="modal">
+  <h3>Manage User</h3>
+  <p id="modalUserName" style="color:#10b981; font-weight:bold; margin-bottom:1rem;">User Name</p>
+  
+  <label>Grant Product (Free Activation)</label>
+  <select id="modalGrantProduct">
+    <option value="">-- Select Crop --</option>
+    <!-- Populated by JS -->
+  </select>
+
+  <label>Adjust Wallet Balance (UGX)</label>
+  <input type="number" id="modalAdjustBalance" placeholder="e.g. 50000 to add, -50000 to deduct">
+
+  <div class="modal-btns">
+    <button class="btn-close" onclick="document.getElementById('userModal').close()">Cancel</button>
+    <button class="btn-save-modal" onclick="saveUserChanges()">Save Changes</button>
+  </div>
+</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
@@ -151,20 +186,13 @@
   'use strict';
 
   let allUsers = [];
-  let currentFilter = 'ALL';
   let searchQuery = '';
+  let selectedUserId = null;
+  let platformSettings = { crop_tiers: [], vip_tiers: [] };
 
-  const TIERS = [
-    { amount: 10,   profit: 1.5 },
-    { amount: 30,   profit: 2.5 },
-    { amount: 50,   profit: 5 },
-    { amount: 100,  profit: 9.8 },
-    { amount: 300,  profit: 13.5 },
-    { amount: 500,  profit: 17 },
-    { amount: 1000, profit: 25.8 },
-    { amount: 2000, profit: 45.5 },
-    { amount: 5000, profit: 100 }
-  ];
+  function formatUGX(amount) {
+    return 'UGX ' + Number(amount).toLocaleString();
+  }
 
   function initAdmin() {
     TN.ready.then(() => TN.getSession())
@@ -178,10 +206,12 @@
         window.location.replace('dashboard.html');
         return;
       }
-      fetchKPIs();
-      loadDeposits();
-      loadWithdrawals();
-      loadUsers();
+      loadSettings().then(() => {
+        fetchKPIs();
+        loadDeposits();
+        loadWithdrawals();
+        loadUsers();
+      });
     })
     .catch(err => {
       console.error(err);
@@ -194,61 +224,159 @@
     if (event && event.target) event.target.classList.add('active');
     document.getElementById('tab-pending').style.display = tab === 'pending' ? 'block' : 'none';
     document.getElementById('tab-users').style.display = tab === 'users' ? 'block' : 'none';
+    document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none';
   };
 
+  // --- SETTINGS LOGIC ---
+  async function loadSettings() {
+    const { data } = await TN.client.from('platform_settings').select('*').eq('id', 1).single();
+    if (data) {
+      platformSettings.crop_tiers = data.crop_tiers || [];
+      platformSettings.vip_tiers = data.vip_tiers || [];
+      renderSettings();
+      populateGrantDropdown();
+    }
+  }
+
+  function renderSettings() {
+    // Crops
+    document.getElementById('cropSettingsContainer').innerHTML = platformSettings.crop_tiers.map((t, i) => `
+      <div class="settings-row">
+        <input type="text" value="${t.name}" onchange="updateCrop(${i}, 'name', this.value)">
+        <input type="number" value="${t.amount}" onchange="updateCrop(${i}, 'amount', this.value)" placeholder="Price">
+        <input type="number" value="${t.profit}" onchange="updateCrop(${i}, 'profit', this.value)" placeholder="Daily Profit">
+      </div>
+    `).join('');
+
+    // VIPs
+    document.getElementById('vipSettingsContainer').innerHTML = platformSettings.vip_tiers.map((t, i) => `
+      <div class="settings-row">
+        <span style="min-width:50px; font-size:0.8rem; font-weight:bold;">VIP ${t.level}</span>
+        <input type="number" value="${t.req}" onchange="updateVip(${i}, 'req', this.value)" placeholder="Refs">
+        <input type="number" value="${t.reward}" onchange="updateVip(${i}, 'reward', this.value)" placeholder="Reward">
+      </div>
+    `).join('');
+  }
+
+  window.updateCrop = function(index, field, value) {
+    platformSettings.crop_tiers[index][field] = field === 'name' ? value : Number(value);
+  };
+  window.updateVip = function(index, field, value) {
+    platformSettings.vip_tiers[index][field] = Number(value);
+  };
+
+  window.saveSettings = async function() {
+    const btn = event.target;
+    btn.textContent = 'Saving...'; btn.disabled = true;
+    try {
+      await TN.client.from('platform_settings').update({
+        crop_tiers: platformSettings.crop_tiers,
+        vip_tiers: platformSettings.vip_tiers
+      }).eq('id', 1);
+      alert('Settings saved successfully!');
+    } catch (err) { alert(err.message); }
+    btn.textContent = 'Save All Settings'; btn.disabled = false;
+  };
+
+  function populateGrantDropdown() {
+    document.getElementById('modalGrantProduct').innerHTML = '<option value="">-- Select Crop --</option>' + 
+      platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (${formatUGX(t.amount)})</option>`).join('');
+  }
+
+  // --- DAILY HARVEST PAYOUT ---
+  window.processDailyHarvest = async function() {
+    if (!confirm("Pay daily harvest profits to all active users?")) return;
+    const btn = document.getElementById('processHarvestBtn');
+    btn.disabled = true; btn.textContent = 'Processing...';
+
+    try {
+      const { data: users } = await TN.client.from('profiles').select('*').gt('deposit_amount', 0).lt('active_day', 45);
+      let paid = 0;
+      for (let u of users) {
+        const crop = platformSettings.crop_tiers.find(t => Number(t.amount) === Number(u.deposit_amount));
+        if (crop) {
+          const newBal = Number(u.balance_usd || 0) + Number(crop.profit);
+          const newDay = Number(u.active_day || 1) + 1;
+          await TN.client.from('profiles').update({ balance_usd: newBal, active_day: newDay }).eq('id', u.id);
+          paid++;
+        }
+      }
+      alert(`Successfully paid ${paid} active farmers!`);
+      loadUsers();
+    } catch (err) { alert(err.message); }
+    btn.disabled = false; btn.textContent = 'Pay Daily Harvests';
+  };
+
+  // --- WEEKLY VIP PAYOUT ---
+  window.processVipPayouts = async function() {
+    if (new Date().getDay() !== 1) { alert("VIP Payouts can only be processed on Mondays!"); return; }
+    if (!confirm("Distribute weekly VIP rewards to eligible users?")) return;
+    const btn = document.getElementById('processVipBtn');
+    btn.disabled = true; btn.textContent = 'Processing...';
+
+    try {
+      const { data: users } = await TN.client.from('profiles').select('id, referred_by, deposit_amount, balance_usd, vip_earnings');
+      
+      // Count referrals
+      const referrals = {};
+      users.forEach(u => {
+        if (u.referred_by && Number(u.deposit_amount) > 0) {
+          if (!referrals[u.referred_by]) referrals[u.referred_by] = [];
+          referrals[u.referred_by].push(Number(u.deposit_amount));
+        }
+      });
+
+      let paidCount = 0;
+      for (let user of users) {
+        const userRefs = referrals[user.id] || [];
+        let currentVip = 0; let currentReward = 0;
+
+        for (let i = platformSettings.vip_tiers.length - 1; i >= 0; i--) {
+          const t = platformSettings.vip_tiers[i];
+          const planReq = t.plan === 'Starter' ? 50000 : 120000;
+          const eligible = userRefs.filter(dep => dep >= planReq).length;
+          if (eligible >= t.req) { currentVip = t.level; currentReward = t.reward; break; }
+        }
+
+        if (currentVip > 0 && currentReward > 0) {
+          await TN.client.from('profiles').update({
+            balance_usd: Number(user.balance_usd || 0) + Number(currentReward),
+            vip_earnings: Number(user.vip_earnings || 0) + Number(currentReward),
+            vip_level: currentVip
+          }).eq('id', user.id);
+          paidCount++;
+        }
+      }
+      alert(`Success! Paid ${paidCount} users their VIP rewards.`);
+      loadUsers();
+    } catch (err) { alert(err.message); }
+    btn.disabled = false; btn.textContent = 'Process VIP Payouts';
+  };
+
+  // --- KPIs & PENDING ---
   function fetchKPIs() {
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
-
     TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
       const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
-      document.getElementById('kpiDeposits').textContent = '$' + total.toLocaleString();
+      document.getElementById('kpiDeposits').textContent = formatUGX(total);
     });
-
     TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
       const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
-      document.getElementById('kpiWithdrawals').textContent = '$' + total.toLocaleString();
+      document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
     });
   }
 
-  // --- SIGNAL RESOLUTION ---
-  window.resolveTrades = async function(direction) {
-    if (!confirm(`Are you sure the signal was ${direction}? This will payout all matching pending trades.`)) return;
-    const { data: pending, error } = await TN.client.from('trades').select('*, profiles(deposit_amount)').eq('result', 'PENDING');
-    if (error) return alert(error.message);
-    if (!pending || pending.length === 0) return alert('No pending trades found for this round.');
-
-    let wins = 0; let losses = 0;
-    for (let trade of pending) {
-      const isWin = (trade.user_choice === direction);
-      let profit = 0;
-      if (isWin) {
-        const dep = Number(trade.profiles.deposit_amount || 0);
-        let tier = TIERS.slice().reverse().find(t => dep >= t.amount);
-        if (tier) {
-          profit = tier.profit;
-          const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', trade.user_id).single();
-          await TN.client.from('profiles').update({ balance_usd: Number(profile.balance_usd) + profit }).eq('id', trade.user_id);
-        }
-        wins++;
-      } else { losses++; }
-      await TN.client.from('trades').update({ result: isWin ? 'WIN' : 'LOSS', profit_usd: profit }).eq('id', trade.id);
-    }
-    alert(`Signal Resolved!\nWins: ${wins}\nLosses: ${losses}`);
-    loadUsers();
-  };
-
-  // --- PENDING DEPOSITS ---
   function loadDeposits() {
     TN.client.from('pending_deposits').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('depositsContainer');
-      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending crypto deposits.'; return; }
+      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending deposits.'; return; }
       let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
       res.data.forEach(d => {
         html += `<tr>
           <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
-          <td style="font-weight:bold; color:#10b981;">$${d.amount_usd}</td>
+          <td style="font-weight:bold; color:#10b981;">${formatUGX(d.amount_usd)}</td>
           <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
           <td>
             <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
@@ -261,7 +389,7 @@
   }
 
   window.approveDeposit = async function(depositId, userId, amount) {
-    if (!confirm(`Confirm $${amount} received in Binance?`)) return;
+    if (!confirm(`Confirm ${formatUGX(amount)} received?`)) return;
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
       await TN.client.from('profiles').update({ 
@@ -279,7 +407,6 @@
     loadDeposits();
   };
 
-  // --- PENDING WITHDRAWALS ---
   function loadWithdrawals() {
     TN.client.from('withdrawal_requests').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('withdrawalsContainer');
@@ -288,7 +415,7 @@
       res.data.forEach(w => {
         html += `<tr>
           <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
-          <td style="font-weight:bold; color:#ef4444;">-$${w.amount_usd}</td>
+          <td style="font-weight:bold; color:#ef4444;">-${formatUGX(w.amount_usd)}</td>
           <td>${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
           <td>
             <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
@@ -301,7 +428,7 @@
   }
 
   window.approveWithdrawal = async function(withdrawalId, userId, amount) {
-    if (!confirm(`Confirm you sent $${amount} to this user?`)) return;
+    if (!confirm(`Confirm you sent ${formatUGX(amount)}?`)) return;
     try {
       const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_withdrawn').eq('id', userId).single();
       await TN.client.from('profiles').update({ 
@@ -309,7 +436,7 @@
         total_withdrawn: Number(profile.total_withdrawn || 0) + Number(amount)
       }).eq('id', userId);
       await TN.client.from('withdrawal_requests').update({ status: 'approved' }).eq('id', withdrawalId);
-      alert('Withdrawal Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
+      alert('Approved!'); fetchKPIs(); loadWithdrawals(); loadUsers();
     } catch (err) { alert(err.message); }
   };
 
@@ -319,7 +446,7 @@
     loadWithdrawals();
   };
 
-  // --- MANAGE USERS TAB ---
+  // --- MANAGE USERS ---
   function loadUsers() {
     TN.client.from('profiles').select('*').order('created_at', { ascending: false }).then(res => {
       if (!res.data) return;
@@ -328,62 +455,80 @@
     });
   }
 
-  window.filterCountry = function(countryCode, el) {
-    currentFilter = countryCode;
-    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    renderUserCards();
-  };
-
   window.renderUserCards = function() {
     searchQuery = document.getElementById('searchInput').value.toLowerCase();
     const container = document.getElementById('userCardsContainer');
     container.innerHTML = '';
 
     const filteredUsers = allUsers.filter(u => {
-      const matchesCountry = currentFilter === 'ALL' || u.country === currentFilter;
-      const matchesSearch = (u.phone || '').toLowerCase().includes(searchQuery) || 
-                            (u.full_name || '').toLowerCase().includes(searchQuery);
-      return matchesCountry && matchesSearch;
+      return (u.phone || '').toLowerCase().includes(searchQuery) || (u.full_name || '').toLowerCase().includes(searchQuery);
     });
 
-    if (filteredUsers.length === 0) {
-      container.innerHTML = '<div class="empty-state">No users found matching this filter.</div>';
-      return;
-    }
+    if (filteredUsers.length === 0) { container.innerHTML = '<div class="empty-state">No users found.</div>'; return; }
 
     let html = '';
     filteredUsers.forEach(u => {
       const dep = Number(u.deposit_amount || 0);
       const isActive = dep > 0;
-      const statusHtml = isActive 
-        ? `<span class="status-badge status-active">Active</span>`
-        : `<span class="status-badge status-inactive">Inactive</span>`;
-      
-      const countryCode = u.country || 'Unknown';
-      
-      // BALANCE IS NOW STRICTLY IN USD
-      const displayBalance = '$' + Number(u.balance_usd || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
+      const vipBadge = Number(u.vip_level) > 0 ? `<span class="vip-badge">VIP ${u.vip_level}</span>` : '';
 
       html += `
-        <div class="user-card">
+        <div class="user-card" onclick="openUserModal('${u.id}', '${u.full_name}', ${u.balance_usd})">
           <div class="user-details">
-            <div class="user-name">${u.full_name || 'User'}</div>
+            <div class="user-name">${u.full_name || 'User'} ${vipBadge}</div>
             <div class="user-phone">${u.phone || 'No phone'}</div>
-            <div class="user-email">${u.email || 'No email'}</div>
           </div>
           <div class="user-financials">
-            <div class="user-balance">${displayBalance}</div>
-            <div class="user-meta">
-              ${statusHtml}
-              <span class="country-code-badge">${countryCode}</span>
-            </div>
+            <div class="user-balance">${formatUGX(u.balance_usd || 0)}</div>
+            <div class="user-meta">${statusHtml}</div>
           </div>
         </div>
       `;
     });
-    
     container.innerHTML = html;
+  };
+
+  // --- USER MANAGE MODAL ---
+  window.openUserModal = function(id, name, balance) {
+    selectedUserId = id;
+    document.getElementById('modalUserName').textContent = name || 'User';
+    document.getElementById('modalGrantProduct').value = '';
+    document.getElementById('modalAdjustBalance').value = '';
+    document.getElementById('userModal').showModal();
+  };
+
+  window.saveUserChanges = async function() {
+    const grantProduct = document.getElementById('modalGrantProduct').value;
+    const adjustBal = parseFloat(document.getElementById('modalAdjustBalance').value);
+
+    if (!grantProduct && (!adjustBal || isNaN(adjustBal))) {
+      alert('Please select a product or enter a balance adjustment.');
+      return;
+    }
+
+    try {
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', selectedUserId).single();
+      let newBal = Number(profile.balance_usd || 0);
+      let updates = {};
+
+      if (!isNaN(adjustBal) && adjustBal !== 0) {
+        newBal += adjustBal;
+        updates.balance_usd = newBal;
+      }
+
+      if (grantProduct) {
+        updates.deposit_amount = Number(grantProduct);
+        updates.active_day = 1;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await TN.client.from('profiles').update(updates).eq('id', selectedUserId);
+        alert('User updated successfully!');
+        document.getElementById('userModal').close();
+        loadUsers();
+      }
+    } catch (err) { alert(err.message); }
   };
 
   document.getElementById('logoutBtn').addEventListener('click', function() {
