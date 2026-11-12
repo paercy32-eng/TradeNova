@@ -153,7 +153,6 @@
   </div>
 </main>
 
-<!-- USER MANAGE MODAL -->
 <dialog id="userModal" class="modal">
   <h3>Manage User</h3>
   <p id="modalUserName" style="color:#10b981; font-weight:bold; margin-bottom:1rem;">User Name</p>
@@ -161,7 +160,6 @@
   <label>Grant Product (Free Activation)</label>
   <select id="modalGrantProduct">
     <option value="">-- Select Crop --</option>
-    <!-- Populated by JS -->
   </select>
 
   <label>Adjust Wallet Balance (UGX)</label>
@@ -221,7 +219,6 @@
     document.getElementById('tab-settings').style.display = tab === 'settings' ? 'block' : 'none';
   };
 
-  // --- SETTINGS LOGIC ---
   async function loadSettings() {
     const { data } = await TN.client.from('platform_settings').select('*').eq('id', 1).single();
     if (data) {
@@ -275,7 +272,6 @@
       platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (${formatUGX(t.amount)})</option>`).join('');
   }
 
-  // --- DAILY HARVEST PAYOUT ---
   window.processDailyHarvest = async function() {
     if (!confirm("Pay daily harvest profits to all active users?")) return;
     const btn = document.getElementById('processHarvestBtn');
@@ -299,7 +295,6 @@
     btn.disabled = false; btn.textContent = 'Pay Daily Harvests';
   };
 
-  // --- WEEKLY VIP PAYOUT ---
   window.processVipPayouts = async function() {
     if (new Date().getDay() !== 1) { alert("VIP Payouts can only be processed on Mondays!"); return; }
     if (!confirm("Distribute weekly VIP rewards to eligible users?")) return;
@@ -324,7 +319,7 @@
 
         for (let i = platformSettings.vip_tiers.length - 1; i >= 0; i--) {
           const t = platformSettings.vip_tiers[i];
-          const planReq = t.plan === 'Starter' ? 50000 : 120000;
+          const planReq = t.plan === 'Starter' ? 30000 : 50000;
           const eligible = userRefs.filter(dep => dep >= planReq).length;
           if (eligible >= t.req) { currentVip = t.level; currentReward = t.reward; break; }
         }
@@ -344,7 +339,6 @@
     btn.disabled = false; btn.textContent = 'Process VIP Payouts';
   };
 
-  // --- KPIs & PENDING ---
   function fetchKPIs() {
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
@@ -398,7 +392,6 @@
     loadDeposits();
   };
 
-  // --- WITHDRAWALS (WITH 16% FEE) ---
   function loadWithdrawals() {
     TN.client.from('withdrawal_requests').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('withdrawalsContainer');
@@ -406,7 +399,6 @@
       
       let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
       res.data.forEach(w => {
-        // Calculate 16% fee
         const gross = Number(w.amount_usd);
         const fee = gross * 0.16;
         const netPayout = gross - fee;
@@ -418,7 +410,7 @@
           <td style="font-size:0.75rem;">${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
           <td>
             <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
-            <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}')">Reject</button>
+            <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Reject</button>
           </td>
         </tr>`;
       });
@@ -431,9 +423,6 @@
     try {
       const { data: profile } = await TN.client.from('profiles').select('total_withdrawn').eq('id', userId).single();
       
-      // NOTE: The user's wallet balance was already deducted by the Gross amount in dashboard.html
-      // So here we only need to update their total_withdrawn stat and mark request approved
-      
       await TN.client.from('profiles').update({ 
         total_withdrawn: Number(profile.total_withdrawn || 0) + Number(amount)
       }).eq('id', userId);
@@ -444,13 +433,27 @@
     } catch (err) { alert(err.message); }
   };
 
-  window.rejectWithdrawal = async function(withdrawalId) {
-    if (!confirm('Reject? (Note: Rejecting will not automatically refund the user in this version)')) return;
-    await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
-    loadWithdrawals();
+  window.rejectWithdrawal = async function(withdrawalId, userId, amount) {
+    if (!confirm('Reject this withdrawal? The full amount will be refunded to the user\'s wallet.')) return;
+    try {
+      // 1. Get current balance
+      const { data: profile } = await TN.client.from('profiles').select('balance_usd').eq('id', userId).single();
+      
+      // 2. Refund the full amount
+      const newBal = Number(profile.balance_usd || 0) + Number(amount);
+      await TN.client.from('profiles').update({ balance_usd: newBal }).eq('id', userId);
+
+      // 3. Mark as rejected
+      await TN.client.from('withdrawal_requests').update({ status: 'rejected' }).eq('id', withdrawalId);
+      
+      alert('Withdrawal rejected and funds refunded to user!');
+      loadWithdrawals();
+      loadUsers();
+    } catch (err) {
+      alert('Error processing refund: ' + err.message);
+    }
   };
 
-  // --- MANAGE USERS ---
   function loadUsers() {
     TN.client.from('profiles').select('*').order('created_at', { ascending: false }).then(res => {
       if (!res.data) return;
@@ -493,7 +496,6 @@
     container.innerHTML = html;
   };
 
-  // --- USER MANAGE MODAL ---
   window.openUserModal = function(id, name) {
     selectedUserId = id;
     document.getElementById('modalUserName').textContent = name || 'User';
