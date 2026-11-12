@@ -9,7 +9,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { padding-bottom: 75px; background: #f9fafb; color: #111827; overflow-x: hidden; }
   
-  /* Header & Ticker */
   .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
   .brand { font-weight: 900; font-size: 1.3rem; color: #065f46; letter-spacing: -0.5px; }
   .brand span { color: #f59e0b; }
@@ -19,21 +18,16 @@
   .ticker { display: inline-block; animation: ticker 20s linear infinite; }
   .ticker span { margin-right: 1.5rem; color: #4b5563; font-weight: 600; }
   @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
-  .text-green { color: #10b981; font-weight: bold; }
-  .text-red { color: #ef4444; font-weight: bold; }
 
-  /* App Content */
   .app-content { padding: 1.15rem; display: none; }
   .app-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Bottom Nav */
   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-around; padding: 0.6rem 0; z-index: 20; padding-bottom: env(safe-area-inset-bottom, 0.6rem); }
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: #9ca3af; font-size: 0.65rem; font-weight: 600; cursor: pointer; }
   .nav-item svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
   .nav-item.active { color: #10b981; }
 
-  /* Home Tab */
   .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; color: #065f46; }
   .plan-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1rem; margin-bottom: 1.2rem; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.03); overflow: hidden; }
   .plan-card.active-plan { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); background: #ecfdf5; }
@@ -48,7 +42,6 @@
   .btn-activate:active { background: #059669; }
   .btn-activated { background: #d1fae5; color: #065f46; border: none; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: default; margin-top: 1rem; width: 100%; }
 
-  /* My Order Tab */
   .order-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
   .order-title { font-size: 1.4rem; font-weight: 900; color: #065f46; margin-bottom: 0.5rem; }
   .order-img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin: 0 auto 1rem; border: 4px solid #10b981; }
@@ -57,8 +50,7 @@
   .cycle-bar { height: 12px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
   .cycle-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); border-radius: 10px; transition: width 0.5s ease; }
   .daily-earn { font-size: 1.2rem; font-weight: 800; color: #f59e0b; margin-top: 1rem; }
-  
-  /* Team Tab */
+
   .commission-card { background: linear-gradient(135deg, #059669, #10b981); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
   .commission-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem; }
   .commission-amount { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
@@ -67,15 +59,7 @@
   .ref-input-group { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
   .ref-input-group input { flex: 1; background: #f9fafb; border: 1px solid #e5e7eb; padding: 0.8rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #6b7280; outline: none; }
   .ref-input-group button { background: #10b981; color: #fff; border: none; padding: 0 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; }
-  .ref-list-title { font-size: 1.1rem; font-weight: 800; color: #111827; margin-bottom: 1rem; }
-  .ref-user-card { display: flex; align-items: center; gap: 1rem; background: #ffffff; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 12px; margin-bottom: 0.8rem; }
-  .ref-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
-  .ref-info { flex: 1; }
-  .ref-info h5 { font-size: 0.95rem; color: #111827; margin-bottom: 0.1rem; }
-  .ref-info p { font-size: 0.75rem; color: #6b7280; }
-  .ref-status { font-size: 0.75rem; font-weight: bold; color: #10b981; background: #d1fae5; padding: 0.3rem 0.6rem; border-radius: 6px; }
-
-  /* VIP Tab */
+  
   .vip-card { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2); }
   .vip-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem; }
   .vip-level-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem; }
@@ -92,7 +76,6 @@
   .vip-tier-reward { font-weight: 800; color: #f59e0b; text-align: right; }
   .vip-tier-reward span { display: block; font-size: 0.65rem; color: #9ca3af; font-weight: 500; }
 
-  /* Profile Tab */
   .profile-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
   .prof-avatar { width: 45px; height: 45px; border-radius: 12px; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
   .prof-info { flex: 1; }
@@ -109,10 +92,14 @@
   .stat-box { flex: 1; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 0.8rem; }
   .stat-box .lbl { font-size: 0.65rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
   .stat-box .val { font-size: 1rem; font-weight: 700; }
+  
   .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
   .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #6b7280; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; }
-  .action-icon { width: 50px; height: 50px; border-radius: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #10b981; }
+  .action-icon { width: 50px; height: 50px; border-radius: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #10b981; position: relative; }
   .action-item:active .action-icon { background: #d1fae5; }
+  
+  .checkin-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: #fff; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; font-weight: bold; }
+
   .menu-list { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
   .menu-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb; text-decoration: none; color: #111827; cursor: pointer; }
   .menu-item:last-child { border-bottom: none; }
@@ -135,6 +122,7 @@
   .btn-primary { width: 100%; padding: 0.9rem; background: #10b981; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
   .btn-primary:disabled { opacity: 0.5; }
   .form-msg { text-align: center; font-size: 0.8rem; margin-top: 0.8rem; }
+  
   .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #e5e7eb; }
   .history-item:last-child { border-bottom: none; }
   .hist-info { display: flex; flex-direction: column; gap: 0.2rem; }
@@ -148,13 +136,6 @@
 </head>
 <body>
 
-<script>
-  window.onerror = function(msg, url, line) {
-    document.body.innerHTML = '<div style="color:white; background:red; padding:20px; font-family:monospace; z-index:9999; position:fixed; top:0; left:0; right:0; bottom:0; overflow-y:auto;"><h2>Javascript Error</h2><p>' + msg + '</p><p>Line: ' + line + '</p><button onclick="location.reload()" style="padding:10px; margin-top:20px;">Reload Page</button></div>' + document.body.innerHTML;
-    return false;
-  };
-</script>
-
 <div class="app-header">
   <div class="brand">Root <span>&</span> Ripe</div>
   <button class="btn-logout" id="logoutBtn">Log out</button>
@@ -165,7 +146,6 @@
 </div>
 
 <main>
-  <!-- HOME TAB -->
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Farmer</div>
     <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1.5rem;">Invest in premium vegetables today.</p>
@@ -178,21 +158,16 @@
     <div id="plansContainer"></div>
   </div>
 
-  <!-- MY ORDER TAB -->
   <div class="app-content" id="tab-order">
     <h3 style="margin-bottom:1.5rem; color: #065f46;">My Active Order</h3>
-    
-    <div id="activeOrderContainer">
-      <!-- Populated by JS -->
-    </div>
+    <div id="activeOrderContainer"></div>
   </div>
 
-  <!-- TEAM TAB -->
   <div class="app-content" id="tab-team">
     <div class="commission-card">
       <div class="commission-label">Total Commission Earned</div>
       <div class="commission-amount" id="teamCommission">UGX 0</div>
-      <p style="font-size:0.75rem; opacity:0.9;">Earn 10% when your direct referrals deposit.</p>
+      <p style="font-size:0.75rem; opacity:0.9;">Earn 25% (L1), 2% (L2), 1% (L3) on referrals.</p>
     </div>
     <div class="ref-box">
       <h4>Your Referral Link</h4>
@@ -205,7 +180,6 @@
     <div id="refListContainer">Loading...</div>
   </div>
 
-  <!-- VIP TAB -->
   <div class="app-content" id="tab-vip">
     <div class="vip-card">
       <div class="vip-label">Your Current Status</div>
@@ -213,22 +187,14 @@
       <div class="vip-daily" id="vipWeekly">UGX 0 / week</div>
       <p style="font-size:0.75rem; opacity:0.9; margin-top:0.5rem;">Total VIP Earnings: <span id="vipEarnings">UGX 0</span></p>
     </div>
-
     <div class="progress-container">
-      <div class="progress-text">
-        <span id="progressLabel">Progress to VIP 1</span>
-        <span id="progressCount">0 / 5</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-      </div>
+      <div class="progress-text"><span id="progressLabel">Progress to VIP 1</span><span id="progressCount">0 / 5</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%;"></div></div>
     </div>
-
     <h3 style="margin-bottom:1rem; color: #065f46;">VIP Tiers</h3>
     <div class="vip-tier-list" id="vipTierList"></div>
   </div>
 
-  <!-- PROFILE TAB -->
   <div class="app-content" id="tab-profile">
     <div class="profile-top">
       <div class="prof-avatar" id="profInitial">R</div>
@@ -236,127 +202,82 @@
         <h2>ROOT & RIPE <span id="profVipBadge" class="vip-badge" style="display:none;">VIP 1</span></h2>
         <span>PROFILE</span>
       </div>
-      <div class="signed-in">
-        SIGNED IN
-        <strong id="profName">User</strong>
-      </div>
+      <div class="signed-in">SIGNED IN<strong id="profName">User</strong></div>
     </div>
+    
     <div class="wallet-card-new">
       <div class="wallet-label">Available Balance</div>
       <div class="wallet-bal"><span>UGX</span> <span id="profBalance">0</span></div>
       <div class="wallet-stats">
-        <div class="stat-box">
-          <div class="lbl">Deposited</div>
-          <div class="val" id="profDeposited">UGX 0</div>
-        </div>
-        <div class="stat-box withdrawn">
-          <div class="lbl">Withdrawn</div>
-          <div class="val" id="profWithdrawn">UGX 0</div>
-        </div>
+        <div class="stat-box"><div class="lbl">Deposited</div><div class="val" id="profDeposited">UGX 0</div></div>
+        <div class="stat-box withdrawn"><div class="lbl">Withdrawn</div><div class="val" id="profWithdrawn">UGX 0</div></div>
       </div>
     </div>
+    
     <div class="action-grid">
       <div class="action-item" onclick="document.getElementById('depositBtn').click()">
-        <div class="action-icon">↓</div>
-        <span>FUND ACCOUNT</span>
+        <div class="action-icon">↓</div><span>FUND ACCOUNT</span>
       </div>
       <div class="action-item" onclick="document.getElementById('withdrawBtn').click()">
-        <div class="action-icon">↑</div>
-        <span>WITHDRAW</span>
+        <div class="action-icon">↑</div><span>WITHDRAW</span>
+      </div>
+      <div class="action-item" onclick="claimDailyCheckin()">
+        <div class="action-icon">🎁<span class="checkin-badge" id="checkinBadge">!</span></div><span>CHECK-IN</span>
       </div>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
-        <div class="action-icon">💬</div>
-        <span>SERVICE</span>
-      </a>
-      <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
-        <div class="action-icon">✈️</div>
-        <span>GROUP</span>
+        <div class="action-icon">✈️</div><span>GROUP</span>
       </a>
     </div>
+    
     <div class="menu-list">
       <div class="menu-item" onclick="openHistory()">
-        <div class="menu-icon">🕒</div>
-        <div class="menu-text"><strong>TRANSACTION HISTORY</strong></div>
-        <div class="menu-arrow">›</div>
+        <div class="menu-icon">🕒</div><div class="menu-text"><strong>TRANSACTION HISTORY</strong></div><div class="menu-arrow">›</div>
       </div>
       <div class="menu-item">
-        <div class="menu-icon">🔒</div>
-        <div class="menu-text">
-          <strong>BIND ACCOUNT</strong>
-          <span id="profPhone">Loading...</span>
-        </div>
-        <div class="menu-arrow">›</div>
+        <div class="menu-icon">🔒</div><div class="menu-text"><strong>BIND ACCOUNT</strong><span id="profPhone">Loading...</span></div><div class="menu-arrow">›</div>
       </div>
     </div>
   </div>
 </main>
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="switchTab('home', this)">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
-  </div>
-  <div class="nav-item" onclick="switchTab('order', this)">
-    <svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>My Order
-  </div>
-  <div class="nav-item" onclick="switchTab('team', this)">
-    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team
-  </div>
-  <div class="nav-item" onclick="switchTab('vip', this)">
-    <svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>VIP
-  </div>
-  <div class="nav-item" onclick="switchTab('profile', this)">
-    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
-  </div>
+  <div class="nav-item active" onclick="switchTab('home', this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</div>
+  <div class="nav-item" onclick="switchTab('order', this)"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>My Order</div>
+  <div class="nav-item" onclick="switchTab('team', this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team</div>
+  <div class="nav-item" onclick="switchTab('vip', this)"><svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>VIP</div>
+  <div class="nav-item" onclick="switchTab('profile', this)"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</div>
 </div>
 
 <button id="depositBtn" style="display:none;"></button>
 <button id="withdrawBtn" style="display:none;"></button>
 
-<!-- HISTORY MODAL -->
 <dialog id="historyDialog" class="modal">
-  <div class="modal-head">
-    <div><h3 style="margin:0;">Transaction History</h3></div>
-    <button class="icon-btn" onclick="document.getElementById('historyDialog').close()">✕</button>
-  </div>
+  <div class="modal-head"><div><h3 style="margin:0;">History</h3></div><button class="icon-btn" onclick="document.getElementById('historyDialog').close()">✕</button></div>
   <div class="deposit-tabs" style="margin-bottom:1rem;">
     <div class="dep-tab active" id="tab-btn-deposits" onclick="switchHistoryTab('deposits')">Deposits</div>
     <div class="dep-tab" id="tab-btn-withdrawals" onclick="switchHistoryTab('withdrawals')">Withdrawals</div>
   </div>
-  <div id="historyList" style="max-height: 60vh; overflow-y: auto;">
-    <div style="text-align:center; padding:2rem; color:#6b7280;">Loading...</div>
-  </div>
+  <div id="historyList" style="max-height: 60vh; overflow-y: auto;"></div>
 </dialog>
 
-<!-- DEPOSIT MODAL (Mobile Money Only) -->
 <dialog id="depositDialog" class="modal">
-  <div class="modal-head">
-    <div><h3 style="margin:0;">Fund Account</h3></div>
-    <button class="icon-btn" onclick="document.getElementById('depositDialog').close()">✕</button>
-  </div>
+  <div class="modal-head"><div><h3 style="margin:0;">Fund Account</h3></div><button class="icon-btn" onclick="document.getElementById('depositDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
-    <div class="field">
-      <label>Amount (UGX) to Deposit</label>
-      <input type="number" id="depositAmountUGX" min="10000" step="1000" placeholder="Min UGX 10,000">
-      <p style="font-size:0.75rem; color:#6b7280; margin-top:0.4rem;">Enter the exact amount you want to invest.</p>
-    </div>
-    <div class="field">
-      <label>Phone Number (MTN or Airtel)</label>
-      <input type="tel" id="momoPhone" placeholder="e.g. 0771234567">
-    </div>
+    <div class="field"><label>Amount (UGX)</label><input type="number" id="depositAmountUGX" min="5000" placeholder="Min UGX 5,000"></div>
+    <div class="field"><label>Phone (MTN or Airtel)</label><input type="tel" id="momoPhone" placeholder="07XXXXXXXX"></div>
     <button class="btn-primary" id="momoSubmitBtn" onclick="submitMobileMoney()">Pay via Mobile Money</button>
     <p class="form-msg" id="momoMsg"></p>
   </div>
 </dialog>
 
-<!-- WITHDRAW MODAL -->
 <dialog id="withdrawDialog" class="modal">
   <div class="modal-head"><div><h3 style="margin:0;">Withdraw</h3></div><button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
     <form id="withdrawForm" style="display:flex; flex-direction:column; gap:1rem;">
-      <div class="field"><label>Amount (UGX)</label><input type="number" id="withdrawAmount" min="10000" placeholder="Min UGX 10,000" required></div>
+      <div class="field"><label>Amount (UGX)</label><input type="number" id="withdrawAmount" min="5000" placeholder="Min UGX 5,000" required></div>
       <div class="field"><label>Provider</label><select id="mmProvider"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
-      <div class="field"><label>Phone Number</label><input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required></div>
+      <div class="field"><label>Phone</label><input type="tel" id="mmNumber" placeholder="07XXXXXXXX" required></div>
+      <p style="font-size:0.75rem; color:#ef4444; font-weight:bold;">Note: 16% withdrawal fee applies. Max 2 per day.</p>
       <button type="submit" class="btn-primary" style="background:#ef4444;">Request Withdrawal</button>
     </form>
     <p class="form-msg" id="withdrawMsg"></p>
@@ -377,8 +298,8 @@
   let refsWithStarter = 0;
   let refsWithBasic = 0;
 
-  // 9 Unique Veggies with UGX prices and daily returns
-  const TIERS = [
+  // Default crops (will be overwritten by DB settings if they exist)
+  let TIERS = [
     { amount: 50000,      name: 'Cherry Tomatoes',      profit: 7500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60' },
     { amount: 120000,     name: 'Golden Beetroot',      profit: 10000,  img: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500&auto=format&fit=crop&q=60' },
     { amount: 200000,     name: 'Purple Cauliflower',   profit: 20000,  img: 'https://images.unsplash.com/photo-1568584711271-6c929fb49b96?w=500&auto=format&fit=crop&q=60' },
@@ -390,7 +311,7 @@
     { amount: 20000000,   name: 'Globe Artichokes',     profit: 400000, img: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=500&auto=format&fit=crop&q=60' }
   ];
 
-  const VIP_TIERS = [
+  let VIP_TIERS = [
     { level: 1, req: 5,  reward: 20000,  plan: 'Starter' },
     { level: 2, req: 10, reward: 40000,  plan: 'Starter' },
     { level: 3, req: 15, reward: 52000,  plan: 'Starter' },
@@ -415,7 +336,14 @@
     .then(session => {
       if (!session) throw new Error('No session');
       currentUser = session.user;
-      return TN.client.from('profiles').select('*').eq('id', session.user.id).single();
+      return TN.client.from('platform_settings').select('*').eq('id', 1).single();
+    })
+    .then(settingsRes => {
+      if (settingsRes.data) {
+        if (settingsRes.data.crop_tiers && settingsRes.data.crop_tiers.length > 0) TIERS = settingsRes.data.crop_tiers;
+        if (settingsRes.data.vip_tiers && settingsRes.data.vip_tiers.length > 0) VIP_TIERS = settingsRes.data.vip_tiers;
+      }
+      return TN.client.from('profiles').select('*').eq('id', currentUser.id).single();
     })
     .then(res => {
       if (!res.data) throw new Error('No profile data found.');
@@ -442,9 +370,16 @@
     const bal = Number(p.balance_usd || 0);
 
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Farmer'}`;
-    
     let hasActivePlan = dep > 0; 
     document.getElementById('noPlanNotice').style.display = hasActivePlan ? 'none' : 'block';
+
+    // Check for Daily Check-in availability
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (p.last_checkin_date === todayStr) {
+      document.getElementById('checkinBadge').style.display = 'none';
+    } else {
+      document.getElementById('checkinBadge').style.display = 'block';
+    }
 
     // Render Home Plans
     document.getElementById('plansContainer').innerHTML = TIERS.map(t => {
@@ -477,33 +412,19 @@
       const activeCrop = TIERS.find(t => t.amount === dep) || TIERS[0];
       const currentDay = p.active_day || 1;
       const percent = (currentDay / 45) * 100;
-      
       orderContainer.innerHTML = `
         <div class="order-box">
           <img src="${activeCrop.img}" class="order-img" alt="${activeCrop.name}">
           <div class="order-title">${activeCrop.name}</div>
           <p style="color:#6b7280; font-size:0.85rem;">Investment: ${formatUGX(activeCrop.amount)}</p>
           <div class="daily-earn">${formatUGX(activeCrop.profit)} <span style="font-size:0.8rem; color:#6b7280; font-weight:600;">/ day</span></div>
-          
           <div class="cycle-container">
-            <div class="cycle-text">
-              <span>Growth Cycle</span>
-              <span>Day ${currentDay} of 45</span>
-            </div>
-            <div class="cycle-bar">
-              <div class="cycle-fill" style="width: ${percent}%;"></div>
-            </div>
+            <div class="cycle-text"><span>Growth Cycle</span><span>Day ${currentDay} of 45</span></div>
+            <div class="cycle-bar"><div class="cycle-fill" style="width: ${percent}%;"></div></div>
           </div>
-        </div>
-      `;
+        </div>`;
     } else {
-      orderContainer.innerHTML = `
-        <div style="text-align:center; padding: 3rem 1rem; color:#6b7280;">
-          <div style="font-size:3rem; margin-bottom:1rem;">🌱</div>
-          <h3>No Active Crops</h3>
-          <p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p>
-        </div>
-      `;
+      orderContainer.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color:#6b7280;"><div style="font-size:3rem; margin-bottom:1rem;">🌱</div><h3>No Active Crops</h3><p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p></div>`;
     }
 
     // TEAM TAB
@@ -543,7 +464,6 @@
       document.getElementById('progressCount').textContent = `Maxed Out`;
       document.getElementById('progressFill').style.width = '100%';
     }
-
     document.getElementById('vipTierList').innerHTML = VIP_TIERS.map(t => {
       const isCurrent = currentVip === t.level;
       return `<div class="vip-tier-item ${isCurrent ? 'active' : ''}"><div><div class="vip-tier-name">VIP ${t.level}</div><div class="vip-tier-req">Requires ${t.req} active referrals</div></div><div class="vip-tier-reward">${formatUGX(t.reward)}<span>per week</span></div></div>`;
@@ -562,19 +482,187 @@
     document.getElementById('profPhone').textContent = p.phone || 'Not bound';
   }
 
-  window.activatePlan = function(planAmount) {
-    const balance = Number(currentProfile.balance_usd || 0);
-    if (balance < planAmount) { alert(`Insufficient balance! You need ${formatUGX(planAmount)} to plant this crop.`); return; }
-    if (!confirm(`Plant this crop for ${formatUGX(planAmount)}? The amount will be deducted from your wallet and daily harvests will begin.`)) return;
+  // --- DAILY CHECK-IN ---
+  window.claimDailyCheckin = async function() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (currentProfile.last_checkin_date === todayStr) {
+      alert("You have already checked in today. Come back tomorrow!");
+      return;
+    }
     
-    const newBalance = balance - planAmount;
-    TN.client.from('profiles').update({ balance_usd: newBalance, deposit_amount: planAmount, active_day: 1 }).eq('id', currentUser.id).then(res => {
-      if (res.error) throw res.error;
-      alert('Crop planted successfully! Check the My Order tab.');
+    try {
+      const newBal = Number(currentProfile.balance_usd || 0) + 300;
+      await TN.client.from('profiles').update({ balance_usd: newBal, last_checkin_date: todayStr }).eq('id', currentUser.id);
+      
+      // Log transaction
+      await TN.client.from('transactions').insert({ user_id: currentUser.id, type: 'checkin', amount_ugx: 300, description: 'Daily Check-in Bonus' });
+      
+      alert("Success! 300 UGX added to your wallet.");
       window.location.reload();
-    }).catch(err => alert(err.message));
+    } catch (err) { alert(err.message); }
   };
 
+  // --- ACTIVATE PLAN (With Multi-Level Commission & First Purchase Rule) ---
+  window.activatePlan = async function(planAmount) {
+    const balance = Number(currentProfile.balance_usd || 0);
+    const totalDeposited = Number(currentProfile.total_deposited || 0);
+
+    // First Purchase Rule: Must be fully funded by actual deposits
+    if (totalDeposited < planAmount) {
+      alert(`First Purchase Rule: You must make an approved deposit of at least ${formatUGX(planAmount)} before planting this crop. You cannot use bonus or commissions for your first purchase.`);
+      return;
+    }
+
+    if (balance < planAmount) { 
+      alert(`Insufficient wallet balance! You need ${formatUGX(planAmount)}.`); 
+      return; 
+    }
+    
+    if (!confirm(`Plant this crop for ${formatUGX(planAmount)}? The amount will be deducted from your wallet.`)) return;
+    
+    const newBalance = balance - planAmount;
+    
+    try {
+      // 1. Deduct balance and set active plan
+      await TN.client.from('profiles').update({ balance_usd: newBalance, deposit_amount: planAmount, active_day: 1 }).eq('id', currentUser.id);
+
+      // 2. Pay Multi-Level Commissions (L1: 25%, L2: 2%, L3: 1%)
+      let currentReferrerId = currentProfile.referred_by;
+      
+      if (currentReferrerId) {
+        // Level 1 (25%)
+        const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
+        if (l1) {
+          const l1Com = planAmount * 0.25;
+          await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission||0) + l1Com }).eq('id', l1.id);
+          
+          // Level 2 (2%)
+          if (l1.referred_by) {
+            const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
+            if (l2) {
+              const l2Com = planAmount * 0.02;
+              await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission||0) + l2Com }).eq('id', l2.id);
+
+              // Level 3 (1%)
+              if (l2.referred_by) {
+                const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
+                if (l3) {
+                  const l3Com = planAmount * 0.01;
+                  await TN.client.from('profiles').update({ balance_usd: Number(l3.balance_usd) + l3Com, team_commission: Number(l3.team_commission||0) + l3Com }).eq('id', l3.id);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      alert('Crop planted successfully! Check the My Order tab.');
+      window.location.reload();
+    } catch (err) { alert(err.message); }
+  };
+
+  // --- WITHDRAWAL LOGIC ---
+  document.getElementById('withdrawBtn').addEventListener('click', () => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const todayStr = now.toISOString().split('T')[0];
+
+    // 1. Check if user has an active product
+    if (Number(currentProfile.deposit_amount) <= 0) {
+      alert("You must have an active product to withdraw.");
+      return;
+    }
+
+    // 2. Check hours (7 AM to 6 PM / 7 to 18)
+    if (currentHour < 7 || currentHour >= 18) {
+      alert("Withdrawals are only allowed between 7:00 AM and 6:00 PM.");
+      return;
+    }
+
+    // 3. Check daily limit (Max 2)
+    let withdrawCount = Number(currentProfile.withdraw_count_today || 0);
+    if (currentProfile.last_withdraw_date !== todayStr) {
+      withdrawCount = 0; // Reset count for a new day
+    }
+    if (withdrawCount >= 2) {
+      alert("You have reached the maximum limit of 2 withdrawals per day.");
+      return;
+    }
+
+    document.getElementById('withdrawDialog').showModal();
+  });
+
+  document.getElementById('withdrawForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); 
+    const amt = parseFloat(document.getElementById('withdrawAmount').value); 
+    const msg = document.getElementById('withdrawMsg');
+    const btn = e.target.querySelector('button[type="submit"]');
+    
+    if (amt < 5000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum withdrawal is UGX 5,000.'; return; }
+    if (amt > Number(currentProfile.balance_usd)) { msg.style.color = '#ef4444'; msg.textContent = 'Insufficient balance.'; return; }
+
+    btn.disabled = true; btn.textContent = 'Processing...';
+
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      let withdrawCount = Number(currentProfile.withdraw_count_today || 0);
+      if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
+
+      // Deduct full amount immediately
+      const newBal = Number(currentProfile.balance_usd) - amt;
+      
+      await TN.client.from('profiles').update({ 
+        balance_usd: newBal,
+        withdraw_count_today: withdrawCount + 1,
+        last_withdraw_date: todayStr
+      }).eq('id', currentUser.id);
+
+      // Insert request (Admin will see the 16% fee and payout the net)
+      await TN.client.from('withdrawal_requests').insert({ 
+        user_id: currentUser.id, 
+        amount_usd: amt, 
+        mobile_money_provider: document.getElementById('mmProvider').value, 
+        mobile_money_number: document.getElementById('mmNumber').value 
+      });
+
+      msg.style.color = '#10b981'; 
+      msg.textContent = 'Submitted! Note: A 16% fee will be deducted from your payout.';
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (err) {
+      msg.style.color = '#ef4444'; msg.textContent = err.message; 
+      btn.disabled = false; btn.textContent = 'Request Withdrawal';
+    }
+  });
+
+  // --- SUBMIT MOBILE MONEY DEPOSIT ---
+  window.submitMobileMoney = async function() {
+    const ugxAmount = parseFloat(document.getElementById('depositAmountUGX').value); 
+    const phone = document.getElementById('momoPhone').value.trim();
+    const msg = document.getElementById('momoMsg'); const btn = document.getElementById('momoSubmitBtn');
+    
+    if (!ugxAmount || ugxAmount < 5000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 5,000.'; return; }
+    if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
+
+    btn.disabled = true; btn.textContent = 'Sending Prompt...'; msg.textContent = '';
+
+    try {
+      const res = await fetch('/api/marzpay-deposit', { 
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ phone_number: phone, amount: ugxAmount, country: 'UG' }) 
+      });
+      const data = await res.json(); 
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      
+      msg.style.color = '#10b981'; msg.textContent = 'USSD prompt sent! Check your phone.';
+      await TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: data.reference, amount_usd: ugxAmount });
+      
+      setTimeout(() => { btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }, 3000);
+    } catch (err) { msg.style.color = '#ef4444'; msg.textContent = err.message; btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }
+  };
+
+  document.getElementById('depositBtn').addEventListener('click', () => { document.getElementById('depositDialog').showModal(); });
+  
+  // --- HISTORY ---
   window.openHistory = function() { document.getElementById('historyDialog').showModal(); fetchHistory(); };
   function fetchHistory() {
     document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#6b7280;">Loading...</div>';
@@ -605,50 +693,6 @@
     }).join('');
   }
 
-  window.submitMobileMoney = async function() {
-    const ugxAmount = parseFloat(document.getElementById('depositAmountUGX').value); 
-    const phone = document.getElementById('momoPhone').value.trim();
-    const msg = document.getElementById('momoMsg'); const btn = document.getElementById('momoSubmitBtn');
-    
-    if (!ugxAmount || ugxAmount < 10000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 10,000.'; return; }
-    if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
-
-    btn.disabled = true; btn.textContent = 'Sending Prompt...'; msg.textContent = '';
-
-    try {
-      // Direct API call with UGX
-      const res = await fetch('/api/marzpay-deposit', { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ phone_number: phone, amount: ugxAmount, country: 'UG' }) 
-      });
-      const data = await res.json(); 
-      if (!res.ok) throw new Error(data.error || 'Failed');
-      
-      msg.style.color = '#10b981'; msg.textContent = 'USSD prompt sent! Check your phone to approve.';
-      
-      // Store the deposit in UGX (stored in amount_usd column to avoid DB changes, but it's UGX now)
-      await TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: data.reference, amount_usd: ugxAmount });
-      
-      setTimeout(() => { btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }, 3000);
-    } catch (err) { msg.style.color = '#ef4444'; msg.textContent = err.message; btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }
-  };
-
-  document.getElementById('depositBtn').addEventListener('click', () => {
-    document.getElementById('depositDialog').showModal();
-  });
-  
-  document.getElementById('withdrawBtn').addEventListener('click', () => {
-    const day = new Date().getDay(); if (day !== 1 && day !== 3) { alert('Withdrawals are only on Mondays and Wednesdays.'); return; }
-    document.getElementById('withdrawDialog').showModal();
-  });
-  
-  document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-    e.preventDefault(); const amt = parseFloat(document.getElementById('withdrawAmount').value); if (amt < 10000) return alert('Min UGX 10,000');
-    TN.client.from('withdrawal_requests').insert({ user_id: currentUser.id, amount_usd: amt, mobile_money_provider: document.getElementById('mmProvider').value, mobile_money_number: document.getElementById('mmNumber').value })
-    .then(res => { if (res.error) throw res.error; document.getElementById('withdrawMsg').style.color = '#10b981'; document.getElementById('withdrawMsg').textContent = 'Submitted!'; }).catch(err => alert(err.message));
-  });
-
   document.getElementById('copyRefBtn').addEventListener('click', function() {
     const input = document.getElementById('refLink'); input.select(); input.setSelectionRange(0, 99999); navigator.clipboard.writeText(input.value);
     this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy', 1500);
@@ -660,4 +704,4 @@
 })();
 </script>
 </body>
- </html>
+   </html>
