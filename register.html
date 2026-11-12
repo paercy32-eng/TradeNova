@@ -3,27 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#fdf2f8">
-<title>Create Account — Nova Trade</title>
+<meta name="theme-color" content="#f0fdf4">
+<title>Create Account — Root & Ripe</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   
   body {
-    background: #fdf2f8;
+    background: #f0fdf4; /* Very light green background */
     color: #111827;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* Top Trading Banner */
+  /* Top Banner */
   .banner {
     width: 100%;
     height: 180px;
-    background: linear-gradient(rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.2)), 
-                url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
-    border-bottom: 4px solid #ec4899;
+    background: linear-gradient(rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.3)), 
+                url('https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+    border-bottom: 4px solid #10b981;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,7 +37,7 @@
     text-transform: uppercase;
     text-shadow: 0 4px 15px rgba(0,0,0,0.7);
   }
-  .banner-text span { color: #ec4899; }
+  .banner-text span { color: #f59e0b; }
 
   /* Form Container */
   .auth-container {
@@ -50,7 +50,7 @@
 
   .auth-title {
     font-size: 1.4rem;
-    color: #ec4899;
+    color: #10b981;
     font-weight: 800;
     margin-bottom: 1.5rem;
   }
@@ -61,17 +61,17 @@
     display: flex;
     align-items: center;
     background: #ffffff;
-    border: 1px solid #fbcfe8;
+    border: 1px solid #bbf7d0;
     border-radius: 12px;
     padding: 0 1rem;
     transition: 0.2s;
   }
   .input-group:focus-within {
-    border-color: #ec4899;
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
   }
   .input-group i {
-    color: #ec4899;
+    color: #10b981;
     font-size: 1.1rem;
     width: 24px;
   }
@@ -88,11 +88,24 @@
   .input-group input::placeholder { color: #9ca3af; }
   .input-group select { appearance: none; color: #111827; }
   
+  /* Locked Country */
+  .locked-country {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: #047857;
+  }
+
   /* Phone specific */
   .dial-code {
-    color: #ec4899;
+    color: #10b981;
     font-weight: 800;
-    border-right: 1px solid #fbcfe8;
+    border-right: 1px solid #bbf7d0;
     padding-right: 0.5rem;
     margin-right: 0.5rem;
   }
@@ -109,29 +122,29 @@
   }
   .check-terms input {
     margin-top: 0.2rem;
-    accent-color: #ec4899;
+    accent-color: #10b981;
     width: 16px;
     height: 16px;
   }
-  .check-terms a { color: #ec4899; text-decoration: none; font-weight: 800; }
+  .check-terms a { color: #10b981; text-decoration: none; font-weight: 800; }
 
   /* Submit Button */
   .btn-submit {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(90deg, #ec4899, #db2777);
+    background: linear-gradient(90deg, #10b981, #059669);
     color: #ffffff;
     border: none;
-    border-radius: 30px; /* Pill shape */
+    border-radius: 30px;
     font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
     transition: 0.2s;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5); }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
   .btn-submit:disabled { opacity: 0.7; transform: none; box-shadow: none; }
 
   /* Messages & Footer */
@@ -140,13 +153,13 @@
   .form-msg.ok { color: #10b981; }
 
   .auth-foot { text-align: center; font-size: 0.95rem; color: #4b5563; margin-top: 1.5rem; font-weight: 600; }
-  .auth-foot a { color: #ec4899; text-decoration: none; font-weight: 800; }
+  .auth-foot a { color: #10b981; text-decoration: none; font-weight: 800; }
 </style>
 </head>
 <body>
 
 <div class="banner">
-  <div class="banner-text">Nova<span>Trade</span></div>
+  <div class="banner-text">Root <span>&</span> Ripe</div>
 </div>
 
 <div class="auth-container">
@@ -168,35 +181,15 @@
     </div>
 
     <div class="field">
-      <div class="input-group">
-        <i class="fa-solid fa-globe"></i>
-        <select id="country" name="country" required>
-          <option value="" data-code="">Select Country</option>
-          <optgroup label="East Africa">
-            <option value="KE" data-code="+254">Kenya</option>
-            <option value="UG" data-code="+256">Uganda</option>
-            <option value="TZ" data-code="+255">Tanzania</option>
-            <option value="RW" data-code="+250">Rwanda</option>
-          </optgroup>
-          <optgroup label="Central Africa">
-            <option value="CM" data-code="+237">Cameroon</option>
-          </optgroup>
-          <optgroup label="Southern Africa">
-            <option value="ZA" data-code="+27">South Africa</option>
-            <option value="ZM" data-code="+260">Zambia</option>
-            <option value="ZW" data-code="+263">Zimbabwe</option>
-          </optgroup>
-          <optgroup label="West Africa">
-            <option value="NG" data-code="+234">Nigeria</option>
-            <option value="GH" data-code="+233">Ghana</option>
-          </optgroup>
-        </select>
+      <div class="locked-country">
+        <i class="fa-solid fa-location-dot"></i> Uganda (UG)
       </div>
+      <input type="hidden" id="country" value="UG" data-code="+256">
     </div>
 
     <div class="field">
       <div class="input-group">
-        <span class="dial-code" id="dialCode">+</span>
+        <span class="dial-code">+256</span>
         <input id="phone" name="phone" type="tel" placeholder="Phone Number" inputmode="numeric" required>
       </div>
     </div>
@@ -243,13 +236,11 @@
   var form      = document.getElementById('registerForm');
   var fullName  = document.getElementById('fullName');
   var email     = document.getElementById('email');
-  var country   = document.getElementById('country');
   var phone     = document.getElementById('phone');
   var passwd    = document.getElementById('password');
   var confirm   = document.getElementById('confirm');
   var inviteCode= document.getElementById('inviteCode');
   var terms     = document.getElementById('terms');
-  var dialCode  = document.getElementById('dialCode');
   var msg       = document.getElementById('formMsg');
   var submit    = document.getElementById('submitBtn');
 
@@ -264,28 +255,19 @@
     msg.textContent = text;
   }
 
-  country.addEventListener('change', function () {
-    var opt = country.options[country.selectedIndex];
-    dialCode.textContent = (opt && opt.dataset.code) || '+';
-  });
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    var opt  = country.options[country.selectedIndex];
-    var code = (opt && opt.dataset.code) || '';
-
     if (!fullName.value.trim()) { setMsg('err', 'Enter your full name.'); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { setMsg('err', 'Enter a valid email.'); return; }
-    if (!code) { setMsg('err', 'Select your country.'); return; }
     
     var local = phone.value.replace(/\D/g, '').replace(/^0+/, '');
-    if (local.length < 7) { setMsg('err', 'Enter a valid phone number.'); return; }
+    if (local.length < 9) { setMsg('err', 'Enter a valid phone number.'); return; }
     if (passwd.value.length < 8) { setMsg('err', 'Password must be at least 8 characters.'); return; }
     if (passwd.value !== confirm.value) { setMsg('err', 'Passwords do not match.'); return; }
     if (!terms.checked) { setMsg('err', 'Agree to the Terms.'); return; }
 
-    var fullPhone = code.replace(/\D/g, '') + local;
+    var fullPhone = '256' + local;
     var finalRef = inviteCode.value.trim().toUpperCase();
 
     submit.disabled = true;
@@ -299,8 +281,8 @@
           data: {
             full_name: fullName.value.trim(),
             phone: fullPhone,
-            country: country.value,
-            country_code: code,
+            country: 'UG',
+            country_code: '+256',
             invite_code: finalRef || null
           }
         }
