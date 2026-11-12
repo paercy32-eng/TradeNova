@@ -56,7 +56,7 @@
   .cycle-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); border-radius: 10px; transition: width 0.5s ease; }
   .daily-earn { font-size: 1.2rem; font-weight: 800; color: #f59e0b; margin-top: 1rem; }
 
-  /* ================= NEW TEAM TAB (NETWORK HUB) ================= */
+  /* TEAM TAB (NETWORK HUB) */
   .hub-title { font-size: 2rem; font-weight: 900; color: #065f46; letter-spacing: -1px; margin-bottom: 0.2rem; }
   .hub-subtitle { font-size: 0.75rem; color: #10b981; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; margin-bottom: 1.5rem; }
   
@@ -91,7 +91,7 @@
   .team-user-status { font-size: 0.7rem; font-weight: 800; color: #10b981; background: #d1fae5; padding: 0.2rem 0.5rem; border-radius: 4px; }
   .team-user-status.inactive { color: #6b7280; background: #f3f4f6; }
 
-  /* ================= NEW PROFILE TAB ================= */
+  /* PROFILE TAB */
   .profile-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
   .prof-avatar { width: 55px; height: 55px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #047857); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
   .prof-info { flex: 1; }
@@ -163,7 +163,6 @@
 </div>
 
 <main>
-  <!-- HOME TAB -->
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Farmer</div>
     <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1.5rem;">Invest in premium vegetables today.</p>
@@ -174,13 +173,11 @@
     <div id="plansContainer"></div>
   </div>
 
-  <!-- MY ORDER TAB -->
   <div class="app-content" id="tab-order">
     <h3 style="margin-bottom:1.5rem; color: #065f46;">My Active Order</h3>
     <div id="activeOrderContainer"></div>
   </div>
 
-  <!-- TEAM TAB (NETWORK HUB) -->
   <div class="app-content" id="tab-team">
     <div class="hub-title">Network Hub</div>
     <div class="hub-subtitle">Build your downline & earn</div>
@@ -209,7 +206,6 @@
       </div>
     </div>
 
-    <!-- Minimized Tabs with click actions -->
     <div class="levels-box">
       <div class="level-item active" id="tab-l1" onclick="switchTeamLevel(1)">
         <div class="level-name">Level 1</div>
@@ -228,13 +224,11 @@
       </div>
     </div>
 
-    <!-- Dynamic List of Users -->
     <div class="team-list-container" id="teamListContainer">
       <div style="text-align:center; color:#9ca3af; padding: 1rem; font-size: 0.85rem;">No users in this level yet.</div>
     </div>
   </div>
 
-  <!-- PROFILE TAB -->
   <div class="app-content" id="tab-profile">
     <div class="profile-top">
       <div class="prof-avatar" id="profInitial">R</div>
@@ -269,13 +263,11 @@
       </div>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
         <div class="action-icon" style="background:#fdf4ff; border-color:#f5d0fe; color:#c026d3;">
-          <!-- Telegram Icon -->
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>SERVICE</span>
       </a>
       <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
         <div class="action-icon" style="background:#ecfdf5; border-color:#a7f3d0; color:#10b981;">
-          <!-- Telegram Icon -->
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>CHANNEL</span>
       </a>
@@ -309,7 +301,6 @@
   </div>
 </main>
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('home', this)">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
@@ -373,12 +364,10 @@
   let userDeposits = [];
   let userWithdrawals = [];
   
-  // Team Data Arrays
   let l1Users = [];
   let l2Users = [];
   let l3Users = [];
 
-  // Robust Image URLs (Unsplash)
   let TIERS = [
     { amount: 50000,      name: 'Cherry Tomatoes',      profit: 7500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80' },
     { amount: 120000,     name: 'Golden Beetroot',      profit: 10000,  img: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=400&q=80' },
@@ -402,7 +391,6 @@
     if (el) el.classList.add('active');
   };
 
-  // --- TEAM TAB LOGIC ---
   window.switchTeamLevel = function(level) {
     document.querySelectorAll('.level-item').forEach(el => el.classList.remove('active'));
     document.getElementById(`tab-l${level}`).classList.add('active');
@@ -452,24 +440,17 @@
       if (!res.data) throw new Error('No profile data found.');
       currentProfile = res.data;
       
-      // Fetch ALL profiles to calculate L1, L2, L3 with full details
-      return TN.client.from('profiles').select('id, full_name, referred_by, deposit_amount, created_at');
+      // Fetch team members securely using the RPC function
+      return TN.client.rpc('get_team_members', { user_id: currentUser.id });
     })
-    .then(allRes => {
-      if (allRes.data) {
-        // Level 1
-        l1Users = allRes.data.filter(u => u.referred_by === currentUser.id);
-        const l1Ids = l1Users.map(u => u.id);
-        
-        // Level 2
-        l2Users = allRes.data.filter(u => l1Ids.includes(u.referred_by));
-        const l2Ids = l2Users.map(u => u.id);
-        
-        // Level 3
-        l3Users = allRes.data.filter(u => l2Ids.includes(u.referred_by));
+    .then(teamRes => {
+      if (teamRes.data) {
+        l1Users = teamRes.data.filter(u => u.level === 1);
+        l2Users = teamRes.data.filter(u => u.level === 2);
+        l3Users = teamRes.data.filter(u => u.level === 3);
       }
       renderUI();
-      switchTeamLevel(1); // Load Level 1 by default
+      switchTeamLevel(1);
     })
     .catch(err => {
       console.error('Init error:', err);
@@ -483,7 +464,6 @@
     const dep = Number(p.deposit_amount || 0);
     const bal = Number(p.balance_usd || 0);
 
-    // HOME TAB
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Farmer'}`;
     let hasActivePlan = dep > 0; 
     document.getElementById('noPlanNotice').style.display = hasActivePlan ? 'none' : 'block';
@@ -512,7 +492,6 @@
         </div>`;
     }).join('');
 
-    // MY ORDER TAB
     const orderContainer = document.getElementById('activeOrderContainer');
     if (hasActivePlan) {
       const activeCrop = TIERS.find(t => t.amount === dep) || TIERS[0];
@@ -533,7 +512,6 @@
       orderContainer.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color:#6b7280;"><div style="font-size:3rem; margin-bottom:1rem;">🌱</div><h3>No Active Crops</h3><p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p></div>`;
     }
 
-    // TEAM TAB
     document.getElementById('teamCommission').textContent = formatUGX(p.team_commission || 0);
     document.getElementById('teamSize').textContent = `${l1Users.length + l2Users.length + l3Users.length} Users`;
     document.getElementById('refCode').value = p.referral_code || '';
@@ -542,7 +520,6 @@
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    // PROFILE TAB
     document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Farmer';
     document.getElementById('profInitial').textContent = p.full_name ? p.full_name.charAt(0).toUpperCase() : 'R';
     document.getElementById('profBalance').textContent = Number(bal).toLocaleString();
@@ -550,7 +527,6 @@
     document.getElementById('profWithdrawn').textContent = formatUGX(p.total_withdrawn || 0);
     document.getElementById('profPhone').textContent = p.phone || 'Not bound';
 
-    // Check-in logic
     const todayStr = new Date().toISOString().split('T')[0];
     const btnCheckin = document.getElementById('btnDailyCheckin');
     if (p.last_checkin_date === todayStr) {
@@ -597,7 +573,6 @@
     try {
       await TN.client.from('profiles').update({ balance_usd: newBalance, deposit_amount: planAmount, active_day: 1 }).eq('id', currentUser.id);
       
-      // Multi-Level Commissions
       let currentReferrerId = currentProfile.referred_by;
       if (currentReferrerId) {
         const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
@@ -638,7 +613,6 @@
     setTimeout(() => btn.textContent = oldText, 1500);
   };
 
-  // WITHDRAWAL LOGIC
   document.getElementById('withdrawBtn').addEventListener('click', () => {
     const now = new Date();
     const currentHour = now.getHours();
@@ -694,7 +668,6 @@
     }
   });
 
-  // SUBMIT DEPOSIT
   window.submitMobileMoney = async function() {
     const ugxAmount = parseFloat(document.getElementById('depositAmountUGX').value); 
     const phone = document.getElementById('momoPhone').value.trim();
@@ -722,7 +695,6 @@
 
   document.getElementById('depositBtn').addEventListener('click', () => { document.getElementById('depositDialog').showModal(); });
   
-  // HISTORY
   window.openHistory = function() { document.getElementById('historyDialog').showModal(); fetchHistory(); };
   function fetchHistory() {
     document.getElementById('historyList').innerHTML = '<div style="text-align:center; padding:2rem; color:#6b7280;">Loading...</div>';
@@ -759,4 +731,4 @@
 })();
 </script>
 </body>
-                                                                                   </html>
+</html>
