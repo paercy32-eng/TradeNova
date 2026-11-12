@@ -90,7 +90,6 @@
     <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
   </div>
 
-  <!-- ================= TAB 1: PENDING ACTIONS ================= -->
   <div id="tab-pending">
     <div class="kpi-grid">
       <div class="kpi-card">
@@ -126,7 +125,6 @@
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
 
-  <!-- ================= TAB 2: MANAGE USERS ================= -->
   <div id="tab-users" style="display:none;">
     <div class="search-bar">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -137,7 +135,6 @@
     </div>
   </div>
 
-  <!-- ================= TAB 3: SETTINGS ================= -->
   <div id="tab-settings" style="display:none;">
     <div class="settings-section">
       <h3>Edit Crop Prices (UGX)</h3>
@@ -393,21 +390,24 @@
   };
 
   function loadWithdrawals() {
-    TN.client.from('withdrawal_requests').select('*, profiles(full_name, email)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
+    TN.client.from('withdrawal_requests').select('*, profiles(full_name, phone)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('withdrawalsContainer');
       if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
       
-      let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Bound Phone</th><th>Actions</th></tr></thead><tbody>`;
       res.data.forEach(w => {
         const gross = Number(w.amount_usd);
         const fee = gross * 0.16;
         const netPayout = gross - fee;
+        
+        const boundName = w.profiles ? w.profiles.full_name : 'Unknown';
+        const boundPhone = w.profiles ? w.profiles.phone : 'Not bound';
 
         html += `<tr>
-          <td>${w.profiles ? w.profiles.full_name : 'Unknown'}</td>
+          <td>${boundName}</td>
           <td style="color:#94a3b8; font-size:0.8rem; text-decoration:line-through;">${formatUGX(gross)}</td>
           <td style="font-weight:bold; color:#10b981; font-size:1rem;">${formatUGX(netPayout)}</td>
-          <td style="font-size:0.75rem;">${w.mobile_money_provider}<br>${w.mobile_money_number}</td>
+          <td style="font-size:0.75rem; color:#fff; font-weight:bold;">${boundPhone}</td>
           <td>
             <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
             <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Reject</button>
