@@ -18,7 +18,7 @@
   
   /* Navigation / Header for sub-pages */
   .sub-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-  .back-btn { background: none; border: none; font-size: 1.5rem; color: #fff; cursor: pointer; display: none; }
+  .back-btn { background: none; border: none; font-size: 1.5rem; color: #fff; cursor: pointer; display: flex; align-items: center; }
   .page-title { font-size: 1.5rem; font-weight: 800; color: #fff; }
   
   /* KPIs */
@@ -41,7 +41,8 @@
   .icon-users { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
   .icon-deposits { background: rgba(16, 185, 129, 0.15); color: #10b981; }
   .icon-withdrawals { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-  .icon-assets { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+  .icon-settings { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+  .icon-actions { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
   .menu-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 0.2rem; }
   .menu-sub { font-size: 0.75rem; color: #94a3b8; }
 
@@ -58,6 +59,11 @@
   .btn-approve { background: #10b981; }
   .btn-reject { background: #ef4444; margin-left: 0.5rem; }
   
+  /* Search Bar */
+  .search-bar { background: #121c2d; border: 1px solid #1e2d42; border-radius: 12px; display: flex; align-items: center; padding: 0 1rem; margin-bottom: 1rem; }
+  .search-bar input { background: transparent; border: none; padding: 1rem 0.5rem; color: #fff; width: 100%; outline: none; font-size: 0.95rem; }
+  .search-bar svg { stroke: #64748b; }
+
   .user-card { background: #121c2d; border: 1px solid #1e2d42; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .user-details { display: flex; flex-direction: column; gap: 0.3rem; }
   .user-name { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
@@ -71,13 +77,21 @@
   .ref-badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 800; }
   .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #121c2d; border-radius: 12px; border: 1px dashed #1e2d42; }
 
-  /* Settings for Actions */
+  /* Settings & Actions */
   .admin-action-box { background: #121c2d; border: 1px solid #1e2d42; padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; text-align: center; }
   .admin-action-box h3 { color: #ffffff; margin-bottom: 0.5rem; font-size: 1rem; }
   .admin-action-box p { color: #94a3b8; font-size: 0.8rem; margin-bottom: 1rem; }
   .btn-action { padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 0.9rem; font-weight: 800; border: none; cursor: pointer; color: #fff; background: #3b82f6; width: 100%; }
   .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .settings-section { background: #121c2d; border: 1px solid #1e2d42; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .settings-section h3 { margin-bottom: 1rem; color: #3b82f6; font-size: 1.1rem; }
+  .settings-row { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
+  .settings-row input { flex: 1; background: #090e17; border: 1px solid #2e405a; padding: 0.6rem; border-radius: 6px; color: #fff; font-size: 0.85rem; outline: none; }
+  .settings-row input:focus { border-color: #3b82f6; }
+  .btn-save { background: #3b82f6; color: #fff; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 1rem; }
   
+  /* Modals */
   .modal { width: 90vw; max-width: 400px; background: #121c2d; border: 1px solid #1e2d42; border-radius: 16px; color: #fff; padding: 1.5rem; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; }
   .modal::backdrop { background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
   .modal h3 { margin-bottom: 1rem; font-size: 1.1rem; }
@@ -125,22 +139,27 @@
       <div class="menu-card" onclick="switchView('users')">
         <div class="menu-icon icon-users">👥</div>
         <div class="menu-title">Users</div>
-        <div class="menu-sub">Manage all accounts</div>
+        <div class="menu-sub">Manage accounts</div>
       </div>
       <div class="menu-card" onclick="switchView('deposits')">
         <div class="menu-icon icon-deposits">💲</div>
         <div class="menu-title">Deposits</div>
-        <div class="menu-sub">View incoming funds</div>
+        <div class="menu-sub">Incoming funds</div>
       </div>
       <div class="menu-card" onclick="switchView('withdrawals')">
         <div class="menu-icon icon-withdrawals">💳</div>
         <div class="menu-title">Withdrawals</div>
         <div class="menu-sub">Approve payouts</div>
       </div>
-      <div class="menu-card" onclick="switchView('assets')">
-        <div class="menu-icon icon-assets">📦</div>
-        <div class="menu-title">Assets</div>
-        <div class="menu-sub">Manage investments</div>
+      <div class="menu-card" onclick="switchView('actions')">
+        <div class="menu-icon icon-actions">⚙️</div>
+        <div class="menu-title">Actions</div>
+        <div class="menu-sub">Harvests & VIP</div>
+      </div>
+      <div class="menu-card" onclick="switchView('settings')" style="grid-column: span 2;">
+        <div class="menu-icon icon-settings">🛠️</div>
+        <div class="menu-title">Settings</div>
+        <div class="menu-sub">Edit Crop Prices & VIP Rewards</div>
       </div>
     </div>
 
@@ -155,6 +174,10 @@
     <div class="sub-header">
       <button class="back-btn" onclick="switchView('home')">&#8592;</button>
       <div class="page-title">Users</div>
+    </div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" placeholder="Search by phone or name..." oninput="renderUserCards()">
     </div>
     <div id="userCardsContainer">
       <div class="empty-state">Loading users...</div>
@@ -179,11 +202,11 @@
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
 
-  <!-- ASSETS / ACTIONS VIEW -->
-  <div id="view-assets" style="display:none;">
+  <!-- ACTIONS VIEW -->
+  <div id="view-actions" style="display:none;">
     <div class="sub-header">
       <button class="back-btn" onclick="switchView('home')">&#8592;</button>
-      <div class="page-title">Assets & Actions</div>
+      <div class="page-title">Actions</div>
     </div>
     
     <div class="admin-action-box">
@@ -197,6 +220,26 @@
       <p>Pay all eligible VIP members their weekly reward. (Only works on Mondays)</p>
       <button class="btn-action" style="background:#f59e0b;" id="processVipBtn" onclick="processVipPayouts()">Process VIP Payouts</button>
     </div>
+  </div>
+
+  <!-- SETTINGS VIEW -->
+  <div id="view-settings" style="display:none;">
+    <div class="sub-header">
+      <button class="back-btn" onclick="switchView('home')">&#8592;</button>
+      <div class="page-title">Settings</div>
+    </div>
+    
+    <div class="settings-section">
+      <h3>Edit Crop Prices (UGX)</h3>
+      <div id="cropSettingsContainer"></div>
+    </div>
+    
+    <div class="settings-section">
+      <h3>Edit VIP Rewards (UGX)</h3>
+      <div id="vipSettingsContainer"></div>
+    </div>
+
+    <button class="btn-save" onclick="saveSettings()" style="margin-top: 0;">Save All Settings</button>
   </div>
 </main>
 
@@ -237,7 +280,8 @@
     document.getElementById('view-users').style.display = view === 'users' ? 'block' : 'none';
     document.getElementById('view-deposits').style.display = view === 'deposits' ? 'block' : 'none';
     document.getElementById('view-withdrawals').style.display = view === 'withdrawals' ? 'block' : 'none';
-    document.getElementById('view-assets').style.display = view === 'assets' ? 'block' : 'none';
+    document.getElementById('view-actions').style.display = view === 'actions' ? 'block' : 'none';
+    document.getElementById('view-settings').style.display = view === 'settings' ? 'block' : 'none';
   };
 
   function initAdmin() {
@@ -270,9 +314,48 @@
     if (data) {
       platformSettings.crop_tiers = data.crop_tiers || [];
       platformSettings.vip_tiers = data.vip_tiers || [];
+      renderSettings();
       populateGrantDropdown();
     }
   }
+
+  function renderSettings() {
+    document.getElementById('cropSettingsContainer').innerHTML = platformSettings.crop_tiers.map((t, i) => `
+      <div class="settings-row">
+        <input type="text" value="${t.name}" onchange="updateCrop(${i}, 'name', this.value)">
+        <input type="number" value="${t.amount}" onchange="updateCrop(${i}, 'amount', this.value)" placeholder="Price">
+        <input type="number" value="${t.profit}" onchange="updateCrop(${i}, 'profit', this.value)" placeholder="Daily Profit">
+      </div>
+    `).join('');
+
+    document.getElementById('vipSettingsContainer').innerHTML = platformSettings.vip_tiers.map((t, i) => `
+      <div class="settings-row">
+        <span style="min-width:50px; font-size:0.8rem; font-weight:bold;">VIP ${t.level}</span>
+        <input type="number" value="${t.req}" onchange="updateVip(${i}, 'req', this.value)" placeholder="Refs">
+        <input type="number" value="${t.reward}" onchange="updateVip(${i}, 'reward', this.value)" placeholder="Reward">
+      </div>
+    `).join('');
+  }
+
+  window.updateCrop = function(index, field, value) {
+    platformSettings.crop_tiers[index][field] = field === 'name' ? value : Number(value);
+  };
+  window.updateVip = function(index, field, value) {
+    platformSettings.vip_tiers[index][field] = Number(value);
+  };
+
+  window.saveSettings = async function() {
+    const btn = event.target;
+    btn.textContent = 'Saving...'; btn.disabled = true;
+    try {
+      await TN.client.from('platform_settings').update({
+        crop_tiers: platformSettings.crop_tiers,
+        vip_tiers: platformSettings.vip_tiers
+      }).eq('id', 1);
+      alert('Settings saved successfully!');
+    } catch (err) { alert(err.message); }
+    btn.textContent = 'Save All Settings'; btn.disabled = false;
+  };
 
   function populateGrantDropdown() {
     document.getElementById('modalGrantProduct').innerHTML = '<option value="">-- Select Crop --</option>' + 
@@ -280,19 +363,16 @@
   }
 
   function fetchKPIs() {
-    // 1. Total Users & Total Invested
-    TN.client.from('profiles').select('*').then(res => {
-      const users = res.data || [];
-      document.getElementById('kpiUsers').textContent = users.length;
-      
-      const totalInvested = users.reduce((sum, u) => sum + Number(u.deposit_amount || 0), 0);
-      document.getElementById('kpiInvested').textContent = formatUGX(totalInvested);
+    // 1. Total Users
+    TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
+      document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    // 2. Total Deposited
+    // 2. Total Deposited (This also serves as Total Invested per request)
     TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
       const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
       document.getElementById('kpiDeposits').textContent = formatUGX(total);
+      document.getElementById('kpiInvested').textContent = formatUGX(total); // Equals total deposits
     });
 
     // 3. Total Withdrawn
@@ -415,7 +495,8 @@
     });
   }
 
-  function renderUserCards() {
+  window.renderUserCards = function() {
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
     const container = document.getElementById('userCardsContainer');
     container.innerHTML = '';
 
@@ -427,8 +508,15 @@
       }
     });
 
+    // 2. Filter users
+    const filteredUsers = allUsers.filter(u => {
+      return (u.phone || '').toLowerCase().includes(searchQuery) || (u.full_name || '').toLowerCase().includes(searchQuery);
+    });
+
+    if (filteredUsers.length === 0) { container.innerHTML = '<div class="empty-state">No users found.</div>'; return; }
+
     let html = '';
-    allUsers.forEach(u => {
+    filteredUsers.forEach(u => {
       const dep = Number(u.deposit_amount || 0);
       const isActive = dep > 0;
       const statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
@@ -451,7 +539,7 @@
       `;
     });
     container.innerHTML = html;
-  }
+  };
 
   window.openUserModal = function(id, name) {
     selectedUserId = id;
