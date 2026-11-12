@@ -299,15 +299,13 @@
       <div class="action-item" onclick="document.getElementById('withdrawBtn').click()">
         <div class="action-icon" style="background:#f0fdf4; border-color:#bbf7d0; color:#22c55e;">↑</div><span>WITHDRAW</span>
       </div>
-      <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
+      <a href="https://t.me/root67u" target="_blank" class="action-item">
         <div class="action-icon" style="background:#fdf4ff; border-color:#f5d0fe; color:#c026d3;">
-          <!-- Telegram Icon -->
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>SERVICE</span>
       </a>
-      <a href="https://t.me/+aCm9Ri9oehFkYTU0" target="_blank" class="action-item">
+      <a href="https://t.me/root67u" target="_blank" class="action-item">
         <div class="action-icon" style="background:#ecfdf5; border-color:#a7f3d0; color:#10b981;">
-          <!-- Telegram Icon -->
           <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         </div><span>CHANNEL</span>
       </a>
@@ -341,7 +339,7 @@
   </div>
 </main>
 
-<!-- Bottom Nav (Restored VIP) -->
+<!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="switchTab('home', this)">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
@@ -375,7 +373,7 @@
 <dialog id="depositDialog" class="modal">
   <div class="modal-head"><div><h3 style="margin:0;">Fund Account</h3></div><button class="icon-btn" onclick="document.getElementById('depositDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
-    <div class="field"><label>Amount (UGX)</label><input type="number" id="depositAmountUGX" min="5000" placeholder="Min UGX 5,000"></div>
+    <div class="field"><label>Amount (UGX)</label><input type="number" id="depositAmountUGX" min="30000" placeholder="Min UGX 30,000"></div>
     <div class="field"><label>Phone (MTN or Airtel)</label><input type="tel" id="momoPhone" placeholder="07XXXXXXXX"></div>
     <button class="btn-primary" id="momoSubmitBtn" onclick="submitMobileMoney()">Pay via Mobile Money</button>
     <p class="form-msg" id="momoMsg"></p>
@@ -412,7 +410,6 @@
   let l2Users = [];
   let l3Users = [];
 
-  // --- UPDATED TIERS FROM YOUR SCREENSHOT ---
   let TIERS = [
     { amount: 30000,    name: 'Cherry Tomatoes',      profit: 6500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80' },
     { amount: 50000,    name: 'Golden Beetroot',      profit: 12000,  img: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=400&q=80' },
@@ -429,9 +426,9 @@
     { level: 1, req: 5,  reward: 5000,  plan: 'Starter' },
     { level: 2, req: 15, reward: 20000, plan: 'Starter' },
     { level: 3, req: 30, reward: 35000, plan: 'Starter' },
-    { level: 4, req: 50, reward: 60000, plan: 'Basic' },
-    { level: 5, req: 100, reward: 120000, plan: 'Basic' },
-    { level: 6, req: 200, reward: 250000, plan: 'Basic' }
+    { level: 4, req: 45, reward: 50000, plan: 'Starter' },
+    { level: 5, req: 60, reward: 65000, plan: 'Starter' },
+    { level: 6, req: 120, reward: 100000, plan: 'Starter' }
   ];
 
   function formatUGX(amount) {
@@ -705,13 +702,11 @@
   };
 
   document.getElementById('withdrawBtn').addEventListener('click', () => {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const todayStr = now.toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split('T')[0];
 
     if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
-    if (currentHour < 7 || currentHour >= 18) { alert("Withdrawals are only allowed between 7:00 AM and 6:00 PM."); return; }
     
+    // Check daily limit
     let withdrawCount = Number(currentProfile.withdraw_count_today || 0);
     if (currentProfile.last_withdraw_date !== todayStr) withdrawCount = 0;
     if (withdrawCount >= 2) { alert("You have reached the maximum limit of 2 withdrawals per day."); return; }
@@ -764,7 +759,7 @@
     const phone = document.getElementById('momoPhone').value.trim();
     const msg = document.getElementById('momoMsg'); const btn = document.getElementById('momoSubmitBtn');
     
-    if (!ugxAmount || ugxAmount < 5000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 5,000.'; return; }
+    if (!ugxAmount || ugxAmount < 30000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 30,000.'; return; }
     if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
 
     btn.disabled = true; btn.textContent = 'Sending Prompt...'; msg.textContent = '';
