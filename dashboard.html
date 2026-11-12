@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#ffffff">
-<title>Nova Trade</title>
+<meta name="theme-color" content="#f0fdf4">
+<title>Root & Ripe</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { padding-bottom: 75px; background: #f9fafb; color: #111827; overflow-x: hidden; }
   
   /* Header & Ticker */
   .app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.15rem; background: #ffffff; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10; }
-  .brand { font-weight: 800; font-size: 1.2rem; color: #111827; }
-  .brand span { color: #ec4899; text-shadow: 0 0 10px rgba(236, 72, 153, 0.2); }
-  .btn-logout { background: #fdf2f8; border: 1px solid #fbcfe8; color: #ec4899; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+  .brand { font-weight: 900; font-size: 1.3rem; color: #065f46; letter-spacing: -0.5px; }
+  .brand span { color: #f59e0b; }
+  .btn-logout { background: #ecfdf5; border: 1px solid #a7f3d0; color: #10b981; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
   
   .ticker-wrap { background: #ffffff; border-bottom: 1px solid #e5e7eb; overflow: hidden; white-space: nowrap; padding: 0.4rem 0; font-size: 0.75rem; }
   .ticker { display: inline-block; animation: ticker 20s linear infinite; }
-  .ticker span { margin-right: 1.5rem; }
+  .ticker span { margin-right: 1.5rem; color: #4b5563; font-weight: 600; }
   @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
   .text-green { color: #10b981; font-weight: bold; }
   .text-red { color: #ef4444; font-weight: bold; }
@@ -27,110 +27,96 @@
   .app-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Bottom Nav (5 Tabs) */
+  /* Bottom Nav */
   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-around; padding: 0.6rem 0; z-index: 20; padding-bottom: env(safe-area-inset-bottom, 0.6rem); }
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: #9ca3af; font-size: 0.65rem; font-weight: 600; cursor: pointer; }
   .nav-item svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
-  .nav-item.active { color: #ec4899; }
+  .nav-item.active { color: #10b981; }
 
   /* Home Tab */
-  .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }
-  .plan-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-  .plan-card.active-plan { border-color: #ec4899; box-shadow: 0 0 15px rgba(236, 72, 153, 0.15); background: #fdf2f8; }
-  .plan-info h4 { margin: 0 0 0.2rem; font-size: 1.1rem; color: #111827; }
-  .plan-info p { margin: 0; font-size: 0.8rem; color: #6b7280; }
-  .plan-return { text-align: right; margin-left: 0.5rem; }
-  .plan-return strong { display: block; color: #10b981; font-size: 1.1rem; }
+  .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; color: #065f46; }
+  .plan-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1rem; margin-bottom: 1.2rem; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.03); overflow: hidden; }
+  .plan-card.active-plan { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); background: #ecfdf5; }
+  .veg-img { width: 100%; height: 140px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; background: #f3f4f6; }
+  .plan-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+  .plan-info h4 { margin: 0 0 0.2rem; font-size: 1.2rem; color: #111827; font-weight: 800; }
+  .plan-info p { margin: 0; font-size: 0.85rem; color: #6b7280; }
+  .plan-return { text-align: right; }
+  .plan-return strong { display: block; color: #f59e0b; font-size: 1.1rem; }
   .plan-return span { font-size: 0.7rem; color: #9ca3af; }
-  .btn-activate { background: #ec4899; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: pointer; margin-top: 0.5rem; width: 100%; }
-  .btn-activated { background: #10b981; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; font-size: 0.8rem; cursor: default; margin-top: 0.5rem; width: 100%; }
+  .btn-activate { background: #10b981; color: #fff; border: none; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; width: 100%; transition: 0.2s; }
+  .btn-activate:active { background: #059669; }
+  .btn-activated { background: #d1fae5; color: #065f46; border: none; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: default; margin-top: 1rem; width: 100%; }
 
-  /* Trade Tab */
-  .chart-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; height: 300px; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); position: relative; }
-  #tvchart { width: 100%; height: 100%; }
-  .trade-action-box { display: none; background: #ffffff; border: 2px solid #ec4899; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; text-align: center; box-shadow: 0 0 20px rgba(236, 72, 153, 0.2); }
-  .trade-action-box h3 { color: #ec4899; margin-bottom: 0.8rem; }
-  .trade-btns { display: flex; gap: 0.8rem; }
-  .btn-trade { flex: 1; padding: 1rem; border-radius: 8px; font-weight: 800; font-size: 1.1rem; border: none; cursor: pointer; text-align: center; color: #fff; }
-  .btn-up { background: #ec4899; }
-  .btn-down { background: #6b21a8; }
-  .btn-trade:active { opacity: 0.8; }
-
-  /* Chat UI */
-  .chat-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; display: flex; flex-direction: column; height: 300px; position: relative; overflow: hidden; }
-  .chat-header { padding: 0.8rem; border-bottom: 1px solid #e5e7eb; font-weight: bold; color: #111827; display: flex; align-items: center; gap: 0.5rem; z-index: 2; background: #fff; }
-  .chat-messages { flex: 1; padding: 0.8rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; z-index: 2; }
-  .msg { max-width: 80%; padding: 0.6rem 0.8rem; border-radius: 12px; font-size: 0.85rem; }
-  .msg-bot { background: #fdf2f8; color: #9d174d; align-self: flex-start; border-bottom-left-radius: 2px; }
-  .msg-user { background: #ec4899; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-  .chat-input-area { display: flex; padding: 0.5rem; border-top: 1px solid #e5e7eb; gap: 0.5rem; z-index: 2; background: #fff; }
-  .chat-input-area input { flex: 1; border: 1px solid #e5e7eb; border-radius: 20px; padding: 0.5rem 1rem; font-size: 0.85rem; outline: none; }
-  .chat-input-area button { background: #ec4899; color: #fff; border: none; border-radius: 20px; padding: 0 1rem; font-weight: bold; }
-  .trade-line { position: absolute; left: 50%; font-size: 2rem; font-weight: 900; pointer-events: none; z-index: 10; opacity: 0; transform: translateX(-50%); text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-  .trade-line.up { color: #ec4899; top: 50%; animation: floatUp 1.5s ease-out forwards; }
-  .trade-line.down { color: #6b21a8; top: 50%; animation: floatDown 1.5s ease-out forwards; }
-  @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); } 20% { opacity: 1; transform: translate(-50%, -20px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -100px) scale(1); } }
-  @keyframes floatDown { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); } 20% { opacity: 1; transform: translate(-50%, 20px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, 100px) scale(1); } }
-
+  /* My Order Tab */
+  .order-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+  .order-title { font-size: 1.4rem; font-weight: 900; color: #065f46; margin-bottom: 0.5rem; }
+  .order-img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin: 0 auto 1rem; border: 4px solid #10b981; }
+  .cycle-container { background: #f3f4f6; border-radius: 12px; padding: 1rem; margin-top: 1.5rem; }
+  .cycle-text { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; color: #4b5563; margin-bottom: 0.5rem; }
+  .cycle-bar { height: 12px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
+  .cycle-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); border-radius: 10px; transition: width 0.5s ease; }
+  .daily-earn { font-size: 1.2rem; font-weight: 800; color: #f59e0b; margin-top: 1rem; }
+  
   /* Team Tab */
-  .commission-card { background: linear-gradient(135deg, #6b21a8, #ec4899); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
+  .commission-card { background: linear-gradient(135deg, #059669, #10b981); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
   .commission-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem; }
   .commission-amount { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
   .ref-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.2rem; text-align: center; margin-bottom: 2rem; }
   .ref-box h4 { font-size: 0.9rem; color: #111827; margin-bottom: 0.8rem; }
   .ref-input-group { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
   .ref-input-group input { flex: 1; background: #f9fafb; border: 1px solid #e5e7eb; padding: 0.8rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #6b7280; outline: none; }
-  .ref-input-group button { background: #ec4899; color: #fff; border: none; padding: 0 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  .ref-input-group button { background: #10b981; color: #fff; border: none; padding: 0 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; }
   .ref-list-title { font-size: 1.1rem; font-weight: 800; color: #111827; margin-bottom: 1rem; }
   .ref-user-card { display: flex; align-items: center; gap: 1rem; background: #ffffff; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 12px; margin-bottom: 0.8rem; }
-  .ref-avatar { width: 40px; height: 40px; border-radius: 50%; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
+  .ref-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
   .ref-info { flex: 1; }
   .ref-info h5 { font-size: 0.95rem; color: #111827; margin-bottom: 0.1rem; }
   .ref-info p { font-size: 0.75rem; color: #6b7280; }
   .ref-status { font-size: 0.75rem; font-weight: bold; color: #10b981; background: #d1fae5; padding: 0.3rem 0.6rem; border-radius: 6px; }
 
   /* VIP Tab */
-  .vip-card { background: linear-gradient(135deg, #f59e0b, #ec4899); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(236, 72, 153, 0.2); }
+  .vip-card { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; padding: 1.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2); }
   .vip-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem; }
   .vip-level-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem; }
-  .vip-daily { font-size: 1.2rem; font-weight: 700; color: #d1fae5; }
+  .vip-daily { font-size: 1.2rem; font-weight: 700; color: #fef3c7; }
   .progress-container { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
   .progress-text { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; color: #4b5563; margin-bottom: 0.5rem; }
   .progress-bar { height: 10px; background: #f3f4f6; border-radius: 10px; overflow: hidden; }
-  .progress-fill { height: 100%; background: #ec4899; border-radius: 10px; transition: width 0.5s ease; }
+  .progress-fill { height: 100%; background: #f59e0b; border-radius: 10px; transition: width 0.5s ease; }
   .vip-tier-list { display: flex; flex-direction: column; gap: 0.8rem; }
   .vip-tier-item { display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 12px; }
-  .vip-tier-item.active { border-color: #ec4899; background: #fdf2f8; }
+  .vip-tier-item.active { border-color: #f59e0b; background: #fffbeb; }
   .vip-tier-name { font-weight: 800; color: #111827; }
   .vip-tier-req { font-size: 0.75rem; color: #6b7280; margin-top: 0.2rem; }
-  .vip-tier-reward { font-weight: 800; color: #10b981; text-align: right; }
+  .vip-tier-reward { font-weight: 800; color: #f59e0b; text-align: right; }
   .vip-tier-reward span { display: block; font-size: 0.65rem; color: #9ca3af; font-weight: 500; }
 
   /* Profile Tab */
   .profile-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-  .prof-avatar { width: 45px; height: 45px; border-radius: 12px; background: #ec4899; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); }
+  .prof-avatar { width: 45px; height: 45px; border-radius: 12px; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
   .prof-info { flex: 1; }
   .prof-info h2 { font-size: 1.2rem; margin-bottom: 0.1rem; letter-spacing: 0.5px; color: #111827; display: flex; align-items: center; gap: 0.5rem;}
-  .prof-info span { font-size: 0.7rem; color: #ec4899; font-weight: 700; letter-spacing: 1px; }
-  .vip-badge { background: linear-gradient(135deg, #f59e0b, #ec4899); color: white; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 900; letter-spacing: 0.5px;}
+  .prof-info span { font-size: 0.7rem; color: #10b981; font-weight: 700; letter-spacing: 1px; }
+  .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 900; letter-spacing: 0.5px;}
   .signed-in { text-align: right; font-size: 0.65rem; color: #6b7280; letter-spacing: 0.5px; }
   .signed-in strong { display: block; font-size: 0.9rem; color: #111827; margin-top: 0.2rem; }
-  .wallet-card-new { background: linear-gradient(145deg, #ec4899, #db2777); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3); color: #fff; }
+  .wallet-card-new { background: linear-gradient(145deg, #10b981, #047857); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); color: #fff; }
   .wallet-label { font-size: 0.7rem; opacity: 0.9; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.2rem; }
   .wallet-bal { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; }
-  .wallet-bal span { font-size: 1.5rem; margin-right: 0.2rem; }
+  .wallet-bal span { font-size: 1.2rem; margin-right: 0.2rem; }
   .wallet-stats { display: flex; gap: 1rem; }
   .stat-box { flex: 1; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 0.8rem; }
   .stat-box .lbl { font-size: 0.65rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
   .stat-box .val { font-size: 1rem; font-weight: 700; }
   .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
   .action-item { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-decoration: none; color: #6b7280; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; }
-  .action-icon { width: 50px; height: 50px; border-radius: 14px; background: #fdf2f8; border: 1px solid #fbcfe8; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #ec4899; }
-  .action-item:active .action-icon { background: #fce7f3; }
+  .action-icon { width: 50px; height: 50px; border-radius: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #10b981; }
+  .action-item:active .action-icon { background: #d1fae5; }
   .menu-list { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
   .menu-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb; text-decoration: none; color: #111827; cursor: pointer; }
   .menu-item:last-child { border-bottom: none; }
-  .menu-icon { width: 35px; height: 35px; border-radius: 10px; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-right: 1rem; }
+  .menu-icon { width: 35px; height: 35px; border-radius: 10px; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-right: 1rem; }
   .menu-text { flex: 1; }
   .menu-text strong { display: block; font-size: 0.9rem; }
   .menu-text span { display: block; font-size: 0.75rem; color: #6b7280; margin-top: 0.2rem; }
@@ -141,17 +127,12 @@
   .modal::backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
   .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .icon-btn { background: #f3f4f6; border: none; color: #6b7280; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
-  .deposit-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .dep-tab { flex: 1; padding: 0.7rem; text-align: center; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #6b7280; }
-  .dep-tab.active { background: #fdf2f8; color: #ec4899; border-color: #ec4899; }
-  .deposit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
-  .deposit-btn { background: #f9fafb; border: 1px solid #e5e7eb; padding: 0.8rem; border-radius: 8px; text-align: center; font-weight: 700; cursor: pointer; color: #111827; }
-  .deposit-btn:active { border-color: #ec4899; color: #ec4899; }
+  
   .field { margin-bottom: 1rem; }
   .field label { display: block; font-size: 0.75rem; color: #6b7280; margin-bottom: 0.4rem; }
   .field input, .field select { width: 100%; padding: 0.8rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; color: #111827; font-size: 0.9rem; }
-  .field input:focus { outline: none; border-color: #ec4899; }
-  .btn-primary { width: 100%; padding: 0.9rem; background: #ec4899; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
+  .field input:focus { outline: none; border-color: #10b981; }
+  .btn-primary { width: 100%; padding: 0.9rem; background: #10b981; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; }
   .btn-primary:disabled { opacity: 0.5; }
   .form-msg { text-align: center; font-size: 0.8rem; margin-top: 0.8rem; }
   .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid #e5e7eb; }
@@ -175,7 +156,7 @@
 </script>
 
 <div class="app-header">
-  <div class="brand">Nova<span>Trade</span></div>
+  <div class="brand">Root <span>&</span> Ripe</div>
   <button class="btn-logout" id="logoutBtn">Log out</button>
 </div>
 
@@ -184,45 +165,33 @@
 </div>
 
 <main>
+  <!-- HOME TAB -->
   <div class="app-content active" id="tab-home">
-    <div class="greeting" id="greetingName">Hello, Trader</div>
-    <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1rem;">Welcome to Nova Trade Markets.</p>
-    <div id="noPlanNotice" style="display:none; background:#fdf2f8; border:1px solid #fbcfe8; color:#ec4899; padding:1rem; border-radius:12px; margin-bottom:1.5rem; font-size:0.9rem; text-align:center;">
-      You need to activate a plan below to start trading and earning.
+    <div class="greeting" id="greetingName">Hello, Farmer</div>
+    <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1.5rem;">Invest in premium vegetables today.</p>
+    
+    <div id="noPlanNotice" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; padding:1rem; border-radius:12px; margin-bottom:1.5rem; font-size:0.9rem; text-align:center; font-weight:bold;">
+      Choose a vegetable below to start your 45-day harvest cycle.
     </div>
-    <h3 style="margin-bottom:1rem;">Trading Plans</h3>
+
+    <h3 style="margin-bottom:1rem; color: #065f46;">Available Crops</h3>
     <div id="plansContainer"></div>
   </div>
 
-  <div class="app-content" id="tab-trade">
-    <div class="chart-container"><div id="tvchart"></div></div>
-    <div id="tradeActionContainer" class="trade-action-box">
-      <h3 id="tradeActionTitle">Trade is Open!</h3>
-      <div class="trade-btns">
-        <button class="btn-trade btn-up" onclick="placeTrade('MANUAL', 'UP')">UP</button>
-        <button class="btn-trade btn-down" onclick="placeTrade('MANUAL', 'DOWN')">DOWN</button>
-      </div>
-    </div>
-    <div class="chat-container">
-      <div class="chat-header">
-        <div style="width:8px; height:8px; border-radius:50%; background:#10b981;"></div>
-        Admin Live Chat
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="msg msg-bot">Welcome to the trading room!</div>
-        <div class="msg msg-bot">Please wait for the next trade window.</div>
-      </div>
-      <div class="chat-input-area">
-        <input type="text" placeholder="Type a message..." id="chatInput">
-        <button onclick="sendChat()">Send</button>
-      </div>
+  <!-- MY ORDER TAB -->
+  <div class="app-content" id="tab-order">
+    <h3 style="margin-bottom:1.5rem; color: #065f46;">My Active Order</h3>
+    
+    <div id="activeOrderContainer">
+      <!-- Populated by JS -->
     </div>
   </div>
 
+  <!-- TEAM TAB -->
   <div class="app-content" id="tab-team">
     <div class="commission-card">
       <div class="commission-label">Total Commission Earned</div>
-      <div class="commission-amount" id="teamCommission">$0.00</div>
+      <div class="commission-amount" id="teamCommission">UGX 0</div>
       <p style="font-size:0.75rem; opacity:0.9;">Earn 10% when your direct referrals deposit.</p>
     </div>
     <div class="ref-box">
@@ -241,8 +210,8 @@
     <div class="vip-card">
       <div class="vip-label">Your Current Status</div>
       <div class="vip-level-title" id="vipTitle">No VIP Yet</div>
-      <div class="vip-daily" id="vipWeekly">$0.00 / week</div>
-      <p style="font-size:0.75rem; opacity:0.9; margin-top:0.5rem;">Total VIP Earnings: <span id="vipEarnings">$0.00</span></p>
+      <div class="vip-daily" id="vipWeekly">UGX 0 / week</div>
+      <p style="font-size:0.75rem; opacity:0.9; margin-top:0.5rem;">Total VIP Earnings: <span id="vipEarnings">UGX 0</span></p>
     </div>
 
     <div class="progress-container">
@@ -255,15 +224,16 @@
       </div>
     </div>
 
-    <h3 style="margin-bottom:1rem;">VIP Tiers</h3>
+    <h3 style="margin-bottom:1rem; color: #065f46;">VIP Tiers</h3>
     <div class="vip-tier-list" id="vipTierList"></div>
   </div>
 
+  <!-- PROFILE TAB -->
   <div class="app-content" id="tab-profile">
     <div class="profile-top">
-      <div class="prof-avatar" id="profInitial">N</div>
+      <div class="prof-avatar" id="profInitial">R</div>
       <div class="prof-info">
-        <h2>NOVA <span id="profVipBadge" class="vip-badge" style="display:none;">VIP 1</span></h2>
+        <h2>ROOT & RIPE <span id="profVipBadge" class="vip-badge" style="display:none;">VIP 1</span></h2>
         <span>PROFILE</span>
       </div>
       <div class="signed-in">
@@ -273,15 +243,15 @@
     </div>
     <div class="wallet-card-new">
       <div class="wallet-label">Available Balance</div>
-      <div class="wallet-bal"><span>$</span><span id="profBalance">0.00</span></div>
+      <div class="wallet-bal"><span>UGX</span> <span id="profBalance">0</span></div>
       <div class="wallet-stats">
         <div class="stat-box">
           <div class="lbl">Deposited</div>
-          <div class="val" id="profDeposited">$0.00</div>
+          <div class="val" id="profDeposited">UGX 0</div>
         </div>
         <div class="stat-box withdrawn">
           <div class="lbl">Withdrawn</div>
-          <div class="val" id="profWithdrawn">$0.00</div>
+          <div class="val" id="profWithdrawn">UGX 0</div>
         </div>
       </div>
     </div>
@@ -326,8 +296,8 @@
   <div class="nav-item active" onclick="switchTab('home', this)">
     <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
   </div>
-  <div class="nav-item" onclick="switchTab('trade', this)">
-    <svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-7 4 4"/><line x1="3" y1="21" x2="21" y2="21"/></svg>Trade
+  <div class="nav-item" onclick="switchTab('order', this)">
+    <svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg>My Order
   </div>
   <div class="nav-item" onclick="switchTab('team', this)">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team
@@ -343,6 +313,7 @@
 <button id="depositBtn" style="display:none;"></button>
 <button id="withdrawBtn" style="display:none;"></button>
 
+<!-- HISTORY MODAL -->
 <dialog id="historyDialog" class="modal">
   <div class="modal-head">
     <div><h3 style="margin:0;">Transaction History</h3></div>
@@ -357,63 +328,41 @@
   </div>
 </dialog>
 
-<dialog id="cryptoDepositDialog" class="modal">
+<!-- DEPOSIT MODAL (Mobile Money Only) -->
+<dialog id="depositDialog" class="modal">
   <div class="modal-head">
     <div><h3 style="margin:0;">Fund Account</h3></div>
-    <button class="icon-btn" onclick="document.getElementById('cryptoDepositDialog').close()">✕</button>
+    <button class="icon-btn" onclick="document.getElementById('depositDialog').close()">✕</button>
   </div>
   <div style="padding: 1rem 0;">
-    <div class="deposit-tabs">
-      <div class="dep-tab active" id="tab-btn-crypto" onclick="switchDepositTab('crypto')">Crypto (Binance)</div>
-      <div class="dep-tab" id="tab-btn-momo" onclick="switchDepositTab('momo')">Mobile Money</div>
+    <div class="field">
+      <label>Amount (UGX) to Deposit</label>
+      <input type="number" id="depositAmountUGX" min="10000" step="1000" placeholder="Min UGX 10,000">
+      <p style="font-size:0.75rem; color:#6b7280; margin-top:0.4rem;">Enter the exact amount you want to invest.</p>
     </div>
-    <div id="deposit-crypto">
-      <div class="deposit-grid" id="depositGrid"></div>
-      <hr style="border:0; border-top:1px solid #e5e7eb; margin: 1.5rem 0;">
-      <div class="field">
-        <label>Binance Wallet (BEP20)</label>
-        <div style="display:flex; gap:0.5rem;">
-          <input type="text" id="binanceAddress" value="YOUR_BINANCE_ADDRESS_HERE" readonly style="font-family:monospace; background:#f9fafb;">
-          <button class="btn" onclick="navigator.clipboard.writeText('YOUR_BINANCE_ADDRESS_HERE');this.textContent='Copied';" style="background:#ec4899; color:#fff; border:none; padding:0 1rem; border-radius:8px;">Copy</button>
-        </div>
-      </div>
-      <form id="depositForm" style="display:none; flex-direction:column; gap:1rem; margin-top:1rem;">
-        <input type="hidden" id="selectedAmount">
-        <div class="field"><label>TXID for <span id="displayAmount"></span></label><input type="text" id="depositTxidInput" placeholder="Paste TXID" required></div>
-        <button type="submit" class="btn-primary">Submit Crypto Deposit</button>
-      </form>
-      <p class="form-msg" id="depositMsg"></p>
+    <div class="field">
+      <label>Phone Number (MTN or Airtel)</label>
+      <input type="tel" id="momoPhone" placeholder="e.g. 0771234567">
     </div>
-    <div id="deposit-momo" style="display:none;">
-      <div class="field">
-        <label>Amount (USD) to Deposit</label>
-        <input type="number" id="momoUsdAmount" min="10" step="1" placeholder="Min $10" oninput="calcLocalAmount()">
-        <p style="font-size:0.75rem; color:#6b7280; margin-top:0.4rem;">You will pay: <strong id="localAmountDisplay" style="color:#ec4899;">0</strong> <span id="localCurrency"></span></p>
-      </div>
-      <div class="field">
-        <label>Phone Number (with Country Code)</label>
-        <input type="tel" id="momoPhone" placeholder="e.g. +256 712 345 678">
-      </div>
-      <button class="btn-primary" id="momoSubmitBtn" onclick="submitMobileMoney()">Pay via Mobile Money</button>
-      <p class="form-msg" id="momoMsg"></p>
-    </div>
+    <button class="btn-primary" id="momoSubmitBtn" onclick="submitMobileMoney()">Pay via Mobile Money</button>
+    <p class="form-msg" id="momoMsg"></p>
   </div>
 </dialog>
 
+<!-- WITHDRAW MODAL -->
 <dialog id="withdrawDialog" class="modal">
   <div class="modal-head"><div><h3 style="margin:0;">Withdraw</h3></div><button class="icon-btn" onclick="document.getElementById('withdrawDialog').close()">✕</button></div>
   <div style="padding: 1rem 0;">
     <form id="withdrawForm" style="display:flex; flex-direction:column; gap:1rem;">
-      <div class="field"><label>Amount (USD)</label><input type="number" id="withdrawAmount" min="10" placeholder="Min $10" required></div>
+      <div class="field"><label>Amount (UGX)</label><input type="number" id="withdrawAmount" min="10000" placeholder="Min UGX 10,000" required></div>
       <div class="field"><label>Provider</label><select id="mmProvider"><option value="MTN">MTN</option><option value="Airtel">Airtel</option></select></div>
       <div class="field"><label>Phone Number</label><input type="tel" id="mmNumber" placeholder="e.g. 0771234567" required></div>
-      <button type="submit" class="btn-primary" style="background:#111827;">Request Withdrawal</button>
+      <button type="submit" class="btn-primary" style="background:#ef4444;">Request Withdrawal</button>
     </form>
     <p class="form-msg" id="withdrawMsg"></p>
   </div>
 </dialog>
 
-<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script>
@@ -422,100 +371,44 @@
 
   let currentUser = null;
   let currentProfile = null;
-  let userTradesToday = [];
-  let chart = null;
-  let candleSeries = null;
-  let lastPrice = 64200;
   let currentHistoryTab = 'deposits';
   let userDeposits = [];
   let userWithdrawals = [];
-  
-  // VIP Tracking
   let refsWithStarter = 0;
   let refsWithBasic = 0;
 
-  const EXCHANGE_RATES = { UG: 4102, KE: 129.89, RW: 1472, ZM: 20.27, CM: 582.68, TZ: 2600, NG: 1500, GH: 14.50, ZA: 18.50 };
-  const CURRENCIES = { UG: 'UGX', KE: 'KES', RW: 'RWF', ZM: 'ZMW', CM: 'XAF', TZ: 'TZS', NG: 'NGN', GH: 'GHS', ZA: 'ZAR' };
-
+  // 9 Unique Veggies with UGX prices and daily returns
   const TIERS = [
-    { amount: 10,   name: 'Starter Level', slots: ['3PM'], profit: '1.5' },
-    { amount: 30,   name: 'Basic Level', slots: ['3PM'], profit: '2.5' },
-    { amount: 50,   name: 'Standard Level', slots: ['3PM'], profit: '5' },
-    { amount: 100,  name: 'Bronze Level', slots: ['3PM', '5PM'], profit: '9.8' },
-    { amount: 300,  name: 'Silver Level', slots: ['3PM', '5PM'], profit: '13.5' },
-    { amount: 500,  name: 'Gold Level', slots: ['3PM', '5PM'], profit: '17' },
-    { amount: 1000, name: 'Platinum Level', slots: ['3PM', '5PM', '8PM'], profit: '25.8' },
-    { amount: 2000, name: 'Diamond Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '45.5' },
-    { amount: 5000, name: 'VIP Level', slots: ['8AM', '3PM', '5PM', '8PM'], profit: '100' }
+    { amount: 50000,      name: 'Cherry Tomatoes',      profit: 7500,   img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60' },
+    { amount: 120000,     name: 'Golden Beetroot',      profit: 10000,  img: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500&auto=format&fit=crop&q=60' },
+    { amount: 200000,     name: 'Purple Cauliflower',   profit: 20000,  img: 'https://images.unsplash.com/photo-1568584711271-6c929fb49b96?w=500&auto=format&fit=crop&q=60' },
+    { amount: 400000,     name: 'Zucchini',             profit: 39200,  img: 'https://images.unsplash.com/photo-1599321955726-e048fbd47da6?w=500&auto=format&fit=crop&q=60' },
+    { amount: 1200000,    name: 'Pink Oyster Mushrooms',profit: 54000,  img: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=500&auto=format&fit=crop&q=60' },
+    { amount: 2000000,    name: 'Rainbow Swiss Chard',  profit: 68000,  img: 'https://images.unsplash.com/photo-1598444743474-7c03a3727cd5?w=500&auto=format&fit=crop&q=60' },
+    { amount: 4000000,    name: 'Romanesco Broccoli',   profit: 103200, img: 'https://images.unsplash.com/photo-1510629954389-c1e0da47d414?w=500&auto=format&fit=crop&q=60' },
+    { amount: 8000000,    name: 'Purple Asparagus',     profit: 182000, img: 'https://images.unsplash.com/photo-1515471209610-dae1c92d8777?w=500&auto=format&fit=crop&q=60' },
+    { amount: 20000000,   name: 'Globe Artichokes',     profit: 400000, img: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=500&auto=format&fit=crop&q=60' }
   ];
 
-  // VIP Requirements
   const VIP_TIERS = [
-    { level: 1, req: 5,  reward: 5.00, plan: 'Starter' },
-    { level: 2, req: 10, reward: 10.00, plan: 'Starter' },
-    { level: 3, req: 15, reward: 13.00, plan: 'Starter' },
-    { level: 4, req: 25, reward: 15.00, plan: 'Basic' },
-    { level: 5, req: 35, reward: 18.00, plan: 'Basic' },
-    { level: 6, req: 60, reward: 25.00, plan: 'Basic' }
+    { level: 1, req: 5,  reward: 20000,  plan: 'Starter' },
+    { level: 2, req: 10, reward: 40000,  plan: 'Starter' },
+    { level: 3, req: 15, reward: 52000,  plan: 'Starter' },
+    { level: 4, req: 25, reward: 60000,  plan: 'Basic' },
+    { level: 5, req: 35, reward: 72000,  plan: 'Basic' },
+    { level: 6, req: 60, reward: 100000, plan: 'Basic' }
   ];
+
+  function formatUGX(amount) {
+    return 'UGX ' + Number(amount).toLocaleString();
+  }
 
   window.switchTab = function(tab, el) {
     document.querySelectorAll('.app-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     if (el) el.classList.add('active');
-    if (tab === 'trade' && chart) {
-      setTimeout(() => { const c = document.getElementById('tvchart'); if(c){ chart.resize(c.clientWidth, 300); chart.timeScale().scrollToRealTime(); } }, 50);
-    }
   };
-
-  function getUserTier(deposit) {
-    let tier = TIERS[0];
-    for (let t of TIERS) { if (deposit >= t.amount) tier = t; }
-    return tier;
-  }
-
-  function formatMoney(amount) {
-    return '$' + Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function initLiveChart() {
-    const chartEl = document.getElementById('tvchart');
-    if (!chartEl) return;
-    chart = LightweightCharts.createChart(chartEl, {
-      width: chartEl.clientWidth, height: 300,
-      layout: { background: { color: '#ffffff' }, textColor: '#6b7280' },
-      grid: { vertLines: { color: '#f3f4f6' }, horzLines: { color: '#f3f4f6' } },
-      rightPriceScale: { borderColor: '#e5e7eb' },
-      timeScale: { borderColor: '#e5e7eb', timeVisible: true, secondsVisible: true },
-    });
-    candleSeries = chart.addCandlestickSeries({
-      upColor: '#ec4899', downColor: '#9d174d', wickUpColor: '#ec4899', wickDownColor: '#9d174d', borderVisible: false
-    });
-    const data = []; let time = Math.floor(Date.now() / 1000) - (50 * 60);
-    for (let i = 0; i < 50; i++) {
-      const open = lastPrice; const close = open + (Math.random() - 0.5) * 100;
-      data.push({ time: time, open, high: Math.max(open, close) + Math.random() * 50, low: Math.min(open, close) - Math.random() * 50, close });
-      lastPrice = close; time += 60;
-    }
-    candleSeries.setData(data);
-    setInterval(() => {
-      const open = lastPrice; const close = open + (Math.random() - 0.5) * 80;
-      candleSeries.update({ time: Math.floor(Date.now() / 1000), open, high: Math.max(open, close) + Math.random() * 40, low: Math.min(open, close) - Math.random() * 40, close });
-      lastPrice = close; updateTickerPrices(close);
-    }, 2000);
-  }
-
-  function updateTickerPrices(price) {
-    const ticker = document.getElementById('tickerData');
-    const isUp = Math.random() > 0.5; const color = isUp ? 'text-green' : 'text-red'; const sign = isUp ? '+' : '';
-    ticker.innerHTML = `
-      <span>BTC/USDT <strong class="${color}">${price.toFixed(2)} ${sign}${(Math.random()*2).toFixed(2)}%</strong></span>
-      <span>ETH/USDT <strong class="text-green">2,259.72 +1.11%</strong></span>
-      <span>BNB/USDT <strong class="text-red">695.69 -1.70%</strong></span>
-      <span>SOL/USDT <strong class="text-red">92.17 -2.35%</strong></span>
-    `;
-  }
 
   function initApp() {
     TN.ready.then(() => TN.getSession())
@@ -527,27 +420,14 @@
     .then(res => {
       if (!res.data) throw new Error('No profile data found.');
       currentProfile = res.data;
-      
-      // Fetch referrals to count VIP eligibility
       return TN.client.from('profiles').select('deposit_amount').eq('referred_by', currentUser.id);
     })
     .then(refsRes => {
       if (refsRes.data) {
-        refsWithStarter = refsRes.data.filter(r => Number(r.deposit_amount) >= 10).length;
-        refsWithBasic = refsRes.data.filter(r => Number(r.deposit_amount) >= 30).length;
+        refsWithStarter = refsRes.data.filter(r => Number(r.deposit_amount) >= 50000).length;
+        refsWithBasic = refsRes.data.filter(r => Number(r.deposit_amount) >= 120000).length;
       }
-      
-      const today = new Date().toISOString().split('T')[0];
-      return TN.client.from('trades').select('*').eq('user_id', currentUser.id).gte('created_at', today)
-        .then(tradesRes => tradesRes.data || [])
-        .catch(err => { return []; });
-    })
-    .then(tradesData => {
-      userTradesToday = tradesData;
       renderUI();
-      initLiveChart();
-      updateTickerPrices(lastPrice);
-      checkTradeTime();
     })
     .catch(err => {
       console.error('Init error:', err);
@@ -561,73 +441,103 @@
     const dep = Number(p.deposit_amount || 0);
     const bal = Number(p.balance_usd || 0);
 
-    document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Trader'}`;
+    document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Farmer'}`;
     
     let hasActivePlan = dep > 0; 
     document.getElementById('noPlanNotice').style.display = hasActivePlan ? 'none' : 'block';
 
+    // Render Home Plans
     document.getElementById('plansContainer').innerHTML = TIERS.map(t => {
       const isActive = (dep === t.amount && dep > 0); 
       let actionHtml = '';
-      if (isActive) actionHtml = `<button class="btn-activated" disabled>Active Plan</button>`;
-      else if (dep > 0) actionHtml = `<div style="text-align:center; font-size:0.7rem; color:#9ca3af; margin-top:0.5rem;">Plan already active</div>`;
-      else actionHtml = `<button class="btn-activate" onclick="activatePlan(${t.amount})">Activate Plan</button>`;
+      if (isActive) actionHtml = `<button class="btn-activated" disabled>Active Crop</button>`;
+      else if (dep > 0) actionHtml = `<div style="text-align:center; font-size:0.75rem; color:#9ca3af; margin-top:0.5rem; font-weight:bold;">Finish current cycle first</div>`;
+      else actionHtml = `<button class="btn-activate" onclick="activatePlan(${t.amount})">Plant Now</button>`;
 
       return `
         <div class="plan-card ${isActive ? 'active-plan' : ''}">
-          <div class="plan-info">
-            <h4>${t.name}</h4>
-            <p>Cost: $${t.amount}</p>
-            <p style="margin-top:0.3rem; font-size:0.7rem; color:#ec4899;">Signals: ${t.slots.join(', ')}</p>
-            ${actionHtml}
+          <img src="${t.img}" class="veg-img" alt="${t.name}">
+          <div class="plan-header">
+            <div class="plan-info">
+              <h4>${t.name}</h4>
+              <p>Investment: ${formatUGX(t.amount)}</p>
+            </div>
+            <div class="plan-return">
+              <strong>${formatUGX(t.profit)}</strong>
+              <span>Est. Daily Harvest</span>
+            </div>
           </div>
-          <div class="plan-return"><strong>$${t.profit}</strong><span>Est. Daily</span></div>
+          ${actionHtml}
         </div>`;
     }).join('');
 
+    // Render My Order
+    const orderContainer = document.getElementById('activeOrderContainer');
+    if (hasActivePlan) {
+      const activeCrop = TIERS.find(t => t.amount === dep) || TIERS[0];
+      const currentDay = p.active_day || 1;
+      const percent = (currentDay / 45) * 100;
+      
+      orderContainer.innerHTML = `
+        <div class="order-box">
+          <img src="${activeCrop.img}" class="order-img" alt="${activeCrop.name}">
+          <div class="order-title">${activeCrop.name}</div>
+          <p style="color:#6b7280; font-size:0.85rem;">Investment: ${formatUGX(activeCrop.amount)}</p>
+          <div class="daily-earn">${formatUGX(activeCrop.profit)} <span style="font-size:0.8rem; color:#6b7280; font-weight:600;">/ day</span></div>
+          
+          <div class="cycle-container">
+            <div class="cycle-text">
+              <span>Growth Cycle</span>
+              <span>Day ${currentDay} of 45</span>
+            </div>
+            <div class="cycle-bar">
+              <div class="cycle-fill" style="width: ${percent}%;"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      orderContainer.innerHTML = `
+        <div style="text-align:center; padding: 3rem 1rem; color:#6b7280;">
+          <div style="font-size:3rem; margin-bottom:1rem;">🌱</div>
+          <h3>No Active Crops</h3>
+          <p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p>
+        </div>
+      `;
+    }
+
     // TEAM TAB
     document.getElementById('refLink').value = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
-    document.getElementById('teamCommission').textContent = formatMoney(p.team_commission || 0);
+    document.getElementById('teamCommission').textContent = formatUGX(p.team_commission || 0);
     TN.client.from('profiles').select('full_name, deposit_amount, created_at').eq('referred_by', currentUser.id).then(res => {
       const list = document.getElementById('refListContainer');
-      if (!res.data || res.data.length === 0) { list.innerHTML = '<div style="color:#6b7280; padding:1rem 0; text-align:center; background:#fff; border-radius:12px; border:1px dashed #e5e7eb;">No referrals yet. Share your link to start earning!</div>'; return; }
+      if (!res.data || res.data.length === 0) { list.innerHTML = '<div style="color:#6b7280; padding:1rem 0; text-align:center; background:#fff; border-radius:12px; border:1px dashed #e5e7eb;">No referrals yet.</div>'; return; }
       list.innerHTML = res.data.map(r => {
         const initial = r.full_name ? r.full_name.charAt(0).toUpperCase() : 'U';
         const isActive = Number(r.deposit_amount) > 0;
-        const statusLabel = isActive ? 'Active' : 'Inactive';
-        const statusColor = isActive ? '#10b981' : '#6b7280';
-        return `<div class="ref-user-card"><div class="ref-avatar">${initial}</div><div class="ref-info"><h5>${r.full_name || 'User'}</h5><p>Joined ${new Date(r.created_at).toLocaleDateString()}</p></div><div style="color:${statusColor}; font-size:0.8rem; font-weight:bold;">${statusLabel}</div></div>`;
+        return `<div class="ref-user-card"><div class="ref-avatar">${initial}</div><div class="ref-info"><h5>${r.full_name || 'User'}</h5><p>Joined ${new Date(r.created_at).toLocaleDateString()}</p></div><div style="color:${isActive ? '#10b981' : '#6b7280'}; font-size:0.8rem; font-weight:bold;">${isActive ? 'Active' : 'Inactive'}</div></div>`;
       }).join('');
-    }).catch(() => { document.getElementById('refListContainer').innerHTML = ''; });
+    });
 
-    // --- VIP TAB ---
-    let currentVip = 0;
-    let currentReward = 0;
-    
-    // Calculate current VIP
+    // VIP TAB
+    let currentVip = 0; let currentReward = 0;
     for (let i = VIP_TIERS.length - 1; i >= 0; i--) {
       const t = VIP_TIERS[i];
       const count = t.plan === 'Starter' ? refsWithStarter : refsWithBasic;
-      if (count >= t.req) {
-        currentVip = t.level;
-        currentReward = t.reward;
-        break;
-      }
+      if (count >= t.req) { currentVip = t.level; currentReward = t.reward; break; }
     }
 
     document.getElementById('vipTitle').textContent = currentVip === 0 ? 'No VIP Yet' : `VIP ${currentVip}`;
-    document.getElementById('vipWeekly').textContent = `$${currentReward.toFixed(2)} / week`;
-    document.getElementById('vipEarnings').textContent = formatMoney(p.vip_earnings || 0);
+    document.getElementById('vipWeekly').textContent = `${formatUGX(currentReward)} / week`;
+    document.getElementById('vipEarnings').textContent = formatUGX(p.vip_earnings || 0);
 
-    // Progress Bar logic (find next tier)
     let nextTier = VIP_TIERS.find(t => t.level === currentVip + 1);
     if (nextTier) {
       const count = nextTier.plan === 'Starter' ? refsWithStarter : refsWithBasic;
       document.getElementById('progressLabel').textContent = `Progress to VIP ${nextTier.level} (${nextTier.plan})`;
       document.getElementById('progressCount').textContent = `${count} / ${nextTier.req}`;
       let percent = (count / nextTier.req) * 100;
-      if (percent > 100) percent = 100;
-      document.getElementById('progressFill').style.width = `${percent}%`;
+      document.getElementById('progressFill').style.width = `${Math.min(percent, 100)}%`;
     } else {
       document.getElementById('progressLabel').textContent = `Max VIP Level Reached!`;
       document.getElementById('progressCount').textContent = `Maxed Out`;
@@ -636,100 +546,33 @@
 
     document.getElementById('vipTierList').innerHTML = VIP_TIERS.map(t => {
       const isCurrent = currentVip === t.level;
-      const count = t.plan === 'Starter' ? refsWithStarter : refsWithBasic;
-      return `
-        <div class="vip-tier-item ${isCurrent ? 'active' : ''}">
-          <div>
-            <div class="vip-tier-name">VIP ${t.level} <span style="font-size:0.6rem; color:#9ca3af; font-weight:normal;">(${t.plan})</span></div>
-            <div class="vip-tier-req">${count} / ${t.req} active referrals</div>
-          </div>
-          <div class="vip-tier-reward">
-            $${t.reward.toFixed(2)}
-            <span>per week</span>
-          </div>
-        </div>`;
+      return `<div class="vip-tier-item ${isCurrent ? 'active' : ''}"><div><div class="vip-tier-name">VIP ${t.level}</div><div class="vip-tier-req">Requires ${t.req} active referrals</div></div><div class="vip-tier-reward">${formatUGX(t.reward)}<span>per week</span></div></div>`;
     }).join('');
 
-    // PROFILE TAB & VIP BADGE
-    document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Trader';
-    document.getElementById('profInitial').textContent = p.full_name ? p.full_name.charAt(0).toUpperCase() : 'N';
-    
+    // PROFILE TAB
+    document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Farmer';
+    document.getElementById('profInitial').textContent = p.full_name ? p.full_name.charAt(0).toUpperCase() : 'R';
     if (currentVip > 0) {
-      const badge = document.getElementById('profVipBadge');
-      badge.style.display = 'inline-block';
-      badge.textContent = `VIP ${currentVip}`;
+      document.getElementById('profVipBadge').style.display = 'inline-block';
+      document.getElementById('profVipBadge').textContent = `VIP ${currentVip}`;
     }
-
-    document.getElementById('profBalance').textContent = bal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    document.getElementById('profDeposited').textContent = formatMoney(p.total_deposited || 0);
-    document.getElementById('profWithdrawn').textContent = formatMoney(p.total_withdrawn || 0);
+    document.getElementById('profBalance').textContent = Number(bal).toLocaleString();
+    document.getElementById('profDeposited').textContent = formatUGX(p.total_deposited || 0);
+    document.getElementById('profWithdrawn').textContent = formatUGX(p.total_withdrawn || 0);
     document.getElementById('profPhone').textContent = p.phone || 'Not bound';
-
-    const allowedMomoCountries = ['UG', 'KE', 'RW', 'ZM', 'CM', 'TZ', 'NG', 'GH', 'ZA'];
-    if (allowedMomoCountries.includes(p.country) || !p.country) {
-      document.getElementById('tab-btn-momo').style.display = 'block';
-      document.getElementById('localCurrency').textContent = CURRENCIES[p.country] || 'UGX';
-    } else {
-      document.getElementById('tab-btn-momo').style.display = 'none';
-    }
   }
 
   window.activatePlan = function(planAmount) {
     const balance = Number(currentProfile.balance_usd || 0);
-    if (balance < planAmount) { alert(`Insufficient balance! You need $${planAmount} to activate this plan.`); return; }
-    if (!confirm(`Activate this plan for $${planAmount}? $${planAmount} will be deducted from your wallet.`)) return;
+    if (balance < planAmount) { alert(`Insufficient balance! You need ${formatUGX(planAmount)} to plant this crop.`); return; }
+    if (!confirm(`Plant this crop for ${formatUGX(planAmount)}? The amount will be deducted from your wallet and daily harvests will begin.`)) return;
+    
     const newBalance = balance - planAmount;
     TN.client.from('profiles').update({ balance_usd: newBalance, deposit_amount: planAmount, active_day: 1 }).eq('id', currentUser.id).then(res => {
       if (res.error) throw res.error;
-      alert('Plan activated successfully!');
+      alert('Crop planted successfully! Check the My Order tab.');
       window.location.reload();
     }).catch(err => alert(err.message));
-  };
-
-  function checkTradeTime() {
-    const tier = getUserTier(Number(currentProfile.deposit_amount || 0));
-    const now = new Date(); const currentHour = now.getHours(); const currentMinute = now.getMinutes();
-    const slots = ['8AM', '3PM', '5PM', '8PM']; let isTime = false; let activeSlot = '';
-    if (Number(currentProfile.deposit_amount) < 10) return; 
-    slots.forEach(slot => {
-      if (!tier.slots.includes(slot)) return;
-      let signalHour = 0;
-      if (slot === '8AM') signalHour = 8; if (slot === '3PM') signalHour = 15; if (slot === '5PM') signalHour = 17; if (slot === '8PM') signalHour = 20;
-      if (currentHour === signalHour && currentMinute < 10) { isTime = true; activeSlot = slot; }
-    });
-    const actionBox = document.getElementById('tradeActionContainer');
-    const actionTitle = document.getElementById('tradeActionTitle');
-    if (isTime) { actionBox.style.display = 'block'; actionTitle.textContent = `Trade Open for ${activeSlot}!`; } else { actionBox.style.display = 'none'; }
-  }
-  setInterval(() => { if (currentProfile) checkTradeTime(); }, 60000);
-
-  function animateTradeLine(choice) {
-    const chatBox = document.querySelector('.chat-container');
-    const line = document.createElement('div');
-    line.className = `trade-line ${choice.toLowerCase()}`;
-    line.textContent = choice === 'UP' ? '↑ UP' : '↓ DOWN';
-    const offset = Math.floor(Math.random() * 80) - 40;
-    line.style.marginLeft = `${offset}px`;
-    chatBox.appendChild(line);
-    setTimeout(() => { line.remove(); }, 1500);
-  }
-
-  window.placeTrade = function(slot, choice) {
-    if (!confirm(`Confirm ${choice} trade?`)) return;
-    animateTradeLine(choice);
-    TN.client.from('trades').insert({ user_id: currentUser.id, signal_time: slot, user_choice: choice, result: 'PENDING' })
-    .then(res => { if (res.error) throw res.error; }).catch(err => alert(err.message));
-  };
-
-  window.sendChat = function() {
-    const input = document.getElementById('chatInput'); const text = input.value.trim(); if (!text) return;
-    const chatBox = document.getElementById('chatMessages');
-    const userMsg = document.createElement('div'); userMsg.className = 'msg msg-user'; userMsg.textContent = text;
-    chatBox.appendChild(userMsg); input.value = ''; chatBox.scrollTop = chatBox.scrollHeight;
-    setTimeout(() => {
-      const botMsg = document.createElement('div'); botMsg.className = 'msg msg-bot'; botMsg.textContent = "Message received. An admin will be with you shortly.";
-      chatBox.appendChild(botMsg); chatBox.scrollTop = chatBox.scrollHeight;
-    }, 1000);
   };
 
   window.openHistory = function() { document.getElementById('historyDialog').showModal(); fetchHistory(); };
@@ -738,7 +581,7 @@
     TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).then(res => {
       userDeposits = res.data || [];
       return TN.client.from('withdrawal_requests').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-    }).then(res => { userWithdrawals = res.data || []; renderHistory(); }).catch(err => { document.getElementById('historyList').innerHTML = 'Failed to load'; });
+    }).then(res => { userWithdrawals = res.data || []; renderHistory(); });
   }
   window.switchHistoryTab = function(tab) {
     currentHistoryTab = tab;
@@ -755,56 +598,53 @@
       let statusClass = ''; let statusText = '';
       if (item.status === 'verified' || item.status === 'approved') { statusClass = 'status-success'; statusText = 'Successful'; } 
       else if (item.status === 'pending') { statusClass = 'status-pending'; statusText = 'Pending'; } else { statusClass = 'status-failed'; statusText = 'Failed'; }
-      let amountDisplay = type === 'Deposit' ? `+$${item.amount_usd}` : `-$${item.amount_usd}`;
+      let amountDisplay = type === 'Deposit' ? `+${formatUGX(item.amount_usd)}` : `-${formatUGX(item.amount_usd)}`;
       let amountClass = type === 'Deposit' ? 'color:#10b981;' : 'color:#ef4444;';
       let date = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
       return `<div class="history-item"><div class="hist-info"><div class="hist-title">${type}</div><div class="hist-date">${date}</div></div><div><div class="hist-amount" style="${amountClass}">${amountDisplay}</div><div class="hist-date ${statusClass}" style="text-align:right; font-weight:bold;">${statusText}</div></div></div>`;
     }).join('');
   }
 
-  window.switchDepositTab = function(tab) {
-    document.querySelectorAll('.dep-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(`tab-btn-${tab}`).classList.add('active');
-    if (tab === 'crypto') { document.getElementById('deposit-crypto').style.display = 'block'; document.getElementById('deposit-momo').style.display = 'none'; } else { document.getElementById('deposit-crypto').style.display = 'none'; document.getElementById('deposit-momo').style.display = 'block'; }
-  };
-  window.calcLocalAmount = function() {
-    const usd = parseFloat(document.getElementById('momoUsdAmount').value) || 0;
-    const rate = EXCHANGE_RATES[currentProfile.country || 'UG'] || 4102;
-    document.getElementById('localAmountDisplay').textContent = (usd * rate).toLocaleString();
-  };
   window.submitMobileMoney = async function() {
-    const usdAmount = parseFloat(document.getElementById('momoUsdAmount').value); const phone = document.getElementById('momoPhone').value.trim();
-    const msg = document.getElementById('momoMsg'); const btn = document.getElementById('momoSubmitBtn'); const country = currentProfile.country || 'UG';
-    if (usdAmount < 10) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is $10.'; return; }
+    const ugxAmount = parseFloat(document.getElementById('depositAmountUGX').value); 
+    const phone = document.getElementById('momoPhone').value.trim();
+    const msg = document.getElementById('momoMsg'); const btn = document.getElementById('momoSubmitBtn');
+    
+    if (!ugxAmount || ugxAmount < 10000) { msg.style.color = '#ef4444'; msg.textContent = 'Minimum deposit is UGX 10,000.'; return; }
     if (!phone || phone.length < 9) { msg.style.color = '#ef4444'; msg.textContent = 'Enter a valid phone number.'; return; }
-    const rate = EXCHANGE_RATES[country] || 4102; const localAmount = Math.round(usdAmount * rate);
+
     btn.disabled = true; btn.textContent = 'Sending Prompt...'; msg.textContent = '';
+
     try {
-      const res = await fetch('/api/marzpay-deposit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone_number: phone, amount: localAmount, country: country }) });
-      const data = await res.json(); if (!res.ok) throw new Error(data.error || 'Failed');
+      // Direct API call with UGX
+      const res = await fetch('/api/marzpay-deposit', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ phone_number: phone, amount: ugxAmount, country: 'UG' }) 
+      });
+      const data = await res.json(); 
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      
       msg.style.color = '#10b981'; msg.textContent = 'USSD prompt sent! Check your phone to approve.';
-      await TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: data.reference, amount_usd: usdAmount });
+      
+      // Store the deposit in UGX (stored in amount_usd column to avoid DB changes, but it's UGX now)
+      await TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: data.reference, amount_usd: ugxAmount });
+      
       setTimeout(() => { btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }, 3000);
     } catch (err) { msg.style.color = '#ef4444'; msg.textContent = err.message; btn.disabled = false; btn.textContent = 'Pay via Mobile Money'; }
   };
 
   document.getElementById('depositBtn').addEventListener('click', () => {
-    const grid = document.getElementById('depositGrid');
-    grid.innerHTML = [10, 30, 50, 100, 300, 500, 1000, 2000, 5000].map(amt => `<div class="deposit-btn" onclick="selectDepositAmount(${amt})">$${amt}</div>`).join('');
-    document.getElementById('cryptoDepositDialog').showModal(); switchDepositTab('crypto');
+    document.getElementById('depositDialog').showModal();
   });
-  window.selectDepositAmount = function(amt) { document.getElementById('selectedAmount').value = amt; document.getElementById('displayAmount').textContent = '$' + amt; document.getElementById('depositForm').style.display = 'flex'; };
-  document.getElementById('depositForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    TN.client.from('pending_deposits').insert({ user_id: currentUser.id, txid: document.getElementById('depositTxidInput').value.trim(), amount_usd: parseFloat(document.getElementById('selectedAmount').value) })
-    .then(res => { if (res.error) throw res.error; document.getElementById('depositMsg').style.color = '#10b981'; document.getElementById('depositMsg').textContent = 'Submitted! Admin will verify.'; }).catch(err => alert(err.message));
-  });
+  
   document.getElementById('withdrawBtn').addEventListener('click', () => {
     const day = new Date().getDay(); if (day !== 1 && day !== 3) { alert('Withdrawals are only on Mondays and Wednesdays.'); return; }
     document.getElementById('withdrawDialog').showModal();
   });
+  
   document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-    e.preventDefault(); const amt = parseFloat(document.getElementById('withdrawAmount').value); if (amt < 10) return alert('Min $10');
+    e.preventDefault(); const amt = parseFloat(document.getElementById('withdrawAmount').value); if (amt < 10000) return alert('Min UGX 10,000');
     TN.client.from('withdrawal_requests').insert({ user_id: currentUser.id, amount_usd: amt, mobile_money_provider: document.getElementById('mmProvider').value, mobile_money_number: document.getElementById('mmNumber').value })
     .then(res => { if (res.error) throw res.error; document.getElementById('withdrawMsg').style.color = '#10b981'; document.getElementById('withdrawMsg').textContent = 'Submitted!'; }).catch(err => alert(err.message));
   });
@@ -820,4 +660,4 @@
 })();
 </script>
 </body>
-                                                                         </html>
+ </html>
