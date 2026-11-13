@@ -679,7 +679,7 @@
     }
 
     document.getElementById('vipTitle').textContent = currentVip === 0 ? 'No VIP Yet' : `VIP ${currentVip}`;
-    document.getElementById('vipday').textContent = `${formatUGX(currentReward)} / week`;
+    document.getElementById('vipWeekly').textContent = `${formatUGX(currentReward)} / day`;
     document.getElementById('vipEarnings').textContent = formatUGX(p.vip_earnings || 0);
 
     let nextTier = VIP_TIERS.find(t => t.level === currentVip + 1);
@@ -709,7 +709,6 @@
     document.getElementById('profDeposited').textContent = formatUGX(p.total_deposited || 0);
     document.getElementById('profWithdrawn').textContent = formatUGX(p.total_withdrawn || 0);
     
-    // 🚨 FIXED: Use bound details if they exist
     if (p.bound_phone && p.bound_name) {
       document.getElementById('profPhone').textContent = `${p.bound_name} (${p.bound_phone})`;
     } else {
@@ -759,13 +758,11 @@
   }
 
   window.openBindAccount = function() {
-    // Populate with existing bound details if they exist
     document.getElementById('bindName').value = currentProfile.bound_name || '';
     document.getElementById('bindPhone').value = currentProfile.bound_phone || '';
     document.getElementById('bindDialog').showModal();
   };
 
-  // 🚨 FIXED: Save to bound_name and bound_phone
   window.saveBindAccount = async function() {
     const name = document.getElementById('bindName').value.trim();
     const phone = document.getElementById('bindPhone').value.trim();
@@ -822,7 +819,7 @@
         deposit_amount: planAmount, 
         active_day: 1,
         last_profit_time: now,
-        product_source: 'purchased' // 🚨 Added this line
+        product_source: 'purchased'
       }).eq('id', currentUser.id);
 
       if (isFirstPurchase) {
@@ -889,7 +886,6 @@
     setTimeout(() => btn.textContent = oldText, 1500);
   };
 
-  // 🚨 FIXED: Check for bound_phone and bound_name
   window.openWithdraw = function() {
     const todayStr = new Date().toISOString().split('T')[0];
     if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
@@ -942,7 +938,6 @@
       
       await TN.client.from('profiles').update({ balance_usd: newBal, withdraw_count_today: withdrawCount + 1, last_withdraw_date: todayStr }).eq('id', currentUser.id);
       
-      // 🚨 FIXED: Use bound_phone
       await TN.client.from('withdrawal_requests').insert({ 
         user_id: currentUser.id, 
         amount_usd: amt, 
