@@ -218,8 +218,8 @@
     </div>
 
     <div class="admin-action-box">
-      <h3>Weekly VIP Payouts</h3>
-      <p>Pay all eligible VIP members their weekly reward. (Only works on Mondays)</p>
+      <h3>Daily VIP Payouts</h3>
+      <p>Pay all eligible VIP members their daily reward. (Click once per day to distribute).</p>
       <button class="btn-action" style="background:#f59e0b;" id="processVipBtn" onclick="processVipPayouts()">Process VIP Payouts</button>
     </div>
   </div>
@@ -524,7 +524,7 @@
       
       let statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
       
-      // 🚨 NEW BADGE LOGIC
+      // 🚨 BADGE LOGIC FOR PURCHASED VS GRANTED
       if (isActive) {
         if (u.product_source === 'admin_granted') {
           statusHtml += `<span class="status-badge source-granted">GRANTED</span>`;
@@ -576,15 +576,17 @@
       let newBal = Number(profile.balance_usd || 0);
       let updates = {};
 
+      // 🚨 ALLOWS ADMIN TO ADJUST BALANCE
       if (!isNaN(adjustBal) && adjustBal !== 0) {
         newBal += adjustBal;
         updates.balance_usd = newBal;
       }
+      
+      // 🚨 GRANTING PRODUCT (Sets badge to Granted)
       if (grantProduct) {
         updates.deposit_amount = Number(grantProduct);
         updates.active_day = 1;
         updates.last_profit_time = new Date().toISOString();
-        // 🚨 NEW: Mark as granted by admin
         updates.product_source = 'admin_granted'; 
       }
 
@@ -599,8 +601,8 @@
 
   // --- ACTIONS (VIP) ---
   window.processVipPayouts = async function() {
-    if (new Date().getDay() !== 1) { alert("VIP Payouts can only be processed on Mondays!"); return; }
-    if (!confirm("Distribute weekly VIP rewards to eligible users?")) return;
+    // 🚨 REMOVED MONDAY CHECK. Now runs every time you click it.
+    if (!confirm("Distribute daily VIP rewards to eligible users?")) return;
     const btn = document.getElementById('processVipBtn');
     btn.disabled = true; btn.textContent = 'Processing...';
 
@@ -636,7 +638,7 @@
           paidCount++;
         }
       }
-      alert(`Success! Paid ${paidCount} users their VIP rewards.`);
+      alert(`Success! Paid ${paidCount} users their daily VIP rewards.`);
       loadUsers();
     } catch (err) { alert(err.message); }
     btn.disabled = false; btn.textContent = 'Process VIP Payouts';
