@@ -37,7 +37,6 @@
   /* Home Tab */
   .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; color: #065f46; }
   .plan-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1rem; margin-bottom: 1.2rem; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.03); overflow: hidden; }
-  .plan-card.active-plan { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); background: #ecfdf5; }
   .veg-img { width: 100%; height: 140px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem; background: #f3f4f6; }
   .plan-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
   .plan-info h4 { margin: 0 0 0.2rem; font-size: 1.2rem; color: #111827; font-weight: 800; }
@@ -47,10 +46,9 @@
   .plan-return span { font-size: 0.7rem; color: #9ca3af; }
   .btn-activate { background: #10b981; color: #fff; border: none; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; width: 100%; transition: 0.2s; }
   .btn-activate:active { background: #059669; }
-  .btn-activated { background: #d1fae5; color: #065f46; border: none; padding: 0.8rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: default; margin-top: 1rem; width: 100%; }
 
   /* My Order Tab */
-  .order-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+  .order-box { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 1.5rem; }
   .order-title { font-size: 1.4rem; font-weight: 900; color: #065f46; margin-bottom: 0.5rem; }
   .order-img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin: 0 auto 1rem; border: 4px solid #10b981; }
   .cycle-container { background: #f3f4f6; border-radius: 12px; padding: 1rem; margin-top: 1.5rem; }
@@ -220,16 +218,13 @@
   <div class="app-content active" id="tab-home">
     <div class="greeting" id="greetingName">Hello, Farmer</div>
     <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1.5rem;">Invest in premium vegetables today.</p>
-    <div id="noPlanNotice" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; padding:1rem; border-radius:12px; margin-bottom:1.5rem; font-size:0.9rem; text-align:center; font-weight:bold;">
-      Choose a vegetable below to start your 45-day harvest cycle.
-    </div>
     <h3 style="margin-bottom:1rem; color: #065f46;">Available Crops</h3>
     <div id="plansContainer"></div>
   </div>
 
   <!-- MY ORDER TAB -->
   <div class="app-content" id="tab-order">
-    <h3 style="margin-bottom:1.5rem; color: #065f46;">My Active Order</h3>
+    <h3 style="margin-bottom:1.5rem; color: #065f46;">My Active Orders</h3>
     <div id="activeOrderContainer"></div>
   </div>
 
@@ -485,9 +480,10 @@
 
   let currentUser = null;
   let currentProfile = null;
+  let userCrops = []; // 🚨 NEW: Store multiple crops
   let currentHistoryTab = 'all';
   let allHistory = [];
-  let timerInterval = null;
+  let timerIntervals = []; // 🚨 NEW: Handle multiple timers
   
   let l1Users = [];
   let l2Users = [];
@@ -579,6 +575,11 @@
     .then(res => {
       if (!res.data) throw new Error('No profile data found.');
       currentProfile = res.data;
+      // 🚨 Fetch multiple crops
+      return TN.client.from('user_crops').select('*').eq('user_id', currentUser.id).eq('status', 'active');
+    })
+    .then(cropsRes => {
+      userCrops = cropsRes.data || [];
       return TN.client.rpc('get_team_members', { user_id: currentUser.id });
     })
     .then(teamRes => {
@@ -599,20 +600,14 @@
 
   function renderUI() {
     const p = currentProfile;
-    const dep = Number(p.deposit_amount || 0);
     const bal = Number(p.balance_usd || 0);
 
     document.getElementById('greetingName').textContent = `Hello, ${p.full_name ? p.full_name.split(' ')[0] : 'Farmer'}`;
-    let hasActivePlan = dep > 0; 
-    document.getElementById('noPlanNotice').style.display = hasActivePlan ? 'none' : 'block';
 
+    // Render Available Plans (Always show 'Plant Now' if they have balance)
     document.getElementById('plansContainer').innerHTML = TIERS.map(t => {
-      const isActive = (dep === t.amount && dep > 0); 
-      let actionHtml = isActive ? `<button class="btn-activated" disabled>Active Crop</button>` :
-                       dep > 0 ? `<div style="text-align:center; font-size:0.75rem; color:#9ca3af; margin-top:0.5rem; font-weight:bold;">Finish current cycle first</div>` :
-                       `<button class="btn-activate" onclick="activatePlan(${t.amount})">Plant Now</button>`;
       return `
-        <div class="plan-card ${isActive ? 'active-plan' : ''}">
+        <div class="plan-card">
           <img src="${t.img}" class="veg-img" alt="${t.name}" onerror="this.src='${FALLBACK_IMG}'">
           <div class="plan-header">
             <div class="plan-info">
@@ -624,43 +619,48 @@
               <span>Est. Daily Harvest</span>
             </div>
           </div>
-          ${actionHtml}
+          <button class="btn-activate" onclick="activatePlan(${t.amount})">Plant Now</button>
         </div>`;
     }).join('');
 
+    // 🚨 Render Multiple Active Orders
     const orderContainer = document.getElementById('activeOrderContainer');
-    if (hasActivePlan) {
-      const activeCrop = TIERS.find(t => t.amount === dep) || TIERS[0];
-      const currentDay = p.active_day || 1;
-      const percent = (currentDay / 45) * 100;
-      
-      // 🚨 MIDNIGHT TIMER LOGIC
-let nextMidnight = new Date();
-nextMidnight.setHours(24, 0, 0, 0); // Sets the target to exactly 00:00:00 (Midnight) tonight
-let nextProfitTime = nextMidnight.getTime();
-      
-      orderContainer.innerHTML = `
-        <div class="order-box">
-          <img src="${activeCrop.img}" class="order-img" alt="${activeCrop.name}" onerror="this.src='${FALLBACK_IMG}'">
-          <div class="order-title">${activeCrop.name}</div>
-          <p style="color:#6b7280; font-size:0.85rem;">Investment: ${formatUGX(activeCrop.amount)}</p>
-          <div class="daily-earn">${formatUGX(activeCrop.profit)} <span style="font-size:0.8rem; color:#6b7280; font-weight:600;">/ day</span></div>
-          
-          <div class="timer-box">
-            <span>Next Harvest In</span>
-            <span class="timer-val" id="countdownTimer">Calculating...</span>
-          </div>
+    timerIntervals.forEach(i => clearInterval(i));
+    timerIntervals = [];
 
-          <div class="cycle-container">
-            <div class="cycle-text"><span>Growth Cycle</span><span>Day ${currentDay} of 45</span></div>
-            <div class="cycle-bar"><div class="cycle-fill" style="width: ${percent}%;"></div></div>
-          </div>
-        </div>`;
+    if (userCrops.length > 0) {
+      orderContainer.innerHTML = userCrops.map(c => {
+        const cropData = TIERS.find(t => t.name === c.crop_name) || TIERS.find(t => t.amount === c.price_paid) || { img: FALLBACK_IMG };
+        const percent = (c.active_day / 45) * 100;
         
-      startTimer(nextProfitTime);
+        // Midnight Timer logic for EACH crop
+        let nextMidnight = new Date();
+        nextMidnight.setHours(24, 0, 0, 0);
+        let nextProfitTime = nextMidnight.getTime();
+        
+        // Start timer for this specific crop
+        startTimerForCrop(c.id, nextProfitTime);
+
+        return `
+          <div class="order-box">
+            <img src="${cropData.img}" class="order-img" alt="${c.name}" onerror="this.src='${FALLBACK_IMG}'">
+            <div class="order-title">${c.crop_name}</div>
+            <p style="color:#6b7280; font-size:0.85rem;">Investment: ${formatUGX(c.price_paid)}</p>
+            <div class="daily-earn">${formatUGX(c.daily_profit)} <span style="font-size:0.8rem; color:#6b7280; font-weight:600;">/ day</span></div>
+            
+            <div class="timer-box">
+              <span>Next Harvest In</span>
+              <span class="timer-val" id="timer-${c.id}">Calculating...</span>
+            </div>
+
+            <div class="cycle-container">
+              <div class="cycle-text"><span>Growth Cycle</span><span>Day ${c.active_day} of 45</span></div>
+              <div class="cycle-bar"><div class="cycle-fill" style="width: ${percent}%;"></div></div>
+            </div>
+          </div>`;
+      }).join('');
     } else {
       orderContainer.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color:#6b7280;"><div style="font-size:3rem; margin-bottom:1rem;">🌱</div><h3>No Active Crops</h3><p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p></div>`;
-      if (timerInterval) clearInterval(timerInterval);
     }
 
     document.getElementById('teamCommission').textContent = formatUGX(p.team_commission || 0);
@@ -671,7 +671,7 @@ let nextProfitTime = nextMidnight.getTime();
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    const activeL1Users = l1Users.filter(u => Number(u.deposit_amount) > 0);
+    const activeL1Users = l1Users.filter(u => Number(u.deposit_amount) > 0 && u.product_source === 'purchased');
     let currentVip = 0; let currentReward = 0;
     for (let i = VIP_TIERS.length - 1; i >= 0; i--) {
       const t = VIP_TIERS[i];
@@ -728,24 +728,22 @@ let nextProfitTime = nextMidnight.getTime();
     }
   }
 
-  // 🚨 TIMER LOGIC FOR 24 HOURS
-  function startTimer(targetTime) {
-    if (timerInterval) clearInterval(timerInterval);
-    const timerEl = document.getElementById('countdownTimer');
-    
-    timerInterval = setInterval(() => {
-      if (!document.getElementById('countdownTimer')) {
-        clearInterval(timerInterval);
-        return;
-      }
+  // 🚨 NEW: Timer logic for individual crops
+  function startTimerForCrop(cropId, targetTime) {
+    const timerEl = document.getElementById(`timer-${cropId}`);
+    if(!timerEl) return;
+
+    const interval = setInterval(() => {
+      const el = document.getElementById(`timer-${cropId}`);
+      if (!el) { clearInterval(interval); return; }
       
       const now = Date.now();
       const distance = targetTime - now;
       
       if (distance <= 0) {
-        timerEl.textContent = "Ready to Harvest!";
-        timerEl.style.color = "#10b981";
-        clearInterval(timerInterval);
+        el.textContent = "Ready to Harvest!";
+        el.style.color = "#10b981";
+        clearInterval(interval);
         return;
       }
       
@@ -753,8 +751,10 @@ let nextProfitTime = nextMidnight.getTime();
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
       
-      timerEl.textContent = `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+      el.textContent = `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
     }, 1000);
+    
+    timerIntervals.push(interval);
   }
 
   window.openBindAccount = function() {
@@ -801,27 +801,35 @@ let nextProfitTime = nextMidnight.getTime();
     } catch (err) { alert(err.message); }
   };
 
+  // 🚨 UPDATED: Insert into user_crops instead of overwriting profiles
   window.activatePlan = async function(planAmount) {
     const balance = Number(currentProfile.balance_usd || 0);
-    const totalDeposited = Number(currentProfile.total_deposited || 0);
 
-    if (totalDeposited < planAmount) { alert(`First Purchase Rule: You must make an approved deposit of at least ${formatUGX(planAmount)}.`); return; }
     if (balance < planAmount) { alert(`Insufficient wallet balance!`); return; }
     if (!confirm(`Plant this crop for ${formatUGX(planAmount)}?`)) return;
     
     const newBalance = balance - planAmount;
-    const isFirstPurchase = Number(currentProfile.deposit_amount) === 0;
     const now = new Date().toISOString();
+    const cropInfo = TIERS.find(t => t.amount === planAmount);
     
     try {
+      // 1. Deduct balance
       await TN.client.from('profiles').update({ 
-        balance_usd: newBalance, 
-        deposit_amount: planAmount, 
-        active_day: 1,
-        last_profit_time: now,
-        product_source: 'purchased'
+        balance_usd: newBalance
       }).eq('id', currentUser.id);
 
+      // 2. Insert into user_crops table
+      await TN.client.from('user_crops').insert({
+        user_id: currentUser.id,
+        crop_name: cropInfo.name,
+        price_paid: planAmount,
+        daily_profit: cropInfo.profit,
+        active_day: 1,
+        last_profit_time: now,
+        status: 'active'
+      });
+
+      alert('Crop planted successfully! Your 24-hour timer has started.');
       window.location.reload();
     } catch (err) { alert(err.message); }
   };
@@ -838,7 +846,7 @@ let nextProfitTime = nextMidnight.getTime();
 
   window.openWithdraw = function() {
     const todayStr = new Date().toISOString().split('T')[0];
-    if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
+    if (userCrops.length === 0) { alert("You must have an active product to withdraw."); return; }
     
     if (!currentProfile.bound_phone || !currentProfile.bound_name) {
       alert("Please bind your account details first.");
@@ -1018,4 +1026,4 @@ let nextProfitTime = nextMidnight.getTime();
 })();
 </script>
 </body>
- </html>
+     </html>
