@@ -505,11 +505,12 @@
     container.innerHTML = '';
 
     const activeReferralsMap = {};
-    allUsers.forEach(u => {
-      if (u.referred_by && Number(u.deposit_amount) > 0) {
-        activeReferralsMap[u.referred_by] = (activeReferralsMap[u.referred_by] || 0) + 1;
-      }
-    });
+allUsers.forEach(u => {
+  // 🚨 ONLY count as active referral if they PURCHASED, not granted
+  if (u.referred_by && Number(u.deposit_amount) > 0 && u.product_source === 'purchased') {
+    activeReferralsMap[u.referred_by] = (activeReferralsMap[u.referred_by] || 0) + 1;
+  }
+});
 
     const filteredUsers = allUsers.filter(u => {
       return (u.phone || '').toLowerCase().includes(searchQuery) || (u.full_name || '').toLowerCase().includes(searchQuery);
