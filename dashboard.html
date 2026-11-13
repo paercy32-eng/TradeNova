@@ -635,8 +635,10 @@
       const percent = (currentDay / 45) * 100;
       
       // 🚨 Live 24hr Countdown Timer for Next Profit
-      let lastProfitTime = p.last_profit_time ? new Date(p.last_profit_time).getTime() : Date.now();
-      let nextProfitTime = lastProfitTime + (24 * 60 * 60 * 1000); // Add 24 hours
+// Fallback to updated_at or created_at if last_profit_time is missing
+let baseTime = p.last_profit_time || p.updated_at || p.created_at || new Date().toISOString();
+let lastProfitTime = new Date(baseTime).getTime();
+let nextProfitTime = lastProfitTime + (24 * 60 * 60 * 1000); // Add 24 hours
       
       orderContainer.innerHTML = `
         <div class="order-box">
