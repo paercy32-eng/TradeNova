@@ -362,21 +362,20 @@
       platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (UGX ${formatUGX(t.amount)})</option>`).join('');
   }
 
-  // 🚨 FIXED KPI FETCHING
+  // 🚨 FIXED KPI FETCHING (Total Invested now matches Total Deposited)
   function fetchKPIs() {
     // 1. Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    // 2. Total Deposited & Total Invested (Pulling directly from profiles table)
-    TN.client.from('profiles').select('total_deposited, deposit_amount').then(res => {
+    // 2. Total Deposited & Total Invested
+    TN.client.from('profiles').select('total_deposited').then(res => {
       if (res.data) {
         const totalDeposits = res.data.reduce((sum, p) => sum + Number(p.total_deposited || 0), 0);
-        const totalInvested = res.data.reduce((sum, p) => sum + Number(p.deposit_amount || 0), 0);
-
+        
         document.getElementById('kpiDeposits').textContent = formatUGX(totalDeposits);
-        document.getElementById('kpiInvested').textContent = formatUGX(totalInvested);
+        document.getElementById('kpiInvested').textContent = formatUGX(totalDeposits);
       }
     });
 
@@ -397,7 +396,6 @@
       res.data.forEach(d => {
         let statusBadge = '';
         if (d.status === 'pending') statusBadge = '<span class="status-badge" style="background:rgba(245,158,11,0.2); color:#f59e0b;">Pending</span>';
-        // 🚨 FIXED: Now recognizes both 'completed' and 'verified'
         else if (d.status === 'completed' || d.status === 'verified') statusBadge = '<span class="status-badge status-active">Completed</span>';
         else statusBadge = '<span class="status-badge" style="background:rgba(239,68,68,0.2); color:#ef4444;">Failed</span>';
 
@@ -635,4 +633,4 @@
 })();
 </script>
 </body>
- </html>
+</html>
