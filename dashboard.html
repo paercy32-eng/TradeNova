@@ -534,6 +534,17 @@
     }
   };
 
+  // Helper function to check if a referral is "Active"
+  function checkIfActive(u) {
+    const hasDeposit = Number(u.total_deposited || 0) > 0 || Number(u.deposit_amount || 0) > 0;
+    const isPurchased = u.product_source === 'purchased';
+    // Make sure we exclude admin grants. Assuming admin grants might be tagged as 'admin' or 'gift'
+    const isAdminGranted = u.product_source === 'admin' || u.product_source === 'gift';
+    
+    // Must have deposit OR purchased, AND must NOT be an admin grant.
+    return (hasDeposit || isPurchased) && !isAdminGranted;
+  }
+
   window.switchTeamLevel = function(level) {
     document.querySelectorAll('.level-item').forEach(el => el.classList.remove('active'));
     document.getElementById(`tab-l${level}`).classList.add('active');
@@ -545,7 +556,7 @@
       return;
     }
     container.innerHTML = targetList.map(u => {
-      const isActive = Number(u.deposit_amount) > 0;
+      const isActive = checkIfActive(u);
       const date = new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       return `
         <div class="team-list-item">
@@ -579,13 +590,14 @@
     })
     .then(cropsRes => {
       userCrops = cropsRes.data || [];
-      return TN.client.rpc('get_team_members', { user_id: currentUser.id });
+      // FETCH DIRECT REFERRALS DIRECTLY
+      return TN.client.from('profiles').select('*').eq('referred_by', currentUser.id);
     })
     .then(teamRes => {
       if (teamRes.data) {
-        l1Users = teamRes.data.filter(u => u.level === 1);
-        l2Users = teamRes.data.filter(u => u.level === 2);
-        l3Users = teamRes.data.filter(u => u.level === 3);
+        l1Users = teamRes.data;
+        l2Users = []; 
+        l3Users = [];
       }
       renderUI();
       switchTeamLevel(1);
@@ -626,7 +638,6 @@
     timerIntervals = [];
 
     if (userCrops.length > 0) {
-      // 1. Render the HTML first
       orderContainer.innerHTML = userCrops.map(c => {
         const cropData = TIERS.find(t => t.name === c.crop_name) || TIERS.find(t => t.amount === c.price_paid) || { img: FALLBACK_IMG };
         const percent = (c.active_day / 45) * 100;
@@ -650,7 +661,6 @@
           </div>`;
       }).join('');
 
-      // 2. NOW start the timers because the HTML exists in the DOM
       userCrops.forEach(c => {
         let nextMidnight = new Date();
         nextMidnight.setHours(24, 0, 0, 0);
@@ -668,7 +678,9 @@
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    const activeL1Users = l1Users.filter(u => Number(u.deposit_amount) > 0 && u.product_source === 'purchased');
+    // VIP LOGIC: Using the specific filter requested
+    const activeL1Users = l1Users.filter(checkIfActive);
+
     let currentVip = 0; let currentReward = 0;
     for (let i = VIP_TIERS.length - 1; i >= 0; i--) {
       const t = VIP_TIERS[i];
@@ -725,7 +737,6 @@
     }
   }
 
-  // 🚨 FIXED: Timer logic for individual crops
   function startTimerForCrop(cropId, targetTime) {
     const timerEl = document.getElementById(`timer-${cropId}`);
     if(!timerEl) return;
@@ -1020,4 +1031,4 @@
 })();
 </script>
 </body>
- </html>
+     </html>
