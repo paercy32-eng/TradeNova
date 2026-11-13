@@ -813,12 +813,13 @@ let nextProfitTime = nextMidnight.getTime();
     
     try {
       // 1. Deduct balance, set plan, start 24hr timer
-      await TN.client.from('profiles').update({ 
-        balance_usd: newBalance, 
-        deposit_amount: planAmount, 
-        active_day: 1,
-        last_profit_time: now
-      }).eq('id', currentUser.id);
+await TN.client.from('profiles').update({ 
+  balance_usd: newBalance, 
+  deposit_amount: planAmount, 
+  active_day: 1,
+  last_profit_time: now,
+  product_source: 'purchased' // 👈 ADD THIS LINE
+}).eq('id', currentUser.id);
 
       // 2. Pay Referral Commissions (Only on FIRST purchase)
       if (isFirstPurchase) {
