@@ -634,11 +634,10 @@
       const currentDay = p.active_day || 1;
       const percent = (currentDay / 45) * 100;
       
-      // 🚨 MIDNIGHT TIMER LOGIC
-let now = new Date();
-let nextMidnight = new Date();
-nextMidnight.setHours(24, 0, 0, 0); // Sets the time to exactly 00:00:00 (Midnight) of the next day
-let nextProfitTime = nextMidnight.getTime();
+      // 🚨 STRICT TIMER LOGIC
+      let baseTime = p.last_profit_time || p.created_at; 
+      let lastProfitTime = new Date(baseTime).getTime();
+      let nextProfitTime = lastProfitTime + (24 * 60 * 60 * 1000); // Add exactly 24 hours
       
       orderContainer.innerHTML = `
         <div class="order-box">
@@ -710,8 +709,9 @@ let nextProfitTime = nextMidnight.getTime();
     document.getElementById('profDeposited').textContent = formatUGX(p.total_deposited || 0);
     document.getElementById('profWithdrawn').textContent = formatUGX(p.total_withdrawn || 0);
     
-    if (p.phone && p.full_name) {
-      document.getElementById('profPhone').textContent = `${p.full_name} (${p.phone})`;
+    // 🚨 FIXED: Use bound details if they exist
+    if (p.bound_phone && p.bound_name) {
+      document.getElementById('profPhone').textContent = `${p.bound_name} (${p.bound_phone})`;
     } else {
       document.getElementById('profPhone').textContent = 'Not bound';
     }
@@ -759,11 +759,13 @@ let nextProfitTime = nextMidnight.getTime();
   }
 
   window.openBindAccount = function() {
-    document.getElementById('bindName').value = currentProfile.full_name || '';
-    document.getElementById('bindPhone').value = currentProfile.phone || '';
+    // Populate with existing bound details if they exist
+    document.getElementById('bindName').value = currentProfile.bound_name || '';
+    document.getElementById('bindPhone').value = currentProfile.bound_phone || '';
     document.getElementById('bindDialog').showModal();
   };
 
+  // 🚨 FIXED: Save to bound_name and bound_phone
   window.saveBindAccount = async function() {
     const name = document.getElementById('bindName').value.trim();
     const phone = document.getElementById('bindPhone').value.trim();
@@ -772,7 +774,11 @@ let nextProfitTime = nextMidnight.getTime();
     if (!phone || phone.length < 9) return alert("Enter a valid phone number.");
 
     try {
-      await TN.client.from('profiles').update({ full_name: name, phone: phone }).eq('id', currentUser.id);
+      await TN.client.from('profiles').update({ 
+        bound_name: name, 
+        bound_phone: phone 
+      }).eq('id', currentUser.id);
+      
       alert('Account bound successfully!');
       document.getElementById('bindDialog').close();
       window.location.reload();
@@ -786,7 +792,6 @@ let nextProfitTime = nextMidnight.getTime();
       const newBal = Number(currentProfile.balance_usd || 0) + 300;
       await TN.client.from('profiles').update({ balance_usd: newBal, last_checkin_date: todayStr }).eq('id', currentUser.id);
       
-      // 🚨 FIXED: Uses amount_usd and COMMISSION type
       await TN.client.from('transactions').insert({ 
         user_id: currentUser.id, 
         type: 'COMMISSION', 
@@ -812,27 +817,23 @@ let nextProfitTime = nextMidnight.getTime();
     const now = new Date().toISOString();
     
     try {
-      // 1. Deduct balance, set plan, start 24hr timer
-await TN.client.from('profiles').update({ 
-  balance_usd: newBalance, 
-  deposit_amount: planAmount, 
-  active_day: 1,
-  last_profit_time: now,
-  product_source: 'purchased' // 👈 ADD THIS LINE
-}).eq('id', currentUser.id);
+      await TN.client.from('profiles').update({ 
+        balance_usd: newBalance, 
+        deposit_amount: planAmount, 
+        active_day: 1,
+        last_profit_time: now,
+        product_source: 'purchased' // 🚨 Added this line
+      }).eq('id', currentUser.id);
 
-      // 2. Pay Referral Commissions (Only on FIRST purchase)
       if (isFirstPurchase) {
         let currentReferrerId = currentProfile.referred_by;
         
-        // LEVEL 1 (25%)
         if (currentReferrerId) {
           const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
           if (l1) {
             const l1Com = planAmount * 0.25;
             await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission || 0) + l1Com }).eq('id', l1.id);
             
-            // 🚨 FIXED: Uses amount_usd and COMMISSION type
             await TN.client.from('transactions').insert({ 
               user_id: l1.id, 
               type: 'COMMISSION', 
@@ -840,14 +841,12 @@ await TN.client.from('profiles').update({
               status: 'completed' 
             });
             
-            // LEVEL 2 (2%)
             if (l1.referred_by) {
               const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
               if (l2) {
                 const l2Com = planAmount * 0.02;
                 await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission || 0) + l2Com }).eq('id', l2.id);
                 
-                // 🚨 FIXED: Uses amount_usd and COMMISSION type
                 await TN.client.from('transactions').insert({ 
                   user_id: l2.id, 
                   type: 'COMMISSION', 
@@ -855,14 +854,12 @@ await TN.client.from('profiles').update({
                   status: 'completed' 
                 });
 
-                // LEVEL 3 (1%)
                 if (l2.referred_by) {
                   const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
                   if (l3) {
                     const l3Com = planAmount * 0.01;
                     await TN.client.from('profiles').update({ balance_usd: Number(l3.balance_usd) + l3Com, team_commission: Number(l3.team_commission || 0) + l3Com }).eq('id', l3.id);
                     
-                    // 🚨 FIXED: Uses amount_usd and COMMISSION type
                     await TN.client.from('transactions').insert({ 
                       user_id: l3.id, 
                       type: 'COMMISSION', 
@@ -892,11 +889,12 @@ await TN.client.from('profiles').update({
     setTimeout(() => btn.textContent = oldText, 1500);
   };
 
+  // 🚨 FIXED: Check for bound_phone and bound_name
   window.openWithdraw = function() {
     const todayStr = new Date().toISOString().split('T')[0];
     if (Number(currentProfile.deposit_amount) <= 0) { alert("You must have an active product to withdraw."); return; }
     
-    if (!currentProfile.phone || !currentProfile.full_name) {
+    if (!currentProfile.bound_phone || !currentProfile.bound_name) {
       alert("Please bind your account details first.");
       openBindAccount();
       return;
@@ -943,11 +941,13 @@ await TN.client.from('profiles').update({
       const newBal = Number(currentProfile.balance_usd) - amt;
       
       await TN.client.from('profiles').update({ balance_usd: newBal, withdraw_count_today: withdrawCount + 1, last_withdraw_date: todayStr }).eq('id', currentUser.id);
+      
+      // 🚨 FIXED: Use bound_phone
       await TN.client.from('withdrawal_requests').insert({ 
         user_id: currentUser.id, 
         amount_usd: amt, 
         mobile_money_provider: 'Bound Account',
-        mobile_money_number: currentProfile.phone 
+        mobile_money_number: currentProfile.bound_phone 
       });
 
       msg.style.color = '#10b981'; msg.textContent = 'Submitted! Check transaction history.';
