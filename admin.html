@@ -362,17 +362,25 @@
       platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (UGX ${formatUGX(t.amount)})</option>`).join('');
   }
 
+  // 🚨 FIXED KPI FETCHING
   function fetchKPIs() {
+    // 1. Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
-      const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
-      document.getElementById('kpiDeposits').textContent = formatUGX(total);
-      document.getElementById('kpiInvested').textContent = formatUGX(total);
+    // 2. Total Deposited & Total Invested (Pulling directly from profiles table)
+    TN.client.from('profiles').select('total_deposited, deposit_amount').then(res => {
+      if (res.data) {
+        const totalDeposits = res.data.reduce((sum, p) => sum + Number(p.total_deposited || 0), 0);
+        const totalInvested = res.data.reduce((sum, p) => sum + Number(p.deposit_amount || 0), 0);
+
+        document.getElementById('kpiDeposits').textContent = formatUGX(totalDeposits);
+        document.getElementById('kpiInvested').textContent = formatUGX(totalInvested);
+      }
     });
 
+    // 3. Total Withdrawn
     TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
       const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
       document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
@@ -389,7 +397,8 @@
       res.data.forEach(d => {
         let statusBadge = '';
         if (d.status === 'pending') statusBadge = '<span class="status-badge" style="background:rgba(245,158,11,0.2); color:#f59e0b;">Pending</span>';
-        else if (d.status === 'verified') statusBadge = '<span class="status-badge status-active">Completed</span>';
+        // 🚨 FIXED: Now recognizes both 'completed' and 'verified'
+        else if (d.status === 'completed' || d.status === 'verified') statusBadge = '<span class="status-badge status-active">Completed</span>';
         else statusBadge = '<span class="status-badge" style="background:rgba(239,68,68,0.2); color:#ef4444;">Failed</span>';
 
         html += `<tr>
@@ -415,7 +424,7 @@
         balance_usd: Number(profile.balance_usd || 0) + Number(amount),
         total_deposited: Number(profile.total_deposited || 0) + Number(amount)
       }).eq('id', userId);
-      await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
+      await TN.client.from('pending_deposits').update({ status: 'completed' }).eq('id', depositId);
       alert('Approved!'); fetchKPIs(); loadDeposits(); loadUsers();
     } catch (err) { alert(err.message); }
   };
