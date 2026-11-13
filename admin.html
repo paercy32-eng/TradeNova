@@ -70,10 +70,12 @@
   .user-phone { font-size: 0.85rem; color: #64748b; font-family: monospace; }
   .user-financials { text-align: right; display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
   .user-balance { font-size: 1.1rem; font-weight: 800; color: #3b82f6; }
-  .user-meta { display: flex; gap: 0.4rem; align-items: center; }
+  .user-meta { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
   .status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
   .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
   .status-inactive { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+  .source-granted { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+  .source-purchased { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
   .ref-badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 800; }
   .empty-state { padding: 2rem; text-align: center; color: #94a3b8; background: #121c2d; border-radius: 12px; border: 1px dashed #1e2d42; }
 
@@ -197,7 +199,7 @@
   <div id="view-withdrawals" style="display:none;">
     <div class="sub-header">
       <button class="back-btn" onclick="switchView('home')">&#8592;</button>
-      <div class="page-title">Pending Withdrawals (16% Fee)</div>
+      <div class="page-title">Pending Withdrawals</div>
     </div>
     <div id="withdrawalsContainer" class="empty-state">Loading...</div>
   </div>
@@ -381,7 +383,7 @@
     });
   }
 
-  // --- DEPOSITS (SHOWING ALL) ---
+  // --- DEPOSITS ---
   async function loadDeposits() {
     TN.client.from('pending_deposits').select('*, profiles(full_name)').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('depositsContainer');
@@ -434,7 +436,7 @@
       const container = document.getElementById('withdrawalsContainer');
       if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending withdrawals.'; return; }
       
-      let html = `<table class="data-table"><thead><tr><th>User</th><th>Requested</th><th>Net Payout</th><th>Phone</th><th>Actions</th></tr></thead><tbody>`;
+      let html = `<table class="data-table"><thead><tr><th>Account User</th><th>Requested</th><th>Net Payout</th><th>Payout Destination</th><th>Actions</th></tr></thead><tbody>`;
       res.data.forEach(w => {
         const gross = Number(w.amount_usd);
         const fee = gross * 0.16;
@@ -444,10 +446,16 @@
         const boundPhone = w.profiles ? w.profiles.phone : 'Not bound';
 
         html += `<tr>
-          <td>${boundName}</td>
+          <td>
+            <div style="font-weight:bold; color:#fff;">${boundName}</div>
+            <div style="font-size:0.75rem; color:#94a3b8;">${boundPhone}</div>
+          </td>
           <td style="color:#94a3b8; font-size:0.8rem; text-decoration:line-through;">${formatUGX(gross)}</td>
           <td style="font-weight:bold; color:#10b981; font-size:1rem;">${formatUGX(netPayout)}</td>
-          <td style="font-size:0.75rem; color:#fff; font-weight:bold;">${boundPhone}</td>
+          <td style="font-size:0.8rem; color:#3b82f6; font-weight:bold;">
+            Send to: ${boundPhone}<br>
+            Name: ${boundName}
+          </td>
           <td>
             <button class="action-btn btn-approve" onclick="approveWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Approve</button>
             <button class="action-btn btn-reject" onclick="rejectWithdrawal('${w.id}', '${w.user_id}', ${w.amount_usd})">Reject</button>
@@ -513,7 +521,18 @@
     filteredUsers.forEach(u => {
       const dep = Number(u.deposit_amount || 0);
       const isActive = dep > 0;
-      const statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
+      
+      let statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
+      
+      // 🚨 NEW BADGE LOGIC
+      if (isActive) {
+        if (u.product_source === 'admin_granted') {
+          statusHtml += `<span class="status-badge source-granted">GRANTED</span>`;
+        } else {
+          statusHtml += `<span class="status-badge source-purchased">PURCHASED</span>`;
+        }
+      }
+
       const activeRefs = activeReferralsMap[u.id] || 0;
 
       html += `
@@ -564,8 +583,9 @@
       if (grantProduct) {
         updates.deposit_amount = Number(grantProduct);
         updates.active_day = 1;
-        // 🚨 FIX: Start the 24-hour timer immediately when granting!
-        updates.last_profit_time = new Date().toISOString(); 
+        updates.last_profit_time = new Date().toISOString();
+        // 🚨 NEW: Mark as granted by admin
+        updates.product_source = 'admin_granted'; 
       }
 
       if (Object.keys(updates).length > 0) {
