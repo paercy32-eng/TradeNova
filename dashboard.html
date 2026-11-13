@@ -286,7 +286,7 @@
     <div class="vip-card">
       <div class="vip-label">Your Current Status</div>
       <div class="vip-level-title" id="vipTitle">No VIP Yet</div>
-      <div class="vip-weekly" id="vipWeekly">UGX 0 / week</div>
+      <div class="vip-weekly" id="vipWeekly">UGX 0 / day</div>
       <p style="font-size:0.75rem; opacity:0.9; margin-top:0.5rem;">Total VIP Earnings: <span id="vipEarnings">UGX 0</span></p>
     </div>
     <div class="progress-container">
@@ -679,7 +679,7 @@
     }
 
     document.getElementById('vipTitle').textContent = currentVip === 0 ? 'No VIP Yet' : `VIP ${currentVip}`;
-    document.getElementById('vipWeekly').textContent = `${formatUGX(currentReward)} / week`;
+    document.getElementById('vipday').textContent = `${formatUGX(currentReward)} / week`;
     document.getElementById('vipEarnings').textContent = formatUGX(p.vip_earnings || 0);
 
     let nextTier = VIP_TIERS.find(t => t.level === currentVip + 1);
@@ -696,7 +696,7 @@
     
     document.getElementById('vipTierList').innerHTML = VIP_TIERS.map(t => {
       const isCurrent = currentVip === t.level;
-      return `<div class="vip-tier-item ${isCurrent ? 'active' : ''}"><div><div class="vip-tier-name">VIP ${t.level}</div><div class="vip-tier-req">Requires ${t.req} active referrals</div></div><div class="vip-tier-reward">${formatUGX(t.reward)}<span>per week</span></div></div>`;
+      return `<div class="vip-tier-item ${isCurrent ? 'active' : ''}"><div><div class="vip-tier-name">VIP ${t.level}</div><div class="vip-tier-req">Requires ${t.req} active referrals</div></div><div class="vip-tier-reward">${formatUGX(t.reward)}<span>per day</span></div></div>`;
     }).join('');
 
     document.getElementById('profName').textContent = p.full_name ? p.full_name.split(' ')[0] : 'Farmer';
