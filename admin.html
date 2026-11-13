@@ -123,11 +123,11 @@
         <div class="kpi-val-row"><div class="kpi-val" id="kpiUsers">-</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-lbl">Total Deposited</div>
+        <div class="kpi-lbl">Total Deposited (Approved)</div>
         <div class="kpi-val-row"><div class="kpi-currency">UGX</div><div class="kpi-val green" id="kpiDeposits">-</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-lbl">Total Invested</div>
+        <div class="kpi-lbl">Total Invested (Purchased)</div>
         <div class="kpi-val-row"><div class="kpi-currency">UGX</div><div class="kpi-val purple" id="kpiInvested">-</div></div>
       </div>
       <div class="kpi-card">
@@ -364,35 +364,27 @@
       platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (UGX ${formatUGX(t.amount)})</option>`).join('');
   }
 
-  // 🚨 UPDATED KPI FETCHING
+  // 🚨 UPDATED KPI FETCHING (Exact logic as requested)
   function fetchKPIs() {
     // 1. Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    // 2. Total Deposited & Total Invested (PULLING DIRECTLY FROM PROFILES)
-    TN.client.from('profiles').select('total_deposited, deposit_amount, product_source').then(res => {
-      if (res.data) {
-        let totalDeposits = 0;
-        let totalInvested = 0;
-
-        res.data.forEach(p => {
-          // Sum all real deposits
-          totalDeposits += Number(p.total_deposited || 0);
-          
-          // ONLY sum active plans if they purchased them
-          if (p.product_source === 'purchased') {
-            totalInvested += Number(p.deposit_amount || 0);
-          }
-        });
-
-        document.getElementById('kpiDeposits').textContent = formatUGX(totalDeposits);
-        document.getElementById('kpiInvested').textContent = formatUGX(totalInvested);
-      }
+    // 2. Total Deposited (Sum of approved/completed deposits)
+    TN.client.from('pending_deposits').select('amount_usd').eq('status', 'completed').then(res => {
+      const totalDep = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
+      document.getElementById('kpiDeposits').textContent = formatUGX(totalDep);
     });
 
-    // 3. Total Withdrawn
+    // 3. Total Invested (Sum of user_crops price_paid ONLY)
+    // Because admin grants update profiles but NOT user_crops, this perfectly isolates actual purchases.
+    TN.client.from('user_crops').select('price_paid').then(res => {
+      const totalInv = (res.data || []).reduce((sum, c) => sum + Number(c.price_paid), 0);
+      document.getElementById('kpiInvested').textContent = formatUGX(totalInv);
+    });
+
+    // 4. Total Withdrawn
     TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
       const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
       document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
@@ -522,7 +514,7 @@
 
     const activeReferralsMap = {};
     allUsers.forEach(u => {
-      // 🚨 ONLY count as active referral if they PURCHASED, not granted
+      // ONLY count as active referral if they PURCHASED, not granted
       if (u.referred_by && Number(u.deposit_amount) > 0 && u.product_source === 'purchased') {
         activeReferralsMap[u.referred_by] = (activeReferralsMap[u.referred_by] || 0) + 1;
       }
