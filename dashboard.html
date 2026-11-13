@@ -534,14 +534,12 @@
     }
   };
 
-  // Helper function to check if a referral is "Active"
+  // Helper function to check if a Level 1 referral is "Active" for VIP logic
   function checkIfActive(u) {
     const hasDeposit = Number(u.total_deposited || 0) > 0 || Number(u.deposit_amount || 0) > 0;
     const isPurchased = u.product_source === 'purchased';
-    // Make sure we exclude admin grants. Assuming admin grants might be tagged as 'admin' or 'gift'
     const isAdminGranted = u.product_source === 'admin' || u.product_source === 'gift';
     
-    // Must have deposit OR purchased, AND must NOT be an admin grant.
     return (hasDeposit || isPurchased) && !isAdminGranted;
   }
 
@@ -590,14 +588,15 @@
     })
     .then(cropsRes => {
       userCrops = cropsRes.data || [];
-      // FETCH DIRECT REFERRALS DIRECTLY
-      return TN.client.from('profiles').select('*').eq('referred_by', currentUser.id);
+      // USE THE NEW RPC TO GET ALL LEVELS
+      return TN.client.rpc('get_team_members', { p_user_id: currentUser.id });
     })
     .then(teamRes => {
       if (teamRes.data) {
-        l1Users = teamRes.data;
-        l2Users = []; 
-        l3Users = [];
+        // Separate the results into the correct arrays
+        l1Users = teamRes.data.filter(u => u.level === 1);
+        l2Users = teamRes.data.filter(u => u.level === 2);
+        l3Users = teamRes.data.filter(u => u.level === 3);
       }
       renderUI();
       switchTeamLevel(1);
@@ -670,15 +669,18 @@
       orderContainer.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color:#6b7280;"><div style="font-size:3rem; margin-bottom:1rem;">🌱</div><h3>No Active Crops</h3><p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p></div>`;
     }
 
+    // TEAM SIZE: Calculates ALL levels combined
+    const totalTeamSize = l1Users.length + l2Users.length + l3Users.length;
     document.getElementById('teamCommission').textContent = formatUGX(p.team_commission || 0);
-    document.getElementById('teamSize').textContent = `${l1Users.length + l2Users.length + l3Users.length} Users`;
+    document.getElementById('teamSize').textContent = `${totalTeamSize} Users`;
+    
     document.getElementById('refCode').value = p.referral_code || '';
     document.getElementById('refLink').value = window.location.origin + '/register.html?ref=' + (p.referral_code || '');
     document.getElementById('l1Count').textContent = `(${l1Users.length})`;
     document.getElementById('l2Count').textContent = `(${l2Users.length})`;
     document.getElementById('l3Count').textContent = `(${l3Users.length})`;
 
-    // VIP LOGIC: Using the specific filter requested
+    // VIP LOGIC: Uses ONLY Level 1 users, filtered by active status
     const activeL1Users = l1Users.filter(checkIfActive);
 
     let currentVip = 0; let currentReward = 0;
@@ -1031,4 +1033,4 @@
 })();
 </script>
 </body>
-     </html>
+                                                                                   </html>
