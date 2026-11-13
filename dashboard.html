@@ -743,7 +743,6 @@
     } catch (err) { alert(err.message); }
   };
 
-  // --- ACTIVATE PLAN & REFERRAL COMMISSIONS (ONLY 1ST PURCHASE) ---
   window.activatePlan = async function(planAmount) {
     const balance = Number(currentProfile.balance_usd || 0);
     const totalDeposited = Number(currentProfile.total_deposited || 0);
@@ -753,20 +752,18 @@
     if (!confirm(`Plant this crop for ${formatUGX(planAmount)}?`)) return;
     
     const newBalance = balance - planAmount;
-    const isFirstPurchase = Number(currentProfile.deposit_amount) === 0; // Check if this is their first time
+    const isFirstPurchase = Number(currentProfile.deposit_amount) === 0;
     
     try {
       await TN.client.from('profiles').update({ 
         balance_usd: newBalance, 
         deposit_amount: planAmount, 
         active_day: 1,
-        last_profit_time: new Date().toISOString() 
+        last_profit_time: new Date().toISOString()
       }).eq('id', currentUser.id);
 
-      // Only pay commissions if it's their absolute first purchase
       if (isFirstPurchase) {
         let currentReferrerId = currentProfile.referred_by;
-        
         if (currentReferrerId) {
           const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
           if (l1) {
@@ -906,13 +903,6 @@
   };
 
   async function fetchAllHistory() {
-    const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
-    await TN.client.from('pending_deposits')
-      .update({ status: 'failed' })
-      .eq('user_id', currentUser.id)
-      .eq('status', 'pending')
-      .lt('created_at', oneMinuteAgo);
-
     allHistory = [];
     try {
       const { data: deps } = await TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id);
@@ -998,4 +988,4 @@
 })();
 </script>
 </body>
-                              </html>
+                                                                                                                 </html>
