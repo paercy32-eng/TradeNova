@@ -743,6 +743,7 @@
     } catch (err) { alert(err.message); }
   };
 
+  // --- ACTIVATE PLAN & REFERRAL COMMISSIONS (ONLY 1ST PURCHASE) ---
   window.activatePlan = async function(planAmount) {
     const balance = Number(currentProfile.balance_usd || 0);
     const totalDeposited = Number(currentProfile.total_deposited || 0);
@@ -752,30 +753,48 @@
     if (!confirm(`Plant this crop for ${formatUGX(planAmount)}?`)) return;
     
     const newBalance = balance - planAmount;
+    const isFirstPurchase = Number(currentProfile.deposit_amount) === 0; // Check if this is their first time
+    
     try {
-      await TN.client.from('profiles').update({ balance_usd: newBalance, deposit_amount: planAmount, active_day: 1 }).eq('id', currentUser.id);
-      let currentReferrerId = currentProfile.referred_by;
-      if (currentReferrerId) {
-        const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
-        if (l1) {
-          const l1Com = planAmount * 0.25;
-          await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission||0) + l1Com }).eq('id', l1.id);
-          if (l1.referred_by) {
-            const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
-            if (l2) {
-              const l2Com = planAmount * 0.02;
-              await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission||0) + l2Com }).eq('id', l2.id);
-              if (l2.referred_by) {
-                const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
-                if (l3) {
-                  const l3Com = planAmount * 0.01;
-                  await TN.client.from('profiles').update({ balance_usd: Number(l3.balance_usd) + l3Com, team_commission: Number(l3.team_commission||0) + l3Com }).eq('id', l3.id);
+      await TN.client.from('profiles').update({ 
+        balance_usd: newBalance, 
+        deposit_amount: planAmount, 
+        active_day: 1,
+        last_profit_time: new Date().toISOString() 
+      }).eq('id', currentUser.id);
+
+      // Only pay commissions if it's their absolute first purchase
+      if (isFirstPurchase) {
+        let currentReferrerId = currentProfile.referred_by;
+        
+        if (currentReferrerId) {
+          const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
+          if (l1) {
+            const l1Com = planAmount * 0.25;
+            await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission || 0) + l1Com }).eq('id', l1.id);
+            await TN.client.from('transactions').insert({ user_id: l1.id, type: 'commission', amount_ugx: l1Com, description: 'Level 1 Referral Bonus' });
+            
+            if (l1.referred_by) {
+              const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
+              if (l2) {
+                const l2Com = planAmount * 0.02;
+                await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission || 0) + l2Com }).eq('id', l2.id);
+                await TN.client.from('transactions').insert({ user_id: l2.id, type: 'commission', amount_ugx: l2Com, description: 'Level 2 Referral Bonus' });
+
+                if (l2.referred_by) {
+                  const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
+                  if (l3) {
+                    const l3Com = planAmount * 0.01;
+                    await TN.client.from('profiles').update({ balance_usd: Number(l3.balance_usd) + l3Com, team_commission: Number(l3.team_commission || 0) + l3Com }).eq('id', l3.id);
+                    await TN.client.from('transactions').insert({ user_id: l3.id, type: 'commission', amount_ugx: l3Com, description: 'Level 3 Referral Bonus' });
+                  }
                 }
               }
             }
           }
         }
       }
+
       alert('Crop planted successfully!');
       window.location.reload();
     } catch (err) { alert(err.message); }
@@ -887,7 +906,6 @@
   };
 
   async function fetchAllHistory() {
-    // 1. Auto-fail stale pending deposits (older than 1 minute)
     const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
     await TN.client.from('pending_deposits')
       .update({ status: 'failed' })
@@ -895,7 +913,6 @@
       .eq('status', 'pending')
       .lt('created_at', oneMinuteAgo);
 
-    // 2. Fetch all data
     allHistory = [];
     try {
       const { data: deps } = await TN.client.from('pending_deposits').select('*').eq('user_id', currentUser.id);
@@ -940,7 +957,7 @@
         iconClass = 'hist-icon-with';
         amountClass = 'negative';
         sign = '-';
-        displayAmount = item.amount * 0.84; // Deduct 16% fee for display
+        displayAmount = item.amount * 0.84;
       } else if (item.type === 'income') {
         iconClass = 'hist-icon-inc';
       }
@@ -981,4 +998,4 @@
 })();
 </script>
 </body>
-     </html>
+                              </html>
