@@ -822,56 +822,6 @@ let nextProfitTime = nextMidnight.getTime();
         product_source: 'purchased'
       }).eq('id', currentUser.id);
 
-      if (isFirstPurchase) {
-        let currentReferrerId = currentProfile.referred_by;
-        
-        if (currentReferrerId) {
-          const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
-          if (l1) {
-            const l1Com = planAmount * 0.25;
-            await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission || 0) + l1Com }).eq('id', l1.id);
-            
-            await TN.client.from('transactions').insert({ 
-              user_id: l1.id, 
-              type: 'COMMISSION', 
-              amount_usd: l1Com, 
-              status: 'completed' 
-            });
-            
-            if (l1.referred_by) {
-              const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
-              if (l2) {
-                const l2Com = planAmount * 0.02;
-                await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission || 0) + l2Com }).eq('id', l2.id);
-                
-                await TN.client.from('transactions').insert({ 
-                  user_id: l2.id, 
-                  type: 'COMMISSION', 
-                  amount_usd: l2Com, 
-                  status: 'completed' 
-                });
-
-                if (l2.referred_by) {
-                  const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
-                  if (l3) {
-                    const l3Com = planAmount * 0.01;
-                    await TN.client.from('profiles').update({ balance_usd: Number(l3.balance_usd) + l3Com, team_commission: Number(l3.team_commission || 0) + l3Com }).eq('id', l3.id);
-                    
-                    await TN.client.from('transactions').insert({ 
-                      user_id: l3.id, 
-                      type: 'COMMISSION', 
-                      amount_usd: l3Com, 
-                      status: 'completed' 
-                    });
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-
-      alert('Crop planted successfully! Your 24-hour timer has started.');
       window.location.reload();
     } catch (err) { alert(err.message); }
   };
