@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Find the pending deposit using the reference
+    // 1. Find the pending deposit using the reference
     const { data: deposit, error: fetchError } = await supabase
       .from('pending_deposits')
       .select('*')
@@ -49,26 +49,27 @@ export default async function handler(req, res) {
     const isSuccess = (status === 'completed' || eventType === 'collection.completed');
 
     if (isSuccess) {
-      // 1. Mark Deposit as 'completed'
+      const depositAmount = Number(deposit.amount_usd || 0);
+
+      // 2. Mark Deposit as 'completed'
       await supabase
         .from('pending_deposits')
         .update({ status: 'completed' })
         .eq('id', deposit.id);
 
-      // 2. Fetch the user's CURRENT balances
+      // 3. Fetch the user's CURRENT balances
       const { data: profile } = await supabase
         .from('profiles')
         .select('balance_usd, deposit_amount, total_deposited')
         .eq('id', deposit.user_id)
         .single();
 
-      // 3. Calculate new balances (using the amount from the deposit record)
-      const depositAmount = Number(deposit.amount_usd || 0);
+      // 4. Calculate new balances
       const newBalance = Number(profile.balance_usd || 0) + depositAmount;
       const newDepositAmount = Number(profile.deposit_amount || 0) + depositAmount;
       const newTotalDeposited = Number(profile.total_deposited || 0) + depositAmount;
 
-      // 4. Update the user's profile
+      // 5. Update the user's profile
       await supabase
         .from('profiles')
         .update({
@@ -77,6 +78,17 @@ export default async function handler(req, res) {
           total_deposited: newTotalDeposited
         })
         .eq('id', deposit.user_id);
+
+      // 6. Log into the transactions table
+      await supabase
+        .from('transactions')
+        .insert({
+          user_id: deposit.user_id,
+          type: 'deposit',
+          amount_usd: depositAmount,
+          status: 'completed',
+          crypto_tx_hash: reference // Storing the MarzPay reference here for tracking
+        });
 
       console.log(`Successfully credited ${depositAmount} UGX to user ${deposit.user_id}`);
 
@@ -96,4 +108,4 @@ export default async function handler(req, res) {
     console.error('Webhook error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-  }
+}
