@@ -635,7 +635,6 @@
       const percent = (currentDay / 45) * 100;
       
       // 🚨 STRICT TIMER LOGIC
-      // We only use last_profit_time. If it's missing, we fall back to created_at.
       let baseTime = p.last_profit_time || p.created_at; 
       let lastProfitTime = new Date(baseTime).getTime();
       let nextProfitTime = lastProfitTime + (24 * 60 * 60 * 1000); // Add exactly 24 hours
@@ -785,7 +784,15 @@
     try {
       const newBal = Number(currentProfile.balance_usd || 0) + 300;
       await TN.client.from('profiles').update({ balance_usd: newBal, last_checkin_date: todayStr }).eq('id', currentUser.id);
-      await TN.client.from('transactions').insert({ user_id: currentUser.id, type: 'checkin', amount_ugx: 300, description: 'Daily Check-in Bonus' });
+      
+      // 🚨 FIXED: Uses amount_usd and COMMISSION type
+      await TN.client.from('transactions').insert({ 
+        user_id: currentUser.id, 
+        type: 'COMMISSION', 
+        amount_usd: 300, 
+        status: 'completed' 
+      });
+      
       alert("Success! 300 UGX added.");
       window.location.reload();
     } catch (err) { alert(err.message); }
@@ -822,7 +829,14 @@
           if (l1) {
             const l1Com = planAmount * 0.25;
             await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission || 0) + l1Com }).eq('id', l1.id);
-            await TN.client.from('transactions').insert({ user_id: l1.id, type: 'commission', amount_ugx: l1Com, description: 'Level 1 Referral Bonus' });
+            
+            // 🚨 FIXED: Uses amount_usd and COMMISSION type
+            await TN.client.from('transactions').insert({ 
+              user_id: l1.id, 
+              type: 'COMMISSION', 
+              amount_usd: l1Com, 
+              status: 'completed' 
+            });
             
             // LEVEL 2 (2%)
             if (l1.referred_by) {
@@ -830,7 +844,14 @@
               if (l2) {
                 const l2Com = planAmount * 0.02;
                 await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission || 0) + l2Com }).eq('id', l2.id);
-                await TN.client.from('transactions').insert({ user_id: l2.id, type: 'commission', amount_ugx: l2Com, description: 'Level 2 Referral Bonus' });
+                
+                // 🚨 FIXED: Uses amount_usd and COMMISSION type
+                await TN.client.from('transactions').insert({ 
+                  user_id: l2.id, 
+                  type: 'COMMISSION', 
+                  amount_usd: l2Com, 
+                  status: 'completed' 
+                });
 
                 // LEVEL 3 (1%)
                 if (l2.referred_by) {
@@ -838,7 +859,14 @@
                   if (l3) {
                     const l3Com = planAmount * 0.01;
                     await TN.client.from('profiles').update({ balance_usd: Number(l3.balance_usd) + l3Com, team_commission: Number(l3.team_commission || 0) + l3Com }).eq('id', l3.id);
-                    await TN.client.from('transactions').insert({ user_id: l3.id, type: 'commission', amount_ugx: l3Com, description: 'Level 3 Referral Bonus' });
+                    
+                    // 🚨 FIXED: Uses amount_usd and COMMISSION type
+                    await TN.client.from('transactions').insert({ 
+                      user_id: l3.id, 
+                      type: 'COMMISSION', 
+                      amount_usd: l3Com, 
+                      status: 'completed' 
+                    });
                   }
                 }
               }
@@ -967,7 +995,7 @@
       if (withs) withs.forEach(w => allHistory.push({ type: 'withdrawal', title: 'Withdrawal', amount: w.amount_usd, status: w.status, date: w.created_at }));
 
       const { data: txs } = await TN.client.from('transactions').select('*').eq('user_id', currentUser.id);
-      if (txs) txs.forEach(t => allHistory.push({ type: 'income', title: t.description || 'Bonus', amount: t.amount_ugx, status: 'completed', date: t.created_at }));
+      if (txs) txs.forEach(t => allHistory.push({ type: 'income', title: t.type === 'COMMISSION' ? 'Referral Bonus' : 'Bonus', amount: t.amount_usd, status: 'completed', date: t.created_at }));
 
       allHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
       renderHistoryList();
