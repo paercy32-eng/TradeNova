@@ -2,7 +2,6 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  // MarzPay sends POST requests to webhooks
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -11,17 +10,15 @@ export default async function handler(req, res) {
     const payload = req.body;
     console.log('Webhook received:', JSON.stringify(payload, null, 2));
 
-    // 1. Extract the reference and status from the payload
     // MarzPay sends the reference inside transaction.reference
     const reference = payload.transaction?.reference;
-    const status = payload.transaction?.status; // e.g., 'completed' or 'failed'
-    const eventType = payload.event_type; // e.g., 'collection.completed'
+    const status = payload.transaction?.status; 
+    const eventType = payload.event_type; 
 
     if (!reference) {
       return res.status(400).json({ error: 'No reference found in webhook payload' });
     }
 
-    // 2. Connect to Supabase with the Service Role Key
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     
@@ -32,7 +29,7 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // 3. Find the pending deposit using the reference (stored as txid)
+    // Find the pending deposit using the reference
     const { data: deposit, error: fetchError } = await supabase
       .from('pending_deposits')
       .select('*')
@@ -49,35 +46,39 @@ export default async function handler(req, res) {
       return res.status(200).json({ message: 'Deposit already processed' });
     }
 
-    // 4. Determine if it's a success or failure
     const isSuccess = (status === 'completed' || eventType === 'collection.completed');
 
     if (isSuccess) {
-      // --- SUCCESS: Update Deposit Status ---
+      // 1. Mark Deposit as 'completed'
       await supabase
         .from('pending_deposits')
-        .update({ status: 'verified' })
+        .update({ status: 'completed' })
         .eq('id', deposit.id);
 
-      // --- SUCCESS: Update User Balance and Total Deposited ---
+      // 2. Fetch the user's CURRENT balances
       const { data: profile } = await supabase
         .from('profiles')
-        .select('deposit_amount, total_deposited')
+        .select('balance_usd, deposit_amount, total_deposited')
         .eq('id', deposit.user_id)
         .single();
 
-      const newDepositAmount = Number(profile.deposit_amount || 0) + Number(deposit.amount_usd);
-      const newTotalDeposited = Number(profile.total_deposited || 0) + Number(deposit.amount_usd);
+      // 3. Calculate new balances (using the amount from the deposit record)
+      const depositAmount = Number(deposit.amount_usd || 0);
+      const newBalance = Number(profile.balance_usd || 0) + depositAmount;
+      const newDepositAmount = Number(profile.deposit_amount || 0) + depositAmount;
+      const newTotalDeposited = Number(profile.total_deposited || 0) + depositAmount;
 
+      // 4. Update the user's profile
       await supabase
         .from('profiles')
         .update({
+          balance_usd: newBalance,
           deposit_amount: newDepositAmount,
           total_deposited: newTotalDeposited
         })
         .eq('id', deposit.user_id);
 
-      console.log(`Successfully credited $${deposit.amount_usd} to user ${deposit.user_id}`);
+      console.log(`Successfully credited ${depositAmount} UGX to user ${deposit.user_id}`);
 
     } else {
       // --- FAILURE: Mark as Failed ---
@@ -89,11 +90,10 @@ export default async function handler(req, res) {
       console.log(`Marked deposit ${reference} as failed.`);
     }
 
-    // 5. Respond to MarzPay to acknowledge receipt
     return res.status(200).json({ received: true });
 
   } catch (error) {
     console.error('Webhook error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+  }
