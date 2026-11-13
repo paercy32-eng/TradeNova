@@ -144,7 +144,7 @@
       <div class="menu-card" onclick="switchView('deposits')">
         <div class="menu-icon icon-deposits">💲</div>
         <div class="menu-title">Deposits</div>
-        <div class="menu-sub">Incoming funds</div>
+        <div class="menu-sub">View incoming funds</div>
       </div>
       <div class="menu-card" onclick="switchView('withdrawals')">
         <div class="menu-icon icon-withdrawals">💳</div>
@@ -188,7 +188,7 @@
   <div id="view-deposits" style="display:none;">
     <div class="sub-header">
       <button class="back-btn" onclick="switchView('home')">&#8592;</button>
-      <div class="page-title">Pending Deposits</div>
+      <div class="page-title">All Deposits</div>
     </div>
     <div id="depositsContainer" class="empty-state">Loading...</div>
   </div>
@@ -210,9 +210,9 @@
     </div>
     
     <div class="admin-action-box">
-      <h3>Process Daily Harvests</h3>
-      <p>Pay all active users their daily crop profit based on their 45-day cycle.</p>
-      <button class="btn-action" id="processHarvestBtn" onclick="processDailyHarvest()">Pay Daily Harvests</button>
+      <h3>Automatic Daily Harvests</h3>
+      <p style="color: #10b981; font-weight: bold;">Status: ACTIVE</p>
+      <p style="font-size: 0.85rem; margin-top: 0.5rem;">The server is automatically checking every 5 minutes. When a user reaches exactly 24 hours since their last payout, their crop profit is instantly added to their balance and their day progresses.</p>
     </div>
 
     <div class="admin-action-box">
@@ -363,49 +363,43 @@
   }
 
   function fetchKPIs() {
-    // 1. Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    // 2. Total Deposited (This also serves as Total Invested per request)
     TN.client.from('pending_deposits').select('amount_usd').eq('status', 'verified').then(res => {
       const total = (res.data || []).reduce((sum, d) => sum + Number(d.amount_usd), 0);
       document.getElementById('kpiDeposits').textContent = formatUGX(total);
-      document.getElementById('kpiInvested').textContent = formatUGX(total); // Equals total deposits
+      document.getElementById('kpiInvested').textContent = formatUGX(total);
     });
 
-    // 3. Total Withdrawn
     TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
       const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
       document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
     });
   }
 
-  // --- 1 MINUTE TIMEOUT LOGIC ---
-  async function autoFailPendingDeposits() {
-    const oneMinuteAgo = new Date(Date.now() - 60000).toISOString();
-    await TN.client.from('pending_deposits')
-      .update({ status: 'failed' })
-      .eq('status', 'pending')
-      .lt('created_at', oneMinuteAgo);
-  }
-
+  // --- DEPOSITS (SHOWING ALL) ---
   async function loadDeposits() {
-    await autoFailPendingDeposits(); // Run check before loading
-    
-    TN.client.from('pending_deposits').select('*, profiles(full_name)').eq('status', 'pending').order('created_at', { ascending: false }).then(res => {
+    TN.client.from('pending_deposits').select('*, profiles(full_name)').order('created_at', { ascending: false }).then(res => {
       const container = document.getElementById('depositsContainer');
-      if (!res.data || res.data.length === 0) { container.innerHTML = 'No pending deposits.'; return; }
-      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Actions</th></tr></thead><tbody>`;
+      if (!res.data || res.data.length === 0) { container.innerHTML = 'No deposits found.'; return; }
+      
+      let html = `<table class="data-table"><thead><tr><th>User</th><th>Amount</th><th>TXID</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
       res.data.forEach(d => {
+        let statusBadge = '';
+        if (d.status === 'pending') statusBadge = '<span class="status-badge" style="background:rgba(245,158,11,0.2); color:#f59e0b;">Pending</span>';
+        else if (d.status === 'verified') statusBadge = '<span class="status-badge status-active">Completed</span>';
+        else statusBadge = '<span class="status-badge" style="background:rgba(239,68,68,0.2); color:#ef4444;">Failed</span>';
+
         html += `<tr>
           <td>${d.profiles ? d.profiles.full_name : 'Unknown'}</td>
           <td style="font-weight:bold; color:#10b981;">${formatUGX(d.amount_usd)}</td>
           <td style="font-family:monospace; font-size:0.7rem; max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.txid}</td>
+          <td>${statusBadge}</td>
           <td>
-            <button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>
-            <button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>
+            ${d.status === 'pending' ? `<button class="action-btn btn-approve" onclick="approveDeposit('${d.id}', '${d.user_id}', ${d.amount_usd})">Approve</button>` : ''}
+            ${d.status === 'pending' ? `<button class="action-btn btn-reject" onclick="rejectDeposit('${d.id}')">Reject</button>` : ''}
           </td>
         </tr>`;
       });
@@ -428,7 +422,7 @@
 
   window.rejectDeposit = async function(depositId) {
     if (!confirm('Reject?')) return;
-    await TN.client.from('pending_deposits').update({ status: 'rejected' }).eq('id', depositId);
+    await TN.client.from('pending_deposits').update({ status: 'failed' }).eq('id', depositId);
     loadDeposits();
   };
 
@@ -500,7 +494,6 @@
     const container = document.getElementById('userCardsContainer');
     container.innerHTML = '';
 
-    // 1. Calculate active referrals for each user
     const activeReferralsMap = {};
     allUsers.forEach(u => {
       if (u.referred_by && Number(u.deposit_amount) > 0) {
@@ -508,7 +501,6 @@
       }
     });
 
-    // 2. Filter users
     const filteredUsers = allUsers.filter(u => {
       return (u.phone || '').toLowerCase().includes(searchQuery) || (u.full_name || '').toLowerCase().includes(searchQuery);
     });
@@ -581,30 +573,7 @@
     } catch (err) { alert(err.message); }
   };
 
-  // --- ACTIONS (Harvests & VIP) ---
-  window.processDailyHarvest = async function() {
-    if (!confirm("Pay daily harvest profits to all active users?")) return;
-    const btn = document.getElementById('processHarvestBtn');
-    btn.disabled = true; btn.textContent = 'Processing...';
-
-    try {
-      const { data: users } = await TN.client.from('profiles').select('*').gt('deposit_amount', 0).lt('active_day', 45);
-      let paid = 0;
-      for (let u of users) {
-        const crop = platformSettings.crop_tiers.find(t => Number(t.amount) === Number(u.deposit_amount));
-        if (crop) {
-          const newBal = Number(u.balance_usd || 0) + Number(crop.profit);
-          const newDay = Number(u.active_day || 1) + 1;
-          await TN.client.from('profiles').update({ balance_usd: newBal, active_day: newDay }).eq('id', u.id);
-          paid++;
-        }
-      }
-      alert(`Successfully paid ${paid} active farmers!`);
-      loadUsers();
-    } catch (err) { alert(err.message); }
-    btn.disabled = false; btn.textContent = 'Pay Daily Harvests';
-  };
-
+  // --- ACTIONS (VIP) ---
   window.processVipPayouts = async function() {
     if (new Date().getDay() !== 1) { alert("VIP Payouts can only be processed on Mondays!"); return; }
     if (!confirm("Distribute weekly VIP rewards to eligible users?")) return;
@@ -657,4 +626,4 @@
 })();
 </script>
 </body>
-</html>
+ </html>
