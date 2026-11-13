@@ -634,10 +634,11 @@
       const currentDay = p.active_day || 1;
       const percent = (currentDay / 45) * 100;
       
-      // 🚨 STRICT TIMER LOGIC
-      let baseTime = p.last_profit_time || p.created_at; 
-      let lastProfitTime = new Date(baseTime).getTime();
-      let nextProfitTime = lastProfitTime + (24 * 60 * 60 * 1000); // Add exactly 24 hours
+      // 🚨 MIDNIGHT TIMER LOGIC
+let now = new Date();
+let nextMidnight = new Date();
+nextMidnight.setHours(24, 0, 0, 0); // Sets the time to exactly 00:00:00 (Midnight) of the next day
+let nextProfitTime = nextMidnight.getTime();
       
       orderContainer.innerHTML = `
         <div class="order-box">
