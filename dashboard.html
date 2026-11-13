@@ -58,6 +58,8 @@
   .cycle-bar { height: 12px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
   .cycle-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); border-radius: 10px; transition: width 0.5s ease; }
   .daily-earn { font-size: 1.2rem; font-weight: 800; color: #f59e0b; margin-top: 1rem; }
+  .timer-box { background: #fffbeb; border: 1px solid #fde68a; color: #d97706; padding: 0.8rem; border-radius: 10px; font-weight: 800; font-size: 0.9rem; margin-top: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .timer-val { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; }
 
   /* TEAM TAB */
   .hub-title { font-size: 2rem; font-weight: 900; color: #065f46; letter-spacing: -1px; margin-bottom: 0.2rem; }
@@ -485,6 +487,7 @@
   let currentProfile = null;
   let currentHistoryTab = 'all';
   let allHistory = [];
+  let timerInterval = null;
   
   let l1Users = [];
   let l2Users = [];
@@ -630,19 +633,33 @@
       const activeCrop = TIERS.find(t => t.amount === dep) || TIERS[0];
       const currentDay = p.active_day || 1;
       const percent = (currentDay / 45) * 100;
+      
+      // 🚨 Live 24hr Countdown Timer for Next Profit
+      let lastProfitTime = p.last_profit_time ? new Date(p.last_profit_time).getTime() : Date.now();
+      let nextProfitTime = lastProfitTime + (24 * 60 * 60 * 1000); // Add 24 hours
+      
       orderContainer.innerHTML = `
         <div class="order-box">
           <img src="${activeCrop.img}" class="order-img" alt="${activeCrop.name}" onerror="this.src='${FALLBACK_IMG}'">
           <div class="order-title">${activeCrop.name}</div>
           <p style="color:#6b7280; font-size:0.85rem;">Investment: ${formatUGX(activeCrop.amount)}</p>
           <div class="daily-earn">${formatUGX(activeCrop.profit)} <span style="font-size:0.8rem; color:#6b7280; font-weight:600;">/ day</span></div>
+          
+          <div class="timer-box">
+            <span>Next Harvest In</span>
+            <span class="timer-val" id="countdownTimer">Calculating...</span>
+          </div>
+
           <div class="cycle-container">
             <div class="cycle-text"><span>Growth Cycle</span><span>Day ${currentDay} of 45</span></div>
             <div class="cycle-bar"><div class="cycle-fill" style="width: ${percent}%;"></div></div>
           </div>
         </div>`;
+        
+      startTimer(nextProfitTime);
     } else {
       orderContainer.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color:#6b7280;"><div style="font-size:3rem; margin-bottom:1rem;">🌱</div><h3>No Active Crops</h3><p style="font-size:0.85rem; margin-top:0.5rem;">Go to the Home tab to plant your first vegetable.</p></div>`;
+      if (timerInterval) clearInterval(timerInterval);
     }
 
     document.getElementById('teamCommission').textContent = formatUGX(p.team_commission || 0);
@@ -710,6 +727,35 @@
     }
   }
 
+  // 🚨 TIMER LOGIC FOR 24 HOURS
+  function startTimer(targetTime) {
+    if (timerInterval) clearInterval(timerInterval);
+    const timerEl = document.getElementById('countdownTimer');
+    
+    timerInterval = setInterval(() => {
+      if (!document.getElementById('countdownTimer')) {
+        clearInterval(timerInterval);
+        return;
+      }
+      
+      const now = Date.now();
+      const distance = targetTime - now;
+      
+      if (distance <= 0) {
+        timerEl.textContent = "Ready to Harvest!";
+        timerEl.style.color = "#10b981";
+        clearInterval(timerInterval);
+        return;
+      }
+      
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      timerEl.textContent = `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+    }, 1000);
+  }
+
   window.openBindAccount = function() {
     document.getElementById('bindName').value = currentProfile.full_name || '';
     document.getElementById('bindPhone').value = currentProfile.phone || '';
@@ -753,17 +799,22 @@
     
     const newBalance = balance - planAmount;
     const isFirstPurchase = Number(currentProfile.deposit_amount) === 0;
+    const now = new Date().toISOString();
     
     try {
+      // 1. Deduct balance, set plan, start 24hr timer
       await TN.client.from('profiles').update({ 
         balance_usd: newBalance, 
         deposit_amount: planAmount, 
         active_day: 1,
-        last_profit_time: new Date().toISOString()
+        last_profit_time: now
       }).eq('id', currentUser.id);
 
+      // 2. Pay Referral Commissions (Only on FIRST purchase)
       if (isFirstPurchase) {
         let currentReferrerId = currentProfile.referred_by;
+        
+        // LEVEL 1 (25%)
         if (currentReferrerId) {
           const { data: l1 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', currentReferrerId).single();
           if (l1) {
@@ -771,6 +822,7 @@
             await TN.client.from('profiles').update({ balance_usd: Number(l1.balance_usd) + l1Com, team_commission: Number(l1.team_commission || 0) + l1Com }).eq('id', l1.id);
             await TN.client.from('transactions').insert({ user_id: l1.id, type: 'commission', amount_ugx: l1Com, description: 'Level 1 Referral Bonus' });
             
+            // LEVEL 2 (2%)
             if (l1.referred_by) {
               const { data: l2 } = await TN.client.from('profiles').select('id, referred_by, balance_usd, team_commission').eq('id', l1.referred_by).single();
               if (l2) {
@@ -778,6 +830,7 @@
                 await TN.client.from('profiles').update({ balance_usd: Number(l2.balance_usd) + l2Com, team_commission: Number(l2.team_commission || 0) + l2Com }).eq('id', l2.id);
                 await TN.client.from('transactions').insert({ user_id: l2.id, type: 'commission', amount_ugx: l2Com, description: 'Level 2 Referral Bonus' });
 
+                // LEVEL 3 (1%)
                 if (l2.referred_by) {
                   const { data: l3 } = await TN.client.from('profiles').select('id, balance_usd, team_commission').eq('id', l2.referred_by).single();
                   if (l3) {
@@ -792,7 +845,7 @@
         }
       }
 
-      alert('Crop planted successfully!');
+      alert('Crop planted successfully! Your 24-hour timer has started.');
       window.location.reload();
     } catch (err) { alert(err.message); }
   };
@@ -988,4 +1041,4 @@
 })();
 </script>
 </body>
-                                                                                                                 </html>
+ </html>
