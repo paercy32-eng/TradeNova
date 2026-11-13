@@ -364,19 +364,35 @@
       platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (UGX ${formatUGX(t.amount)})</option>`).join('');
   }
 
+  // 🚨 UPDATED KPI FETCHING
   function fetchKPIs() {
+    // 1. Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
       document.getElementById('kpiUsers').textContent = res.count || 0;
     });
 
-    TN.client.from('profiles').select('total_deposited').then(res => {
+    // 2. Total Deposited & Total Invested (PULLING DIRECTLY FROM PROFILES)
+    TN.client.from('profiles').select('total_deposited, deposit_amount, product_source').then(res => {
       if (res.data) {
-        const totalDeposits = res.data.reduce((sum, p) => sum + Number(p.total_deposited || 0), 0);
+        let totalDeposits = 0;
+        let totalInvested = 0;
+
+        res.data.forEach(p => {
+          // Sum all real deposits
+          totalDeposits += Number(p.total_deposited || 0);
+          
+          // ONLY sum active plans if they purchased them
+          if (p.product_source === 'purchased') {
+            totalInvested += Number(p.deposit_amount || 0);
+          }
+        });
+
         document.getElementById('kpiDeposits').textContent = formatUGX(totalDeposits);
-        document.getElementById('kpiInvested').textContent = formatUGX(totalDeposits);
+        document.getElementById('kpiInvested').textContent = formatUGX(totalInvested);
       }
     });
 
+    // 3. Total Withdrawn
     TN.client.from('withdrawal_requests').select('amount_usd').eq('status', 'approved').then(res => {
       const total = (res.data || []).reduce((sum, w) => sum + Number(w.amount_usd), 0);
       document.getElementById('kpiWithdrawals').textContent = formatUGX(total);
@@ -505,12 +521,12 @@
     container.innerHTML = '';
 
     const activeReferralsMap = {};
-allUsers.forEach(u => {
-  // 🚨 ONLY count as active referral if they PURCHASED, not granted
-  if (u.referred_by && Number(u.deposit_amount) > 0 && u.product_source === 'purchased') {
-    activeReferralsMap[u.referred_by] = (activeReferralsMap[u.referred_by] || 0) + 1;
-  }
-});
+    allUsers.forEach(u => {
+      // 🚨 ONLY count as active referral if they PURCHASED, not granted
+      if (u.referred_by && Number(u.deposit_amount) > 0 && u.product_source === 'purchased') {
+        activeReferralsMap[u.referred_by] = (activeReferralsMap[u.referred_by] || 0) + 1;
+      }
+    });
 
     const filteredUsers = allUsers.filter(u => {
       return (u.phone || '').toLowerCase().includes(searchQuery) || (u.full_name || '').toLowerCase().includes(searchQuery);
@@ -525,7 +541,6 @@ allUsers.forEach(u => {
       
       let statusHtml = isActive ? `<span class="status-badge status-active">Active</span>` : `<span class="status-badge status-inactive">Inactive</span>`;
       
-      // 🚨 BADGE LOGIC FOR PURCHASED VS GRANTED
       if (isActive) {
         if (u.product_source === 'admin_granted') {
           statusHtml += `<span class="status-badge source-granted">GRANTED</span>`;
@@ -577,13 +592,13 @@ allUsers.forEach(u => {
       let newBal = Number(profile.balance_usd || 0);
       let updates = {};
 
-      // 🚨 ALLOWS ADMIN TO ADJUST BALANCE
+      // Adjusting Balance
       if (!isNaN(adjustBal) && adjustBal !== 0) {
         newBal += adjustBal;
         updates.balance_usd = newBal;
       }
       
-      // 🚨 GRANTING PRODUCT (Sets badge to Granted)
+      // Granting Product
       if (grantProduct) {
         updates.deposit_amount = Number(grantProduct);
         updates.active_day = 1;
@@ -602,17 +617,17 @@ allUsers.forEach(u => {
 
   // --- ACTIONS (VIP) ---
   window.processVipPayouts = async function() {
-    // 🚨 REMOVED MONDAY CHECK. Now runs every time you click it.
     if (!confirm("Distribute daily VIP rewards to eligible users?")) return;
     const btn = document.getElementById('processVipBtn');
     btn.disabled = true; btn.textContent = 'Processing...';
 
     try {
-      const { data: users } = await TN.client.from('profiles').select('id, referred_by, deposit_amount, balance_usd, vip_earnings');
+      const { data: users } = await TN.client.from('profiles').select('id, referred_by, deposit_amount, balance_usd, vip_earnings, product_source');
       
       const referrals = {};
       users.forEach(u => {
-        if (u.referred_by && Number(u.deposit_amount) > 0) {
+        // Only count PURCHASED referrals for VIP tiers
+        if (u.referred_by && Number(u.deposit_amount) > 0 && u.product_source === 'purchased') {
           if (!referrals[u.referred_by]) referrals[u.referred_by] = [];
           referrals[u.referred_by].push(Number(u.deposit_amount));
         }
@@ -653,4 +668,4 @@ allUsers.forEach(u => {
 })();
 </script>
 </body>
- </html>
+</html>
