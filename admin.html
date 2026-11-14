@@ -364,7 +364,7 @@
       platformSettings.crop_tiers.map(t => `<option value="${t.amount}">${t.name} (UGX ${formatUGX(t.amount)})</option>`).join('');
   }
 
-  // 🚨 KPI FETCHING (Only valid deposits count towards the 130k)
+  // KPI FETCHING (Only valid deposits count towards the 130k)
   function fetchKPIs() {
     // 1. Total Users
     TN.client.from('profiles').select('*', { count: 'exact', head: true }).then(res => {
@@ -378,7 +378,6 @@
     });
 
     // 3. Total Invested (Sum of user_crops price_paid ONLY)
-    // Since admin grants do not create entries in user_crops, this perfectly isolates real purchases.
     TN.client.from('user_crops').select('price_paid').then(res => {
       const totalInv = (res.data || []).reduce((sum, c) => sum + Number(c.price_paid), 0);
       document.getElementById('kpiInvested').textContent = formatUGX(totalInv);
@@ -422,14 +421,55 @@
   window.approveDeposit = async function(depositId, userId, amount) {
     if (!confirm(`Confirm UGX ${formatUGX(amount)} received?`)) return;
     try {
-      const { data: profile } = await TN.client.from('profiles').select('balance_usd, total_deposited').eq('id', userId).single();
+      // 1. Mark deposit as VERIFIED (matches database constraint)
+      const { error: depositError } = await TN.client.from('pending_deposits').update({ status: 'verified' }).eq('id', depositId);
+      if (depositError) throw depositError;
+      
+      // 2. Get user profile
+      const { data: profile, error: profileError } = await TN.client.from('profiles').select('balance_usd, total_deposited, referred_by').eq('id', userId).single();
+      if (profileError) throw profileError;
+
+      // 3. Credit the user who deposited
       await TN.client.from('profiles').update({ 
         balance_usd: Number(profile.balance_usd || 0) + Number(amount),
         total_deposited: Number(profile.total_deposited || 0) + Number(amount)
       }).eq('id', userId);
-      await TN.client.from('pending_deposits').update({ status: 'completed' }).eq('id', depositId);
-      alert('Approved!'); fetchKPIs(); loadDeposits(); loadUsers();
-    } catch (err) { alert(err.message); }
+
+      // 4. Process Multi-Level Commissions
+      let currentReferrer = profile.referred_by;
+      const commissions = [0.25, 0.02, 0.01]; // Level 1: 25%, Level 2: 2%, Level 3: 1%
+
+      for (let i = 0; i < commissions.length; i++) {
+        if (!currentReferrer) break; // Stop if no more uplines
+
+        const commissionAmount = Number(amount) * commissions[i];
+        
+        // Fetch the referrer's current balance
+        const { data: referrer } = await TN.client.from('profiles').select('balance_usd, referred_by').eq('id', currentReferrer).single();
+        if (!referrer) break;
+
+        // Credit the referrer
+        await TN.client.from('profiles').update({ 
+          balance_usd: Number(referrer.balance_usd || 0) + commissionAmount 
+        }).eq('id', currentReferrer);
+
+        // Log the commission into the transactions table
+        await TN.client.from('transactions').insert({ 
+          user_id: currentReferrer, 
+          type: 'COMMISSION', 
+          amount_usd: commissionAmount, 
+          status: 'completed' 
+        });
+
+        // Move up to the next level
+        currentReferrer = referrer.referred_by;
+      }
+
+      alert('Approved and multi-level commissions distributed!'); 
+      fetchKPIs(); loadDeposits(); loadUsers();
+    } catch (err) { 
+      alert(err.message); 
+    }
   };
 
   window.rejectDeposit = async function(depositId) {
