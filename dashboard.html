@@ -588,7 +588,7 @@
     })
     .then(cropsRes => {
       userCrops = cropsRes.data || [];
-      // USE THE NEW RPC TO GET ALL LEVELS
+      // USE THE RPC TO GET ALL LEVELS
       return TN.client.rpc('get_team_members', { p_user_id: currentUser.id });
     })
     .then(teamRes => {
@@ -1033,4 +1033,4 @@
 })();
 </script>
 </body>
-                                                                                   </html>
+ </html>
